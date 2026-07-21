@@ -1,0 +1,417 @@
+.container {
+  padding: 2rem;
+  background-color: #F8FAFC;
+  min-height: 100vh;
+  color: #0F172A;
+  overflow-y: auto;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+}
+
+.titleArea {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.subtitle {
+  color: #64748B;
+  font-size: 0.85rem;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.datePicker {
+  background: #FFFFFF;
+  border: 1px solid #0F172A;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #CBD5E1;
+  cursor: pointer;
+}
+
+.btnPrimary {
+  background: #5A4AF4;
+  color: #0F172A;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.iconBtn {
+  background: transparent;
+  border: 1px solid #0F172A;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #CBD5E1;
+  cursor: pointer;
+  position: relative;
+}
+
+.notificationBadge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background: #EF4444;
+  color: #0F172A;
+  font-size: 0.6rem;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #5A4AF4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+/* Metric Cards */
+.metricsRow {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.metricCard {
+  background: #FFFFFF;
+  border: 1px solid #0F172A;
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.metricHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #64748B;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.iconBox {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.metricValue {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.metricTrend {
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.trendUp { color: #10B981; }
+.trendDown { color: #EF4444; }
+.trendLabel { color: #64748B; }
+
+.donutSmall {
+  align-self: flex-end;
+  margin-top: -2.5rem;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 4px solid #0F172A;
+  border-top-color: #10B981;
+  border-right-color: #10B981;
+}
+
+/* Row 2 */
+.row2 {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.card {
+  background: #FFFFFF;
+  border: 1px solid #0F172A;
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.cardTitle {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.viewAll {
+  color: #64748B;
+  font-size: 0.75rem;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.viewAll:hover {
+  color: #0F172A;
+}
+
+/* Row 3 */
+.row3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* AI Fix Center List */
+.issueList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.issueItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #FFFFFF;
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #FFFFFF;
+}
+
+.issueLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.issueName {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.issuePages {
+  font-size: 0.75rem;
+  color: #64748B;
+}
+
+.badgeCritical { background: rgba(239, 68, 68, 0.2); color: #F87171; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.65rem; }
+.badgeWarning { background: rgba(245, 158, 11, 0.2); color: #FBBF24; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.65rem; }
+.badgeNotice { background: rgba(59, 130, 246, 0.2); color: #60A5FA; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.65rem; }
+
+.actionBtn {
+  background: #5A4AF4;
+  color: #0F172A;
+  border: none;
+  padding: 0.35rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* AI Tools Grid */
+.toolsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.toolCard {
+  background: #FFFFFF;
+  border: 1px solid #FFFFFF;
+  padding: 1rem;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.toolIconBox {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.25rem;
+}
+
+.toolTitle { font-size: 0.85rem; font-weight: 600; }
+.toolDesc { font-size: 0.7rem; color: #64748B; line-height: 1.4; }
+
+/* Timeline */
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.timelineItem {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.timelineIcon {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.timelineContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.timelineTitle { font-size: 0.85rem; color: #0F172A; margin-bottom: 0.15rem; }
+.timelineTime { font-size: 0.7rem; color: #64748B; }
+
+/* Banner */
+.banner {
+  background: linear-gradient(90deg, #1A1141 0%, #0A041A 100%);
+  border: 1px solid #2D1B69;
+  border-radius: 12px;
+  padding: 2rem 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.bannerContent {
+  position: relative;
+  z-index: 2;
+}
+
+.bannerTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.bannerDesc {
+  color: #64748B;
+  font-size: 0.9rem;
+}
+
+.bannerRocket {
+  position: absolute;
+  right: 20%;
+  bottom: -20px;
+  font-size: 6rem;
+  transform: rotate(-15deg);
+  opacity: 0.8;
+}
+
+.bannerBtn {
+  background: #5A4AF4;
+  color: #0F172A;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Modal Styles */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(4px);
+}
+
+.modalContent {
+  background: #FFFFFF;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  padding: 2rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.spin {
+  animation: spin 2s linear infinite;
+}

@@ -1,0 +1,120 @@
+"use client";
+import { Info } from "lucide-react";
+
+import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import Link from 'next/link';
+import styles from './page.module.css';
+
+export default function SitesPage() {
+  const { data: session } = useSession();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [url, setUrl] = useState('');
+  const [isCrawling, setIsCrawling] = useState(false);
+
+  const [sites, setSites] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetchSites();
+  }, [session]);
+
+  const fetchSites = async () => {
+    try {
+      const res = await fetch(`http://localhost:4000/api/sites?userId=${(session?.user as any)?.id || '1'}`);
+      if (res.ok) {
+        const data = await res.json();
+        setSites(data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch sites', error);
+    }
+  };
+
+  const handleCrawl = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsCrawling(true);
+    
+    try {
+      const res = await fetch('http://localhost:4000/api/crawl', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url, userId: (session?.user as any)?.id || '1' })
+      });
+      
+      if (res.ok) {
+        await fetchSites();
+        setIsModalOpen(false);
+        setUrl('');
+      }
+    } catch (error) {
+      console.error('Failed to crawl', error);
+    } finally {
+      setIsCrawling(false);
+    }
+  };
+
+  return (
+    <div>
+      <div className={styles.header}>
+        <h1 className={styles.title}>My Websites</h1>
+      {/* Auto-injected Info Block */}
+      <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', gap: '12px' }}>
+        <Info size={20} color="#0284C7" style={{ flexShrink: 0, marginTop: '2px' }} />
+        <div>
+          <h4 style={{ margin: '0 0 0.5rem 0', color: '#0369A1', fontSize: '0.95rem' }}>How does this work?</h4>
+          <p style={{ margin: 0, color: '#0C4A6E', fontSize: '0.85rem', lineHeight: '1.5' }}>
+             Manage all the websites and projects you are tracking in AutoSEO Pro. <strong>Example:</strong> Switch from your main business site to your personal blog to view its individual stats.
+          </p>
+        </div>
+      </div>
+  
+        <button className={styles.addBtn} onClick={() => setIsModalOpen(true)}>
+          + Add New Site
+        </button>
+      </div>
+
+      <div className={styles.sitesGrid}>
+        {sites.map((site: any) => (
+          <div key={site.id} className={styles.siteCard}>
+            <div className={styles.siteUrl}>{site.url}</div>
+            <div className={styles.siteMeta}>
+              <p>Pages Indexed: {site.pages?.length || 0}</p>
+              <p>Last Crawled: {site.lastCrawled}</p>
+            </div>
+            <div className={styles.siteActions}>
+              <Link href={`/dashboard/sites/${site.id}`} className={styles.actionBtn}>View SEO Files</Link>
+              <button className={styles.actionBtn} onClick={() => alert('Recrawling...')}>Re-Crawl</button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {isModalOpen && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <h2 className={styles.modalTitle}>Add Website</h2>
+            <form onSubmit={handleCrawl}>
+              <div className={styles.inputGroup}>
+                <label className={styles.label}>Website URL</label>
+                <input 
+                  type="url" 
+                  className={styles.input} 
+                  placeholder="https://yourwebsite.com" 
+                  value={url}
+                  onChange={(e) => setUrl(e.target.value)}
+                  required
+                />
+              </div>
+              <div className={styles.modalActions}>
+                <button type="button" className={styles.cancelBtn} onClick={() => setIsModalOpen(false)}>Cancel</button>
+                <button type="submit" className={styles.addBtn} disabled={isCrawling}>
+                  {isCrawling ? 'Adding...' : 'Add Site'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

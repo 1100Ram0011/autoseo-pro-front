@@ -1,0 +1,282 @@
+.layout {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  background-color: transparent; /* Uses globals.css body gradient */
+  color: var(--foreground);
+  font-family: var(--font-main);
+}
+
+.sidebar {
+  width: 260px;
+  background-color: rgba(11, 14, 20, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-right: 1px solid var(--card-border);
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex-shrink: 0;
+  z-index: 50;
+  transition: transform 0.3s ease;
+}
+
+/* Custom scrollbar for sidebar */
+.sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+.sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.logoArea {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-decoration: none;
+  margin-bottom: 2rem;
+}
+
+.logoGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--foreground);
+  text-shadow: 0 0 10px rgba(90, 74, 244, 0.3);
+}
+
+.versionBadge {
+  background: rgba(90, 74, 244, 0.15);
+  color: #8C82FA;
+  font-size: 0.65rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-weight: 600;
+  border: 1px solid rgba(90, 74, 244, 0.3);
+}
+
+.websiteSelector {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.websiteSelector:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.websiteInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.websiteIcon {
+  color: var(--primary);
+}
+
+.websiteNameGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.websiteName {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.websitePlan {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.navSection {
+  margin-bottom: 2rem;
+}
+
+.sectionTitle {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.75rem;
+  padding-left: 0.5rem;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-bottom: 0.2rem;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.navItem:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--foreground);
+}
+
+.navItem.active {
+  background-color: rgba(90, 74, 244, 0.15);
+  color: var(--primary);
+  border: 1px solid rgba(90, 74, 244, 0.2);
+}
+
+.navBadge {
+  position: absolute;
+  right: 0.75rem;
+  background: rgba(90, 74, 244, 0.2);
+  color: var(--primary);
+  font-size: 0.65rem;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  font-weight: 600;
+  border: 1px solid rgba(90, 74, 244, 0.3);
+}
+
+.navBadgeRed {
+  position: absolute;
+  right: 0.75rem;
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--danger);
+  font-size: 0.65rem;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  font-weight: 600;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.upgradeCard {
+  background: linear-gradient(135deg, rgba(90, 74, 244, 0.1) 0%, rgba(11, 14, 20, 0) 100%);
+  border: 1px solid rgba(90, 74, 244, 0.2);
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-top: auto;
+  position: relative;
+  overflow: hidden;
+}
+
+.upgradeCardTitle {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--foreground);
+  margin-bottom: 0.25rem;
+}
+
+.upgradeCardDesc {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+.upgradeCardBtn {
+  background: var(--primary);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 4px;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.upgradeCardBtn:hover {
+  background: var(--primary-hover);
+  box-shadow: 0 0 10px rgba(90, 74, 244, 0.5);
+}
+
+.rocketGraphic {
+  position: absolute;
+  right: -10px;
+  bottom: -10px;
+  font-size: 3rem;
+  opacity: 0.5;
+}
+
+.mainContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 100vh;
+  position: relative;
+}
+
+.mobileHeader {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background: #FFFFFF;
+  border-bottom: 1px solid #E2E8F0;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+.mobileMenuBtn {
+  background: none;
+  border: none;
+  color: #0F172A;
+  padding: 0.5rem;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.mobileMenuBtn:hover {
+  background: #F1F5F9;
+}
+
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  z-index: 45;
+  backdrop-filter: blur(2px);
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    height: 100vh;
+    transform: translateX(-100%);
+  }
+
+  .sidebarOpen {
+    transform: translateX(0);
+  }
+
+  .mobileHeader {
+    display: flex;
+  }
+
+  .overlayOpen {
+    display: block;
+  }
+}

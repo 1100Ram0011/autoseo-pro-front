@@ -1,0 +1,146 @@
+.container {
+  padding: 2rem 3rem;
+  background-color: #F8FAFC;
+  min-height: 100vh;
+  color: #0F172A;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0F172A;
+}
+
+.datePicker {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: white;
+  border: 1px solid #E2E8F0;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #475569;
+  cursor: pointer;
+}
+
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.metricCard {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+}
+
+.metricLabel {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #64748B;
+  margin-bottom: 0.5rem;
+}
+
+.metricValue {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #0F172A;
+  margin-bottom: 0.5rem;
+}
+
+.changePos { color: #10B981; font-size: 0.8rem; font-weight: 500; display: flex; align-items: center; gap: 0.25rem;}
+.changeNeg { color: #EF4444; font-size: 0.8rem; font-weight: 500; display: flex; align-items: center; gap: 0.25rem;}
+
+.mainGrid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.panel {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid #E2E8F0;
+}
+
+.panelTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #0F172A;
+  margin-bottom: 1.5rem;
+}
+
+.healthContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.healthRing {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 8px solid #10B981;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #0F172A;
+  margin-bottom: 2rem;
+}
+
+.healthList {
+  width: 100%;
+}
+
+.healthItem {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+}
+
+.healthItemLabel { color: #475569; display: flex; align-items: center; gap: 0.5rem;}
+.healthItemValue { font-weight: 600; color: #0F172A; }
+
+.tablesGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.container table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.container th {
+  text-align: left;
+  padding: 1rem 0;
+  font-size: 0.85rem;
+  color: #64748B;
+  border-bottom: 1px solid #E2E8F0;
+}
+
+.container td {
+  padding: 1rem 0;
+  font-size: 0.95rem;
+  color: #0F172A;
+  border-bottom: 1px solid #F1F5F9;
+}

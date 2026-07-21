@@ -1,0 +1,188 @@
+.container {
+  padding: 2rem;
+  background-color: #F8FAFC;
+  min-height: 100vh;
+  color: #0F172A;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+.header {
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #0F172A;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.splitLayout {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+/* Left Sidebar - Config */
+.configPanel {
+  flex: 0 0 320px;
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid #0F172A;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+}
+
+.formGroup {
+  margin-bottom: 1.5rem;
+}
+
+.label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #475569;
+  margin-bottom: 0.5rem;
+}
+
+.input, .select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #0F172A;
+  border-radius: 8px;
+  background: #F8FAFC;
+  font-size: 0.95rem;
+  color: #0F172A;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.input:focus, .select:focus {
+  border-color: #5A4AF4;
+  background: white;
+}
+
+.twoCols {
+  display: flex;
+  gap: 1rem;
+}
+
+.twoCols .formGroup {
+  flex: 1;
+}
+
+.generateBtn {
+  width: 100%;
+  background: #5A4AF4;
+  color: #0F172A;
+  border: none;
+  padding: 0.85rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.generateBtn:hover {
+  opacity: 0.9;
+}
+
+/* Right Panel - Editor */
+.editorPanel {
+  flex: 1;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #0F172A;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+}
+
+.editorHeader {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #0F172A;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.editorTitle {
+  font-weight: 600;
+  color: #0F172A;
+}
+
+.toolbar {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.5rem 1.5rem;
+  border-bottom: 1px solid #0F172A;
+  background: #F8FAFC;
+}
+
+.toolIconBtn {
+  background: transparent;
+  border: none;
+  color: #64748B;
+  padding: 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.toolIconBtn:hover {
+  background: #0F172A;
+  color: #0F172A;
+}
+
+.editorContent {
+  padding: 2rem 3rem;
+  min-height: 500px;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: #334155;
+  outline: none;
+}
+
+.editorContent h1 {
+  font-size: 2rem;
+  color: #0F172A;
+  margin-bottom: 1rem;
+}
+
+.editorContent p {
+  margin-bottom: 1.5rem;
+}
+
+.editorContent h3 {
+  font-size: 1.25rem;
+  color: #0F172A;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.editorFooter {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #0F172A;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.draftBtn {
+  background: white;
+  color: #5A4AF4;
+  border: 1px solid #5A4AF4;
+  padding: 0.5rem 1.25rem;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.draftBtn:hover {
+  background: #F1F5F9;
+}

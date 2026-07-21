@@ -1,0 +1,167 @@
+.container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #0F172A;
+  margin: 0;
+}
+
+.addForm {
+  display: flex;
+  gap: 1rem;
+}
+
+.input {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #E2E8F0;
+  background: #F8FAFC;
+  color: #0F172A;
+  min-width: 300px;
+  font-size: 0.95rem;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #5A4AF4;
+}
+
+.button {
+  background: #5A4AF4;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.button:hover {
+  background: #4A3AE4;
+  transform: translateY(-1px);
+}
+
+.button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+@media (max-width: 400px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  border-color: rgba(90, 74, 244, 0.4);
+  transform: translateY(-2px);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #E2E8F0;
+}
+
+.domainName {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #0F172A;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.deleteBtn {
+  background: transparent;
+  color: #EF4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.deleteBtn:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.keywordList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.keywordItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: #F8FAFC;
+  border-radius: 8px;
+}
+
+.keywordText {
+  color: #0F172A;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.metrics {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.85rem;
+  color: #64748B;
+}
+
+.metrics span {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.metrics strong {
+  color: #0F172A;
+}
+
+.noData {
+  text-align: center;
+  color: #64748B;
+  padding: 3rem;
+  background: #FFFFFF;
+  border-radius: 12px;
+  border: 1px dashed #E2E8F0;
+  grid-column: 1 / -1;
+}
