@@ -11,6 +11,8 @@ export const api = axios.create({
   withCredentials: true,
 });
 
+
+
 // Auto-attach user email to every request for auth middleware
 api.interceptors.request.use((config) => {
   if (typeof window !== 'undefined') {
