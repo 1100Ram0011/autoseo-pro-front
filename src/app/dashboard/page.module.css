@@ -415,3 +415,41 @@
 .spin {
   animation: spin 2s linear infinite;
 }
+
+/* ==========================================
+   Responsive Design
+   ========================================== */
+@media (max-width: 1200px) {
+  .metricsRow { grid-template-columns: repeat(3, 1fr); }
+  .row2 { grid-template-columns: 1fr 1fr; }
+  .row3 { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 992px) {
+  .container { padding: 1.5rem; }
+  .metricsRow { grid-template-columns: repeat(2, 1fr); }
+  .row2 { grid-template-columns: 1fr; }
+  .row3 { grid-template-columns: 1fr; }
+  .banner { padding: 1.5rem; }
+}
+
+@media (max-width: 768px) {
+  .container { padding: 1rem; }
+  .header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  .headerActions { width: 100%; flex-wrap: wrap; }
+  .metricsRow { grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .row2 { grid-template-columns: 1fr; gap: 1rem; }
+  .row3 { grid-template-columns: 1fr; gap: 1rem; }
+  .toolsGrid { grid-template-columns: 1fr; }
+  .title { font-size: 1.35rem; }
+  .banner { flex-direction: column; text-align: center; padding: 1.5rem; }
+  .bannerTitle { font-size: 1.25rem; }
+  .bannerRocket { display: none; }
+  .metricValue { font-size: 1.35rem; }
+}
+
+@media (max-width: 480px) {
+  .metricsRow { grid-template-columns: 1fr; }
+  .container { padding: 0.75rem; }
+}
+

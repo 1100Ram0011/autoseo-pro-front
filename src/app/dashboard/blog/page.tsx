@@ -1,5 +1,7 @@
 "use client";
 
+
+import { API_BASE } from '@/lib/apiConfig';
 import { useState } from 'react';
 import { Info, PenTool, Bold, Italic, Underline, Link, List, ListOrdered, AlignLeft, AlignCenter, Sparkles} from 'lucide-react';
 import styles from './page.module.css';
@@ -26,7 +28,7 @@ export default function AIBlogWriterPage() {
     setIsGenerating(true);
     setContent('<p>Generating AI Content... Please wait... 🚀</p>');
     try {
-      const res = await fetch('http://localhost:4000/api/ai/blog', {
+      const res = await fetch(`${API_BASE}/ai/blog`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ keyword: title })

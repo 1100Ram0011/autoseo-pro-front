@@ -1,4 +1,6 @@
 "use client";
+
+import { API_BASE } from '@/lib/apiConfig';
 import { Info } from "lucide-react";
 
 import { useState, useEffect } from 'react';
@@ -20,7 +22,7 @@ export default function SitesPage() {
 
   const fetchSites = async () => {
     try {
-      const res = await fetch(`http://localhost:4000/api/sites?userId=${(session?.user as any)?.id || '1'}`);
+      const res = await fetch(`${API_BASE}/sites?userId=${(session?.user as any)?.id || '1'}`);
       if (res.ok) {
         const data = await res.json();
         setSites(data);
@@ -35,7 +37,7 @@ export default function SitesPage() {
     setIsCrawling(true);
     
     try {
-      const res = await fetch('http://localhost:4000/api/crawl', {
+      const res = await fetch(`${API_BASE}/crawl`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url, userId: (session?.user as any)?.id || '1' })

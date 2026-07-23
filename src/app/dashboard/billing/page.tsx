@@ -1,4 +1,6 @@
 "use client";
+
+import { API_BASE } from '@/lib/apiConfig';
 import { Info } from "lucide-react";
 
 import { useState, useEffect, Suspense } from 'react';
@@ -20,7 +22,7 @@ function BillingContent() {
   const handleUpgrade = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch('http://localhost:4000/api/checkout', {
+      const res = await fetch(`${API_BASE}/checkout`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: 'user_123' }) // Mock user ID

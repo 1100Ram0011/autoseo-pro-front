@@ -1,5 +1,7 @@
 "use client";
 
+
+import { API_BASE } from '@/lib/apiConfig';
 import { useState, useEffect } from 'react';
 import { 
   Monitor, Smartphone, RefreshCw, X, AlertTriangle, CheckCircle, 
@@ -28,7 +30,7 @@ export default function Dashboard() {
 
   const fetchSites = async () => {
     try {
-      const res = await fetch('http://localhost:4000/api/sites');
+      const res = await fetch(`${API_BASE}/sites`);
       if (res.ok) {
         const data = await res.json();
         setSites(data);
@@ -43,7 +45,7 @@ export default function Dashboard() {
     const fetchSiteDetails = async () => {
       if (!selectedSiteId) return;
       try {
-        const res = await fetch(`http://localhost:4000/api/sites/${selectedSiteId}/pages`);
+        const res = await fetch(`${API_BASE}/sites/${selectedSiteId}/pages`);
         if (res.ok) {
           const data = await res.json();
           setPages(data.pages || []);
@@ -60,11 +62,11 @@ export default function Dashboard() {
     if (!selectedSiteId) return;
     setIsSyncing(true);
     try {
-      const res = await fetch(`http://localhost:4000/api/sites/${selectedSiteId}/ga4/pages`);
+      const res = await fetch(`${API_BASE}/sites/${selectedSiteId}/ga4/pages`);
       if (res.ok) {
         const data = await res.json();
         toast.success(`Synced ${data.addedCount || 0} new pages from Google Analytics!`);
-        const pageRes = await fetch(`http://localhost:4000/api/sites/${selectedSiteId}/pages`);
+        const pageRes = await fetch(`${API_BASE}/sites/${selectedSiteId}/pages`);
         if (pageRes.ok) {
           const pageData = await pageRes.json();
           setPages(pageData.pages);
@@ -85,7 +87,7 @@ export default function Dashboard() {
     setIsSyncing(true);
     toast.success('Starting site crawl... This may take a moment.');
     try {
-      const res = await fetch('http://localhost:4000/api/crawl', {
+      const res = await fetch(`${API_BASE}/crawl`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url: siteUrl, userId: '1' })
@@ -93,7 +95,7 @@ export default function Dashboard() {
       if (res.ok) {
         const data = await res.json();
         toast.success(`Crawled successfully! Found ${data.pagesFound || 0} pages.`);
-        const pageRes = await fetch(`http://localhost:4000/api/sites/${selectedSiteId}/pages`);
+        const pageRes = await fetch(`${API_BASE}/sites/${selectedSiteId}/pages`);
         if (pageRes.ok) {
           const pageData = await pageRes.json();
           setPages(pageData.pages);
@@ -117,7 +119,7 @@ export default function Dashboard() {
     
     for (const page of pages) {
       try {
-        const res = await fetch('http://localhost:4000/api/seo/pagespeed/analyze', {
+        const res = await fetch(`${API_BASE}/seo/pagespeed/analyze`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ pageId: page.id })
@@ -139,7 +141,7 @@ export default function Dashboard() {
   const runAudit = async (pageId: string) => {
     setIsAuditing(pageId);
     try {
-      const res = await fetch('http://localhost:4000/api/seo/pagespeed/analyze', {
+      const res = await fetch(`${API_BASE}/seo/pagespeed/analyze`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ pageId })

@@ -163,3 +163,26 @@
   color: #5A4AF4;
   opacity: 0.8;
 }
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .metricsGrid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 992px) {
+  .metricsGrid { grid-template-columns: repeat(2, 1fr); }
+  .searchBar { flex-direction: column; }
+}
+
+@media (max-width: 768px) {
+  .container { padding: 1rem; }
+  .title { font-size: 1.25rem; }
+  .metricsGrid { grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .searchBtn { width: 100%; text-align: center; }
+  .tableContainer { overflow-x: auto; }
+}
+
+@media (max-width: 480px) {
+  .metricsGrid { grid-template-columns: 1fr; }
+}
+

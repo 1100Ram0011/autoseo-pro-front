@@ -144,3 +144,26 @@
   color: #0F172A;
   border-bottom: 1px solid #F1F5F9;
 }
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .metricsGrid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 992px) {
+  .mainGrid { grid-template-columns: 1fr; }
+  .tablesGrid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+  .container { padding: 1rem; }
+  .header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  .title { font-size: 1.25rem; }
+  .metricsGrid { grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .metricValue { font-size: 1.35rem; }
+}
+
+@media (max-width: 480px) {
+  .metricsGrid { grid-template-columns: 1fr; }
+}
+

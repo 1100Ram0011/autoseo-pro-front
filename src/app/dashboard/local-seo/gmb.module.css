@@ -221,3 +221,18 @@
   font-style: italic;
   font-size: 0.95rem;
 }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container { padding: 1rem; }
+  .header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  .header h1 { font-size: 1.5rem; }
+  .syncButton { width: 100%; justify-content: center; }
+  .profileHeader { padding: 1.25rem; }
+  .businessName { font-size: 1.25rem; }
+  .reviewHeader { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+  .actionRow { flex-direction: column; }
+  .btnAi, .btnPublish { width: 100%; text-align: center; }
+  .cardValue { font-size: 1.75rem; }
+}
+

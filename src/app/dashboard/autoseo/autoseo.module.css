@@ -195,3 +195,14 @@
   background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(99, 102, 241, 0.1));
   border: 1px solid rgba(99, 102, 241, 0.2);
 }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container { padding: 1rem; }
+  .header h1 { font-size: 1.75rem; }
+  .inputGroup { flex-direction: column; }
+  .btnScan { width: 100%; }
+  .reportSection { padding: 1rem; }
+  .terminal { height: 150px; }
+}
+

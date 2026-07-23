@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { API_BASE } from './apiConfig';
 
 // The backend API base URL
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
+const API_BASE_URL = API_BASE;
 
 export const api = axios.create({
   baseURL: API_BASE_URL,

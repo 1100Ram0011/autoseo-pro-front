@@ -1,5 +1,7 @@
 "use client";
 
+
+import { API_BASE } from '@/lib/apiConfig';
 import { useState, useEffect } from 'react';
 import { 
   Puzzle, CheckCircle, ExternalLink, ArrowRight, Settings, 
@@ -24,7 +26,7 @@ export default function IntegrationsDashboard() {
 
   useEffect(() => {
     if (email) {
-      fetch(`http://localhost:4000/api/users/api-key?email=${encodeURIComponent(email)}`)
+      fetch(`${API_BASE}/users/api-key?email=${encodeURIComponent(email)}`)
         .then(res => res.json())
         .then(data => {
           if (data.apiKey) setApiKey(data.apiKey);
@@ -36,20 +38,20 @@ export default function IntegrationsDashboard() {
   const handleConnectGsc = () => {
     if (!email) return;
     setLoadingGoogle(true);
-    window.location.href = `http://localhost:4000/api/auth/google?email=${encodeURIComponent(email)}&redirect=search-console`;
+    window.location.href = `${API_BASE}/auth/google?email=${encodeURIComponent(email)}&redirect=search-console`;
   };
 
   const handleConnectGa4 = () => {
     if (!email) return;
     setLoadingGoogle(true);
-    window.location.href = `http://localhost:4000/api/auth/google?email=${encodeURIComponent(email)}&redirect=analytics`;
+    window.location.href = `${API_BASE}/auth/google?email=${encodeURIComponent(email)}&redirect=analytics`;
   };
 
   const handleGenerateKey = async () => {
     if (!email) return;
     setLoadingKey(true);
     try {
-      const res = await fetch(`http://localhost:4000/api/users/api-key/generate`, {
+      const res = await fetch(`${API_BASE}/users/api-key/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })
@@ -72,7 +74,7 @@ export default function IntegrationsDashboard() {
     
     setLoadingKey(true);
     try {
-      await fetch(`http://localhost:4000/api/users/api-key/revoke`, {
+      await fetch(`${API_BASE}/users/api-key/revoke`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })

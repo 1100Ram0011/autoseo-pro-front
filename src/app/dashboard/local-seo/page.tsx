@@ -1,4 +1,6 @@
 "use client";
+
+import { API_BASE } from '@/lib/apiConfig';
 import { Info } from "lucide-react";
 
 import { useState, useEffect } from 'react';
@@ -12,7 +14,7 @@ export default function LocalSeoPage() {
   useEffect(() => {
     const fetchSitesAndProfile = async () => {
       try {
-        const sitesRes = await fetch('http://localhost:4000/api/sites');
+        const sitesRes = await fetch(`${API_BASE}/sites`);
         const sites = await sitesRes.json();
         
         if (sites && sites.length > 0) {
@@ -32,7 +34,7 @@ export default function LocalSeoPage() {
     setLoading(true);
 
     try {
-      const res = await fetch(`http://localhost:4000/api/sites/${siteId}/gmb/sync`, {
+      const res = await fetch(`${API_BASE}/sites/${siteId}/gmb/sync`, {
         method: 'POST',
       });
 

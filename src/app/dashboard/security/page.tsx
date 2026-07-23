@@ -1,5 +1,7 @@
 "use client";
 
+
+import { API_BASE } from '@/lib/apiConfig';
 import { useState, useEffect } from 'react';
 import { Info, ShieldAlert, ShieldCheck, Search, Activity, Globe, CheckCircle2, XCircle} from 'lucide-react';
 import { toast } from 'react-hot-toast';
@@ -23,7 +25,7 @@ export default function SecurityAuditDashboard() {
     setThreats([]);
 
     try {
-      const res = await fetch(`http://localhost:4000/api/seo/safe-browsing?url=${encodeURIComponent(targetUrl)}`);
+      const res = await fetch(`${API_BASE}/seo/safe-browsing?url=${encodeURIComponent(targetUrl)}`);
       const data = await res.json();
       
       if (res.ok) {
@@ -48,7 +50,7 @@ export default function SecurityAuditDashboard() {
   useEffect(() => {
     const fetchSites = async () => {
       try {
-        const res = await fetch('http://localhost:4000/api/sites');
+        const res = await fetch(`${API_BASE}/sites`);
         if (res.ok) {
           const data = await res.json();
           if (data.length > 0) {

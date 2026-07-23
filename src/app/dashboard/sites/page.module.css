@@ -157,3 +157,15 @@
   color: #0F172A;
   background: #E2E8F0;
 }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  .title { font-size: 1.5rem; }
+  .addBtn { width: 100%; justify-content: center; }
+  .sitesGrid { grid-template-columns: 1fr; }
+  .siteActions { flex-direction: column; }
+  .modal { margin: 1rem; padding: 1.5rem; }
+  .modalActions { flex-direction: column; }
+}
+

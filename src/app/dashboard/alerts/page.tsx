@@ -1,5 +1,7 @@
 'use client';
 
+
+import { API_BASE } from '@/lib/apiConfig';
 import { useState, useEffect } from 'react';
 import { Info, Bell, AlertTriangle, TrendingDown, ArrowDownRight, ShieldAlert,
   Link as LinkIcon, Activity, CheckCircle, Clock, Trash2, Settings, Zap} from 'lucide-react';
@@ -23,14 +25,14 @@ export default function AlertsDashboard() {
   useEffect(() => {
     const fetchSitesAndAlerts = async () => {
       try {
-        const sitesRes = await fetch('http://localhost:4000/api/sites');
+        const sitesRes = await fetch(`${API_BASE}/sites`);
         const sites = await sitesRes.json();
         
         if (sites && sites.length > 0) {
           const sId = sites[0].id;
           setSiteId(sId);
           
-          const alertsRes = await fetch(`http://localhost:4000/api/sites/${sId}/alerts`);
+          const alertsRes = await fetch(`${API_BASE}/sites/${sId}/alerts`);
           if (alertsRes.ok) {
             const data = await alertsRes.json();
             setAlerts(data);
@@ -49,7 +51,7 @@ export default function AlertsDashboard() {
   const markAllRead = async () => {
     if (!siteId) return;
     try {
-      await fetch(`http://localhost:4000/api/sites/${siteId}/alerts/mark-read`, { method: 'POST' });
+      await fetch(`${API_BASE}/sites/${siteId}/alerts/mark-read`, { method: 'POST' });
       setAlerts(alerts.map(a => ({ ...a, isRead: true })));
     } catch (e) { console.error(e); }
   };
@@ -61,7 +63,7 @@ export default function AlertsDashboard() {
   const markAsRead = async (id: string, isRead: boolean) => {
     if (isRead || !siteId) return;
     try {
-      await fetch(`http://localhost:4000/api/sites/${siteId}/alerts/mark-read`, {
+      await fetch(`${API_BASE}/sites/${siteId}/alerts/mark-read`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ alertId: id })
@@ -74,7 +76,7 @@ export default function AlertsDashboard() {
     if (!siteId) return;
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:4000/api/sites/${siteId}/alerts/simulate-uptime`, {
+      const res = await fetch(`${API_BASE}/sites/${siteId}/alerts/simulate-uptime`, {
         method: 'POST'
       });
       if (res.ok) {

@@ -1,4 +1,6 @@
 "use client";
+
+import { API_BASE } from '@/lib/apiConfig';
 import { Info } from "lucide-react";
 
 import { useState, useEffect } from 'react';
@@ -22,14 +24,14 @@ export default function ReviewsPage() {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const sitesRes = await fetch('http://localhost:4000/api/sites');
+        const sitesRes = await fetch(`${API_BASE}/sites`);
         const sites = await sitesRes.json();
         
         if (sites && sites.length > 0) {
           const sId = sites[0].id;
           setSiteId(sId);
           
-          const revRes = await fetch(`http://localhost:4000/api/sites/${sId}/gmb/reviews`);
+          const revRes = await fetch(`${API_BASE}/sites/${sId}/gmb/reviews`);
           if (revRes.ok) {
             const data = await revRes.json();
             setReviews(data);
@@ -49,7 +51,7 @@ export default function ReviewsPage() {
     setLoadingIds(prev => new Set(prev).add(reviewId));
     
     try {
-      const res = await fetch(`http://localhost:4000/api/sites/${siteId}/gmb/reviews/${reviewId}/ai-reply`, {
+      const res = await fetch(`${API_BASE}/sites/${siteId}/gmb/reviews/${reviewId}/ai-reply`, {
         method: 'POST',
       });
 
@@ -72,7 +74,7 @@ export default function ReviewsPage() {
     if (!siteId) return;
 
     try {
-      const res = await fetch(`http://localhost:4000/api/sites/${siteId}/gmb/reviews/${reviewId}/publish`, {
+      const res = await fetch(`${API_BASE}/sites/${siteId}/gmb/reviews/${reviewId}/publish`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ replyText })

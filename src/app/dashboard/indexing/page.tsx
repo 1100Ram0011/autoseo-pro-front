@@ -1,5 +1,7 @@
 "use client";
 
+
+import { API_BASE } from '@/lib/apiConfig';
 import { useState, useEffect } from 'react';
 import { 
   CheckCircle, AlertTriangle, Play, RefreshCw, UploadCloud, 
@@ -24,7 +26,7 @@ export default function IndexingDashboard() {
   useEffect(() => {
     const fetchSites = async () => {
       try {
-        const res = await fetch('http://localhost:4000/api/sites');
+        const res = await fetch(`${API_BASE}/sites`);
         if (res.ok) {
           const data = await res.json();
           setSites(data);
@@ -40,7 +42,7 @@ export default function IndexingDashboard() {
   const fetchPages = async () => {
     if (!selectedSiteId) return;
     try {
-      const res = await fetch(`http://localhost:4000/api/sites/${selectedSiteId}/pages`);
+      const res = await fetch(`${API_BASE}/sites/${selectedSiteId}/pages`);
       if (res.ok) {
         const data = await res.json();
         setPages(data.pages);
@@ -64,7 +66,7 @@ export default function IndexingDashboard() {
     }
 
     toast.promise(
-      fetch('http://localhost:4000/api/seo/indexing/batch', {
+      fetch(`${API_BASE}/seo/indexing/batch`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ urls: urlsToSubmit, type: 'URL_UPDATED', siteId: selectedSiteId })
@@ -95,7 +97,7 @@ export default function IndexingDashboard() {
 
   const handleVerify = async (pageId: string, url: string) => {
     toast.promise(
-      fetch('http://localhost:4000/api/seo/indexing/verify', {
+      fetch(`${API_BASE}/seo/indexing/verify`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url, siteId: selectedSiteId, userId: "1" })
@@ -117,7 +119,7 @@ export default function IndexingDashboard() {
     setIsSingleLoading(true);
 
     try {
-      const res = await fetch('http://localhost:4000/api/seo/indexing', {
+      const res = await fetch(`${API_BASE}/seo/indexing`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url: singleUrl, type: actionType, siteId: selectedSiteId })
@@ -139,7 +141,7 @@ export default function IndexingDashboard() {
     if (!singleUrl.trim()) return toast.error('Enter URL first');
     setIsSingleLoading(true);
     try {
-      const res = await fetch(`http://localhost:4000/api/seo/indexing/metadata?url=${encodeURIComponent(singleUrl)}`);
+      const res = await fetch(`${API_BASE}/seo/indexing/metadata?url=${encodeURIComponent(singleUrl)}`);
       const data = await res.json();
       setMetadataResult(data);
       if (data.urlNotificationMetadata) {

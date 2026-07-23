@@ -1,5 +1,7 @@
 "use client";
 
+
+import { API_BASE } from '@/lib/apiConfig';
 import { useState, useEffect, useRef } from 'react';
 import useSWR from 'swr';
 import { fetcher, api } from '@/lib/api';
@@ -70,7 +72,7 @@ export default function AutoSeoPage() {
       setReportId(id);
 
       // 2. Connect to SSE for live updates
-      const eventSource = new EventSource(`http://localhost:4000/api/autoseo/stream/${id}`);
+      const eventSource = new EventSource(`${API_BASE}/autoseo/stream/${id}`);
 
       eventSource.onmessage = (event) => {
         const data: LogEvent = JSON.parse(event.data);

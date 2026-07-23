@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { X, Search, Loader2, Plus, Sparkles } from "lucide-react";
 import { toast } from "react-hot-toast";
+import { API_BASE } from '@/lib/apiConfig';
 
 interface KeywordDiscoveryModalProps {
   siteId: string;
@@ -32,7 +33,7 @@ export default function KeywordDiscoveryModal({
     setIdeas([]);
     
     try {
-      const res = await fetch(`http://localhost:4000/api/sites/${siteId}/keyword-ideas?seed=${encodeURIComponent(seed)}`);
+      const res = await fetch(`${API_BASE}/sites/${siteId}/keyword-ideas?seed=${encodeURIComponent(seed)}`);
       if (!res.ok) throw new Error("Search failed");
       const data = await res.json();
       setIdeas(data.ideas || []);
@@ -49,7 +50,7 @@ export default function KeywordDiscoveryModal({
   const handleSaveKeyword = async (idea: any) => {
     setSavingKw(idea.keyword);
     try {
-      const res = await fetch(`http://localhost:4000/api/sites/${siteId}/keywords`, {
+      const res = await fetch(`${API_BASE}/sites/${siteId}/keywords`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

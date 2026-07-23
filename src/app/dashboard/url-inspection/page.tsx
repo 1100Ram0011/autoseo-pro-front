@@ -1,5 +1,7 @@
 "use client";
 
+
+import { API_BASE } from '@/lib/apiConfig';
 import { useState, useEffect } from 'react';
 import { Info, Search, Globe, Smartphone, CheckCircle, XCircle, FileSearch, 
   AlertTriangle, ShieldCheck, RefreshCw} from 'lucide-react';
@@ -18,7 +20,7 @@ export default function UrlInspectionDashboard() {
   useEffect(() => {
     const fetchSites = async () => {
       try {
-        const res = await fetch('http://localhost:4000/api/sites');
+        const res = await fetch(`${API_BASE}/sites`);
         if (res.ok) {
           const data = await res.json();
           setSites(data);
@@ -42,7 +44,7 @@ export default function UrlInspectionDashboard() {
     setResult(null);
 
     try {
-      const res = await fetch(`http://localhost:4000/api/sites/${siteId}/gsc/inspect`, {
+      const res = await fetch(`${API_BASE}/sites/${siteId}/gsc/inspect`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ inspectUrl })

@@ -1,4 +1,6 @@
 "use client";
+
+import { API_BASE } from '@/lib/apiConfig';
 import { Info } from "lucide-react";
 
 import { useState, useEffect } from 'react';
@@ -20,14 +22,14 @@ export default function InternalLinksPage() {
   useEffect(() => {
     const fetchSitesAndSuggestions = async () => {
       try {
-        const sitesRes = await fetch('http://localhost:4000/api/sites');
+        const sitesRes = await fetch(`${API_BASE}/sites`);
         const sites = await sitesRes.json();
         
         if (sites && sites.length > 0) {
           const sId = sites[0].id;
           setSiteId(sId);
           
-          const sugRes = await fetch(`http://localhost:4000/api/sites/${sId}/internal-links`);
+          const sugRes = await fetch(`${API_BASE}/sites/${sId}/internal-links`);
           if (sugRes.ok) {
             const data = await sugRes.json();
             setSuggestions(data);
@@ -46,13 +48,13 @@ export default function InternalLinksPage() {
     setLoading(true);
 
     try {
-      const res = await fetch(`http://localhost:4000/api/sites/${siteId}/internal-links/generate`, {
+      const res = await fetch(`${API_BASE}/sites/${siteId}/internal-links/generate`, {
         method: 'POST',
       });
 
       if (res.ok) {
         // Refresh the list after generating
-        const sugRes = await fetch(`http://localhost:4000/api/sites/${siteId}/internal-links`);
+        const sugRes = await fetch(`${API_BASE}/sites/${siteId}/internal-links`);
         const data = await sugRes.json();
         setSuggestions(data);
       }
@@ -67,7 +69,7 @@ export default function InternalLinksPage() {
     if (!siteId) return;
 
     try {
-      const res = await fetch(`http://localhost:4000/api/sites/${siteId}/internal-links/${suggestionId}`, {
+      const res = await fetch(`${API_BASE}/sites/${siteId}/internal-links/${suggestionId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status })

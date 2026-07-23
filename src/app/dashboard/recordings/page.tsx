@@ -1,4 +1,6 @@
 "use client";
+
+import { API_BASE } from '@/lib/apiConfig';
 import { Info } from "lucide-react";
 import { useState, useEffect } from 'react';
 import { fetcher } from '../../../lib/api';
@@ -18,10 +20,10 @@ export default function RecordingsPage() {
   const loadData = async () => {
     try {
       // Fetch sites first to get a valid siteId
-      const sites = await fetcher('http://localhost:4000/api/sites?userId=1');
+      const sites = await fetcher(`${API_BASE}/sites?userId=1`);
       if (sites.length > 0) {
         const siteId = sites[0].id;
-        const data = await fetcher(`http://localhost:4000/api/sites/${siteId}/clarity/issues?days=7`);
+        const data = await fetcher(`${API_BASE}/sites/${siteId}/clarity/issues?days=7`);
         setIssues(data);
       }
     } catch (err) {
@@ -38,7 +40,7 @@ export default function RecordingsPage() {
   const handleSync = async () => {
     setSyncing(true);
     try {
-      await fetch('http://localhost:4000/api/clarity/sync', { method: 'POST' });
+      await fetch(`${API_BASE}/clarity/sync`, { method: 'POST' });
       // Wait a few seconds for the background sync to populate the DB
       setTimeout(() => {
         loadData();

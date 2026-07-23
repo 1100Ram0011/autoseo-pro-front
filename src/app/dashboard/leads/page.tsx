@@ -1,4 +1,6 @@
 "use client";
+
+import { API_BASE } from '@/lib/apiConfig';
 import { Info } from "lucide-react";
 import { useState, useEffect } from 'react';
 
@@ -8,7 +10,7 @@ export default function LeadsPage() {
   const [leads, setLeads] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch('http://localhost:4000/api/leads')
+    fetch(`${API_BASE}/leads`)
       .then(res => res.json())
       .then(data => setLeads(data))
       .catch(err => console.error("Failed to fetch leads", err));

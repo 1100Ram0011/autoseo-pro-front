@@ -1,5 +1,7 @@
 "use client";
 
+
+import { API_BASE } from '@/lib/apiConfig';
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { X, Loader2, CheckCircle2 } from "lucide-react";
@@ -36,8 +38,8 @@ export default function GA4SettingsModal({
     setLoading(true);
 
     Promise.all([
-      fetch(`http://localhost:4000/api/sites/${siteId}/settings`).then(r => r.ok ? r.json() : null),
-      fetch(`http://localhost:4000/api/auth/google/properties?email=${encodeURIComponent(email)}`).then(r => r.ok ? r.json() : null)
+      fetch(`${API_BASE}/sites/${siteId}/settings`).then(r => r.ok ? r.json() : null),
+      fetch(`${API_BASE}/auth/google/properties?email=${encodeURIComponent(email)}`).then(r => r.ok ? r.json() : null)
     ])
       .then(([settingsData, propsData]) => {
         if (settingsData) {
@@ -59,7 +61,7 @@ export default function GA4SettingsModal({
     setError(null);
 
     try {
-      const res = await fetch(`http://localhost:4000/api/sites/${siteId}/settings`, {
+      const res = await fetch(`${API_BASE}/sites/${siteId}/settings`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ga4PropertyId: propertyId.trim() }),
@@ -113,7 +115,7 @@ export default function GA4SettingsModal({
                     setLoading(true);
                     setError(null);
                     try {
-                      const res = await fetch(`http://localhost:4000/api/sites/${siteId}/auto-detect-ga4`, { method: 'POST' });
+                      const res = await fetch(`${API_BASE}/sites/${siteId}/auto-detect-ga4`, { method: 'POST' });
                       const data = await res.json();
                       if (res.ok && data.success) {
                         const rawId = data.propertyId.replace("properties/", "");

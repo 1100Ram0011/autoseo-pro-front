@@ -228,3 +228,15 @@ input:checked + .slider:before {
   padding: 4rem;
   color: #64748B;
 }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container { padding: 1rem; }
+  .header h1 { font-size: 1.5rem; }
+  .actionGroup { flex-direction: column; width: 100%; }
+  .btnScan, .btnExport { width: 100%; justify-content: center; }
+  .urlCol { max-width: 150px; }
+  .tableContainer { overflow-x: auto; }
+  .statValue { font-size: 1.75rem; }
+}
+

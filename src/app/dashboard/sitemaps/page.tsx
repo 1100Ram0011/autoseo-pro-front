@@ -1,5 +1,7 @@
 "use client";
 
+
+import { API_BASE } from '@/lib/apiConfig';
 import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Info, FileJson, UploadCloud, CheckCircle, AlertTriangle, Loader2, RefreshCw} from 'lucide-react';
@@ -34,7 +36,7 @@ export default function SitemapsManager() {
   useEffect(() => {
     const fetchSites = async () => {
       try {
-        const res = await fetch('http://localhost:4000/api/sites');
+        const res = await fetch(`${API_BASE}/sites`);
         if (res.ok) {
           const data = await res.json();
           setSites(data);
@@ -52,7 +54,7 @@ export default function SitemapsManager() {
     if (!selectedSiteId) return;
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:4000/api/sites/${selectedSiteId}/gsc/sitemaps`);
+      const res = await fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/sitemaps`);
       if (res.ok) {
         const data = await res.json();
         setSitemaps(data.sitemaps || []);

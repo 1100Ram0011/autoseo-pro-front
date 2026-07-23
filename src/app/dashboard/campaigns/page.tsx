@@ -1,4 +1,6 @@
 "use client";
+
+import { API_BASE } from '@/lib/apiConfig';
 import { Info } from "lucide-react";
 import { useState, useEffect } from 'react';
 
@@ -6,7 +8,7 @@ export default function CampaignsPage() {
   const [campaigns, setCampaigns] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch('http://localhost:4000/api/campaigns')
+    fetch(`${API_BASE}/campaigns`)
       .then(res => res.json())
       .then(data => setCampaigns(data))
       .catch(err => console.error("Failed to fetch campaigns", err));

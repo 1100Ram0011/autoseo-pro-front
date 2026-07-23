@@ -1,5 +1,7 @@
 "use client";
 
+
+import { API_BASE } from '@/lib/apiConfig';
 import { useState } from 'react';
 import useSWR from 'swr';
 import { fetcher } from '@/lib/api';
@@ -32,7 +34,7 @@ export default function SmartActionsFeed({ siteId }: { siteId: string }) {
     toast.loading('AI is applying the fix...', { id: actionId });
 
     try {
-      const res = await fetch(`http://localhost:4000/api/anomalies/execute`, {
+      const res = await fetch(`${API_BASE}/anomalies/execute`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ actionId })
@@ -53,7 +55,7 @@ export default function SmartActionsFeed({ siteId }: { siteId: string }) {
     setIsScanning(true);
     toast.loading('Running Omnichannel AI Scan...', { id: 'scan' });
     try {
-      await fetch(`http://localhost:4000/api/anomalies/${siteId}/scan`, { method: 'POST' });
+      await fetch(`${API_BASE}/anomalies/${siteId}/scan`, { method: 'POST' });
       toast.success('Scan complete! Results are in.', { id: 'scan' });
       setLastScan(new Date());
       mutate();

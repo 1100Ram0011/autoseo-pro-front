@@ -190,3 +190,18 @@
   background: var(--primary-hover);
   box-shadow: 0 0 10px rgba(90, 74, 244, 0.5);
 }
+
+/* Responsive */
+@media (max-width: 992px) {
+  .sidebar { display: none; }
+  .container { padding: 1rem; }
+}
+
+@media (max-width: 768px) {
+  .container { padding: 0.75rem; height: calc(100vh - 5rem); }
+  .messages { padding: 1rem; gap: 1rem; }
+  .messageRow { max-width: 95%; }
+  .inputArea { padding: 0.75rem; }
+  .bubble { padding: 0.75rem 1rem; font-size: 0.9rem; }
+}
+

@@ -158,3 +158,24 @@
 .table tr:last-child td {
   border-bottom: none;
 }
+
+/* ==========================================
+   Responsive Design
+   ========================================== */
+@media (max-width: 992px) {
+  .pageContainer { padding: 1.5rem; }
+  .grid4 { grid-template-columns: 1fr 1fr; }
+  .grid3 { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 768px) {
+  .pageContainer { padding: 1rem; }
+  .header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  .headerActions { width: 100%; }
+  .grid4 { grid-template-columns: 1fr; }
+  .grid3 { grid-template-columns: 1fr; }
+  .grid2 { grid-template-columns: 1fr; }
+  .title { font-size: 1.35rem; }
+  .card { padding: 1rem; }
+}
+

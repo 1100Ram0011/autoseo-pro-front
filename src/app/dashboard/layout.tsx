@@ -38,13 +38,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* Dark Theme Sidebar */}
       <div className={`${styles.sidebar} ${isMobileMenuOpen ? styles.sidebarOpen : ''}`}>
         
-        <Link href="/" className={styles.logoArea}>
-          <div className={styles.logoGroup}>
-            <Activity size={24} color="#5A4AF4" />
-            AutoSEO Pro
-          </div>
-          <div className={styles.versionBadge}>v1.0</div>
-        </Link>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem' }}>
+          <Link href="/" className={styles.logoArea} style={{ marginBottom: 0 }}>
+            <div className={styles.logoGroup}>
+              <Activity size={24} color="#5A4AF4" />
+              AutoSEO Pro
+            </div>
+            <div className={styles.versionBadge}>v1.0</div>
+          </Link>
+          <button className={styles.mobileCloseBtn} onClick={() => setIsMobileMenuOpen(false)}>
+            <X size={20} />
+          </button>
+        </div>
 
         <SiteSelector />
 

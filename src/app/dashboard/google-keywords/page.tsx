@@ -1,5 +1,7 @@
 "use client";
 
+
+import { API_BASE } from '@/lib/apiConfig';
 import { useState, useEffect, useMemo } from 'react';
 import { Info, Key, Plus, Search, Trash2, TrendingUp, BarChart2, Activity, Sparkles, Download, ArrowUpRight} from 'lucide-react';
 import { toast } from 'react-hot-toast';
@@ -30,7 +32,7 @@ export default function GoogleKeywordsPage() {
   useEffect(() => {
     const fetchSites = async () => {
       try {
-        const res = await fetch('http://localhost:4000/api/sites');
+        const res = await fetch(`${API_BASE}/sites`);
         if (res.ok) {
           const data = await res.json();
           setSites(data);
@@ -48,7 +50,7 @@ export default function GoogleKeywordsPage() {
     if (!selectedSiteId) return;
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:4000/api/sites/${selectedSiteId}/keywords`);
+      const res = await fetch(`${API_BASE}/sites/${selectedSiteId}/keywords`);
       if (res.ok) {
         const data = await res.json();
         // Append a random sparkline to each for the UI
@@ -91,7 +93,7 @@ export default function GoogleKeywordsPage() {
     if (!newKw.trim() || !selectedSiteId) return;
 
     try {
-      const res = await fetch(`http://localhost:4000/api/sites/${selectedSiteId}/keywords`, {
+      const res = await fetch(`${API_BASE}/sites/${selectedSiteId}/keywords`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -123,7 +125,7 @@ export default function GoogleKeywordsPage() {
     
     try {
       // Fetch top keywords from GSC API
-      const gscRes = await fetch(`http://localhost:4000/api/sites/${selectedSiteId}/gsc/keywords`);
+      const gscRes = await fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/keywords`);
       if (!gscRes.ok) throw new Error('GSC fetch failed');
       const data = await gscRes.json();
       const topKeywords = data.keywords?.slice(0, 10) || [];
@@ -140,7 +142,7 @@ export default function GoogleKeywordsPage() {
         // Skip if already tracked
         if (keywords.some(existing => existing.keyword === kw.keyword)) continue;
         
-        await fetch(`http://localhost:4000/api/sites/${selectedSiteId}/keywords`, {
+        await fetch(`${API_BASE}/sites/${selectedSiteId}/keywords`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
@@ -170,7 +172,7 @@ export default function GoogleKeywordsPage() {
   const handleDelete = async (id: string) => {
     if (!confirm('Remove this keyword?')) return;
     try {
-      const res = await fetch(`http://localhost:4000/api/keywords/${id}`, { method: 'DELETE' });
+      const res = await fetch(`${API_BASE}/keywords/${id}`, { method: 'DELETE' });
       if (res.ok) {
         toast.success('Keyword removed');
         fetchKeywords();

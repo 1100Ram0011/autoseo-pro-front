@@ -1,5 +1,7 @@
 "use client";
 
+
+import { API_BASE } from '@/lib/apiConfig';
 import { useState, useEffect } from 'react';
 import { Info, Code, Copy, CheckCircle, ChevronDown, AlignLeft, Building2, MessageCircleQuestion,
   Search, ShieldAlert, BadgeCheck} from 'lucide-react';
@@ -103,7 +105,7 @@ export default function SchemaGeneratorDashboard() {
     if (!lbName) return toast.error('Please enter a Brand/Business Name first.');
     setKgStatus('loading');
     try {
-      const res = await fetch(`http://localhost:4000/api/seo/kg-check?query=${encodeURIComponent(lbName)}`);
+      const res = await fetch(`${API_BASE}/seo/kg-check?query=${encodeURIComponent(lbName)}`);
       const data = await res.json();
       if (res.ok && data.found) {
         setKgData(data.entity);

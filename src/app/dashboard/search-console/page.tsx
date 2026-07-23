@@ -1,5 +1,7 @@
 "use client";
 
+
+import { API_BASE } from '@/lib/apiConfig';
 import { useState, useEffect, useMemo } from 'react';
 import {
   AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Legend
@@ -52,7 +54,7 @@ export default function SearchConsoleDashboard() {
   useEffect(() => {
     const fetchSites = async () => {
       try {
-        const res = await fetch('http://localhost:4000/api/sites');
+        const res = await fetch(`${API_BASE}/sites`);
         if (res.ok) {
           const data = await res.json();
           setSites(data);
@@ -79,13 +81,13 @@ export default function SearchConsoleDashboard() {
       setError(null);
       try {
         const [ovRes, kwRes, pgRes, ctRes, dvRes, smRes, insRes] = await Promise.all([
-          fetch(`http://localhost:4000/api/sites/${selectedSiteId}/gsc/overview`),
-          fetch(`http://localhost:4000/api/sites/${selectedSiteId}/gsc/keywords`),
-          fetch(`http://localhost:4000/api/sites/${selectedSiteId}/gsc/pages`),
-          fetch(`http://localhost:4000/api/sites/${selectedSiteId}/gsc/countries`),
-          fetch(`http://localhost:4000/api/sites/${selectedSiteId}/gsc/devices`),
-          fetch(`http://localhost:4000/api/sites/${selectedSiteId}/gsc/sitemaps`),
-          fetch(`http://localhost:4000/api/sites/${selectedSiteId}/gsc/insights`),
+          fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/overview`),
+          fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/keywords`),
+          fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/pages`),
+          fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/countries`),
+          fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/devices`),
+          fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/sitemaps`),
+          fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/insights`),
         ]);
 
         const ovData = await ovRes.json();
@@ -114,7 +116,7 @@ export default function SearchConsoleDashboard() {
     setInspectLoading(true);
     setInspectResult(null);
     try {
-      const res = await fetch(`http://localhost:4000/api/sites/${selectedSiteId}/gsc/inspect`, {
+      const res = await fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/inspect`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ inspectUrl: inspectUrl })
@@ -139,7 +141,7 @@ export default function SearchConsoleDashboard() {
         const u = window.prompt('Enter URL to request indexing:', targetUrl || 'https://');
         if (u) {
           toast.promise(
-            fetch('http://localhost:4000/api/seo/indexing', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url: u }) }),
+            fetch(`${API_BASE}/seo/indexing`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url: u }) }),
             { loading: 'Requesting indexing...', success: 'Indexing requested!', error: 'Failed.' }
           );
         }
@@ -148,7 +150,7 @@ export default function SearchConsoleDashboard() {
         const topic = window.prompt('Enter topic for Schema:', 'Local Business');
         if (topic) {
           toast.promise(
-            fetch('http://localhost:4000/api/ai/schema', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ topic, type: 'FAQPage' }) })
+            fetch(`${API_BASE}/ai/schema`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ topic, type: 'FAQPage' }) })
               .then(async r => { const d = await r.json(); if (d.schema) { const b = new Blob([JSON.stringify(d.schema, null, 2)], { type: 'application/json' }); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'schema.json'; a.click(); return true; } throw new Error(); }),
             { loading: 'Generating...', success: 'Schema Downloaded!', error: 'Failed.' }
           );
@@ -159,7 +161,7 @@ export default function SearchConsoleDashboard() {
         const kw = window.prompt('Enter keyword for AI Blog:');
         if (kw) {
           toast.promise(
-            fetch('http://localhost:4000/api/ai/blog', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ keyword: kw }) })
+            fetch(`${API_BASE}/ai/blog`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ keyword: kw }) })
               .then(async r => { const d = await r.json(); if (d.post) { const w = window.open('', '_blank'); if (w) { w.document.write(`<pre style="font-family:sans-serif;padding:20px;white-space:pre-wrap">${d.post.replace(/</g, '&lt;')}</pre>`); w.document.title = 'AI Blog Draft'; } return true; } throw new Error(); }),
             { loading: 'Writing...', success: 'Blog ready!', error: 'Failed.' }
           );
@@ -720,7 +722,7 @@ export default function SearchConsoleDashboard() {
               >
                 Configure Property
               </button>
-              <a href={`http://localhost:4000/api/auth/google?email=${encodeURIComponent(email)}&redirect=search-console&siteId=${selectedSiteId || ''}`} className={styles.connectBtn}>
+              <a href={`${API_BASE}/auth/google?email=${encodeURIComponent(email)}&redirect=search-console&siteId=${selectedSiteId || ''}`} className={styles.connectBtn}>
                 Connect GSC
               </a>
             </div>
@@ -779,7 +781,7 @@ export default function SearchConsoleDashboard() {
             ]}
             note="The website URL in your GSC property must exactly match the URL used in this dashboard."
             onConnect={() => {
-              window.location.href = `http://localhost:4000/api/auth/google?email=${encodeURIComponent(email || '')}&redirect=search-console&siteId=${selectedSiteId}`;
+              window.location.href = `${API_BASE}/auth/google?email=${encodeURIComponent(email || '')}&redirect=search-console&siteId=${selectedSiteId}`;
             }}
             connectButtonText="I've set it up — Connect with Google"
           />
@@ -806,7 +808,7 @@ export default function SearchConsoleDashboard() {
                 </button>
               ) : error.includes('Google Auth') || error.includes('connected') ? (
                 <a 
-                  href={`http://localhost:4000/api/auth/google?email=${encodeURIComponent(email || '')}&redirect=search-console&siteId=${selectedSiteId}`} 
+                  href={`${API_BASE}/auth/google?email=${encodeURIComponent(email || '')}&redirect=search-console&siteId=${selectedSiteId}`} 
                   style={{ width: '100%', background: '#3b82f6', color: '#fff', textDecoration: 'none', border: 'none', padding: '12px 24px', borderRadius: '8px', fontSize: '1rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', boxShadow: '0 4px 6px -1px rgba(59, 130, 246, 0.3)' }}
                 >
                   Connect with Google

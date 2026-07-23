@@ -1,4 +1,6 @@
 "use client";
+
+import { API_BASE } from '@/lib/apiConfig';
 import { Info } from "lucide-react";
 
 import { useState } from 'react';
@@ -54,7 +56,7 @@ export default function CompetitorsPage() {
     if (!site) return;
     
     try {
-      const res = await fetch(`http://localhost:4000/api/sites/${site.id}/competitors/${competitorId}`, {
+      const res = await fetch(`${API_BASE}/sites/${site.id}/competitors/${competitorId}`, {
         method: 'DELETE',
       });
 

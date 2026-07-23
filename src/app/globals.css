@@ -105,6 +105,20 @@ button {
 }
 
 /* ==========================================
+   Global Mobile Responsive Helpers
+   ========================================== */
+
+/* Make tables horizontally scrollable on mobile */
+@media (max-width: 768px) {
+  table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+  }
+}
+
+/* ==========================================
    Skeleton Loading Animation
    ========================================== */
 @keyframes shimmer {

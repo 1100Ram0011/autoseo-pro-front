@@ -1,5 +1,7 @@
 "use client";
 
+
+import { API_BASE } from '@/lib/apiConfig';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -58,7 +60,7 @@ export default function DashboardPage() {
     if (!dashboardData) return;
     setAlertStatus('loading');
     try {
-      const res = await fetch('http://localhost:4000/api/ai/analyze-site', {
+      const res = await fetch(`${API_BASE}/ai/analyze-site`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ siteUrl: site?.url, data: dashboardData })

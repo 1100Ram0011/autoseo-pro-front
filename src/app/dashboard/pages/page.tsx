@@ -1,5 +1,7 @@
 "use client";
 
+
+import { API_BASE } from '@/lib/apiConfig';
 import { useState, useEffect, useMemo } from 'react';
 import { Info, FileText, TrendingUp, MousePointerClick, Eye, BarChart2, Search, ExternalLink, RefreshCw, Loader2} from 'lucide-react';
 import { toast } from 'react-hot-toast';
@@ -16,7 +18,7 @@ export default function TopPagesDashboard() {
   useEffect(() => {
     const fetchSites = async () => {
       try {
-        const res = await fetch('http://localhost:4000/api/sites');
+        const res = await fetch(`${API_BASE}/sites`);
         if (res.ok) {
           const data = await res.json();
           setSites(data);
@@ -34,7 +36,7 @@ export default function TopPagesDashboard() {
     if (!selectedSiteId) return;
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:4000/api/sites/${selectedSiteId}/gsc/pages`);
+      const res = await fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/pages`);
       if (res.ok) {
         const data = await res.json();
         setPagesData(data.pages || []);

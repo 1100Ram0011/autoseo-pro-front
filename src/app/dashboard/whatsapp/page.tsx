@@ -1,5 +1,7 @@
 "use client";
 
+
+import { API_BASE } from '@/lib/apiConfig';
 import { useState, useEffect, useRef } from "react";
 import {
   Smartphone,
@@ -47,7 +49,7 @@ export default function WhatsAppAutomationPage() {
 
   const pollIntervalRef = useRef<any>(null);
   const qrPollRef = useRef<any>(null);
-  const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
+  const backendUrl = process.env.NEXT_PUBLIC_API_URL || `${API_BASE}`;
 
   const fetchConnections = async () => {
     try {

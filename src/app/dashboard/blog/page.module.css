@@ -186,3 +186,18 @@
 .draftBtn:hover {
   background: #F1F5F9;
 }
+
+/* Responsive */
+@media (max-width: 992px) {
+  .splitLayout { flex-direction: column; }
+  .configPanel { flex: 1 1 auto; }
+}
+
+@media (max-width: 768px) {
+  .container { padding: 1rem; }
+  .title { font-size: 1.25rem; }
+  .twoCols { flex-direction: column; }
+  .editorContent { padding: 1rem; min-height: 300px; }
+  .toolbar { overflow-x: auto; }
+}
+

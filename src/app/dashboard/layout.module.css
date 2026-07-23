@@ -227,13 +227,16 @@
   position: relative;
 }
 
+/* Mobile Header — Dark Theme matching sidebar */
 .mobileHeader {
   display: none;
   align-items: center;
   justify-content: space-between;
   padding: 1rem 1.5rem;
-  background: #FFFFFF;
-  border-bottom: 1px solid #E2E8F0;
+  background: rgba(11, 14, 20, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--card-border);
   position: sticky;
   top: 0;
   z-index: 40;
@@ -242,23 +245,40 @@
 .mobileMenuBtn {
   background: none;
   border: none;
-  color: #0F172A;
+  color: var(--foreground);
   padding: 0.5rem;
   cursor: pointer;
   border-radius: 6px;
 }
 
 .mobileMenuBtn:hover {
-  background: #F1F5F9;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Close button for mobile sidebar */
+.mobileCloseBtn {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  padding: 0.5rem;
+  cursor: pointer;
+  border-radius: 6px;
+  margin-left: auto;
+}
+
+.mobileCloseBtn:hover {
+  color: var(--foreground);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .overlay {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.5);
+  background: rgba(0, 0, 0, 0.6);
   z-index: 45;
-  backdrop-filter: blur(2px);
+  backdrop-filter: blur(4px);
 }
 
 @media (max-width: 768px) {
@@ -273,6 +293,10 @@
   }
 
   .mobileHeader {
+    display: flex;
+  }
+
+  .mobileCloseBtn {
     display: flex;
   }
 

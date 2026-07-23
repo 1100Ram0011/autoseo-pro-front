@@ -1,4 +1,6 @@
 "use client";
+
+import { API_BASE } from '@/lib/apiConfig';
 import { Info } from "lucide-react";
 
 import { useState } from 'react';
@@ -66,7 +68,7 @@ export default function BacklinksPage() {
 
   const handleExportDisavow = () => {
     if (!site) return;
-    window.open(`http://localhost:4000/api/sites/${site.id}/backlinks/export-disavow`, '_blank');
+    window.open(`${API_BASE}/sites/${site.id}/backlinks/export-disavow`, '_blank');
   };
 
   const toxicCount = links.filter((l: Backlink) => l.toxicityScore >= 60).length;

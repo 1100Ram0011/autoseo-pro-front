@@ -1,5 +1,7 @@
 "use client";
 
+
+import { API_BASE } from '@/lib/apiConfig';
 import { useState, useEffect, useMemo } from 'react';
 import { Info, Smartphone, Monitor, Tablet, RefreshCw, AlertTriangle, CheckCircle, 
   SmartphoneCharging, MousePointerClick, Eye} from 'lucide-react';
@@ -21,7 +23,7 @@ export default function MobileUsabilityDashboard() {
   useEffect(() => {
     const fetchSites = async () => {
       try {
-        const res = await fetch('http://localhost:4000/api/sites');
+        const res = await fetch(`${API_BASE}/sites`);
         if (res.ok) {
           const data = await res.json();
           setSites(data);
@@ -39,7 +41,7 @@ export default function MobileUsabilityDashboard() {
     if (!selectedSiteId) return;
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:4000/api/sites/${selectedSiteId}/gsc/devices`);
+      const res = await fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/devices`);
       if (res.ok) {
         const data = await res.json();
         setDeviceData(data.devices || []);

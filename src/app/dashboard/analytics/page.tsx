@@ -1,5 +1,7 @@
 "use client";
 
+
+import { API_BASE } from '@/lib/apiConfig';
 import { useState, useEffect, useMemo } from 'react';
 import {
   BarChart, Bar, AreaChart, Area, PieChart, Pie, Cell, LineChart, Line, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, CartesianGrid, Legend
@@ -50,7 +52,7 @@ export default function AnalyticsPage() {
     const fetchSites = async () => {
       if (!email) return;
       try {
-        const res = await fetch(`http://localhost:4000/api/sites?email=${encodeURIComponent(email)}`);
+        const res = await fetch(`${API_BASE}/sites?email=${encodeURIComponent(email)}`);
         if (res.ok) {
           const data = await res.json();
           setSites(data);
@@ -80,7 +82,7 @@ export default function AnalyticsPage() {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`http://localhost:4000/api/sites/${selectedSiteId}/ga4/overview?range=monthly`);
+        const res = await fetch(`${API_BASE}/sites/${selectedSiteId}/ga4/overview?range=monthly`);
         const data = await res.json();
 
         if (!res.ok) {
@@ -890,7 +892,7 @@ export default function AnalyticsPage() {
             ]}
             note="The website URL in your GA4 property must exactly match the URL used in this dashboard."
             onConnect={() => {
-              window.location.href = `http://localhost:4000/api/auth/google?email=${encodeURIComponent(email || '')}&redirect=analytics&siteId=${selectedSiteId}`;
+              window.location.href = `${API_BASE}/auth/google?email=${encodeURIComponent(email || '')}&redirect=analytics&siteId=${selectedSiteId}`;
             }}
             connectButtonText="I've set it up — Connect with Google"
           />
@@ -917,7 +919,7 @@ export default function AnalyticsPage() {
                 </button>
               ) : error.includes('Google Analytics not connected') ? (
                 <a 
-                  href={`http://localhost:4000/api/auth/google?email=${encodeURIComponent(email || '')}&redirect=analytics&siteId=${selectedSiteId}`} 
+                  href={`${API_BASE}/auth/google?email=${encodeURIComponent(email || '')}&redirect=analytics&siteId=${selectedSiteId}`} 
                   style={{ width: '100%', background: '#3b82f6', color: '#fff', textDecoration: 'none', border: 'none', padding: '12px 24px', borderRadius: '8px', fontSize: '1rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', boxShadow: '0 4px 6px -1px rgba(59, 130, 246, 0.3)' }}
                 >
                   Connect with Google

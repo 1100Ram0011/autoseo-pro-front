@@ -1,5 +1,7 @@
 "use client";
 
+
+import { API_BASE } from '@/lib/apiConfig';
 import { useState, useEffect, use } from 'react';
 import Link from 'next/link';
 import { 
@@ -27,7 +29,7 @@ export default function SiteDetailsPage({ params }: { params: Promise<{ siteId: 
     if (!siteId) return;
     const fetchSiteDetails = async () => {
       try {
-        const res = await fetch(`http://localhost:4000/api/sites/${siteId}/pages`);
+        const res = await fetch(`${API_BASE}/sites/${siteId}/pages`);
         if (res.ok) {
           const data = await res.json();
           setSiteUrl(data.url);
@@ -43,7 +45,7 @@ export default function SiteDetailsPage({ params }: { params: Promise<{ siteId: 
   const runAudit = async (pageId: string) => {
     setIsAuditing(pageId);
     try {
-      const res = await fetch('http://localhost:4000/api/seo/pagespeed/analyze', {
+      const res = await fetch(`${API_BASE}/seo/pagespeed/analyze`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ pageId })

@@ -1,5 +1,7 @@
 "use client";
 
+
+import { API_BASE } from '@/lib/apiConfig';
 import { useState, useEffect, useMemo } from 'react';
 import { 
   PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend 
@@ -19,7 +21,7 @@ export default function IndexCoverageDashboard() {
   useEffect(() => {
     const fetchSites = async () => {
       try {
-        const res = await fetch('http://localhost:4000/api/sites');
+        const res = await fetch(`${API_BASE}/sites`);
         if (res.ok) {
           const data = await res.json();
           setSites(data);
@@ -38,7 +40,7 @@ export default function IndexCoverageDashboard() {
     setLoading(true);
     setCoverageData(null);
     try {
-      const res = await fetch(`http://localhost:4000/api/sites/${selectedSiteId}/gsc/coverage`);
+      const res = await fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/coverage`);
       if (res.ok) {
         const data = await res.json();
         // If the backend returned an error object instead of the coverage data

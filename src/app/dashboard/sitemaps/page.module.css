@@ -123,3 +123,27 @@
 .actionIcon:hover {
   color: #5A4AF4;
 }
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .metricsGrid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 992px) {
+  .metricsGrid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .container { padding: 1rem; }
+  .header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  .title { font-size: 1.25rem; }
+  .headerActions { width: 100%; }
+  .addBtn { width: 100%; text-align: center; }
+  .metricsGrid { grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .tablePanel { overflow-x: auto; }
+}
+
+@media (max-width: 480px) {
+  .metricsGrid { grid-template-columns: 1fr; }
+}
+
