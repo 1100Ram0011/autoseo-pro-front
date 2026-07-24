@@ -556,4 +556,63 @@
     align-items: flex-start;
     gap: 1rem;
   }
+
+  .headerControls {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .topNav {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .navTabs {
+    overflow-x: auto;
+    width: 100%;
+    flex-wrap: nowrap;
+  }
+
+  .pageTitle {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboardWrapper {
+    padding: 1rem 0.75rem 2rem;
+  }
+
+  .metricsRow {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .metricCard {
+    border-radius: 0;
+    border-bottom-width: 0;
+  }
+
+  .metricCard:first-child {
+    border-radius: 6px 6px 0 0;
+  }
+
+  .metricCard:last-child {
+    border-bottom-width: 1.5px;
+    border-radius: 0 0 6px 6px;
+  }
+
+  .pageTitle {
+    font-size: 1.35rem;
+  }
+
+  .navTabs {
+    padding: 0.2rem;
+  }
+
+  .navTab {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.75rem;
+  }
 }
