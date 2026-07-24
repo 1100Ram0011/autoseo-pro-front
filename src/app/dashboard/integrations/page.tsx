@@ -112,7 +112,7 @@ export default function IntegrationsDashboard() {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.5rem', marginBottom: '2rem' }}>
+      <div className="grid-responsive grid-cols-2" style={{ marginBottom: '2rem' }}>
         
         {/* GOOGLE SEARCH CONSOLE */}
         <div className={styles.panel} style={{ position: 'relative', overflow: 'hidden' }}>
