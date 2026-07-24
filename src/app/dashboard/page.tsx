@@ -148,7 +148,7 @@ export default function DashboardPage() {
     >
       
       {/* Header */}
-      <motion.div variants={itemVariants} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
+      <motion.div variants={itemVariants} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
           <h1 style={{ margin: 0, fontSize: '1.6rem', fontWeight: 700, color: 'var(--foreground)' }}>
             {getGreeting()} 👋
@@ -178,7 +178,7 @@ export default function DashboardPage() {
             ))}
           </div>
         </div>
-        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
           <select
             value={dateRange}
             onChange={(e) => setDateRange(e.target.value)}
@@ -258,7 +258,7 @@ export default function DashboardPage() {
           <p style={{ margin: '0 0 1.25rem', fontSize: '0.8rem', color: '#64748B' }}>
             4 simple steps — we handle the hard part, you just click "Fix".
           </p>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px' }}>
+          <div className="grid-responsive grid-cols-4">
             {[
               { step: '1', icon: '🔗', title: 'Connect', desc: 'Link your Google Analytics, Search Console & Clarity accounts.' },
               { step: '2', icon: '🔍', title: 'Scan', desc: 'AI scans all platforms simultaneously for cross-platform issues.' },
@@ -679,7 +679,7 @@ export default function DashboardPage() {
       <motion.div variants={itemVariants} className="grid-responsive grid-cols-3">
         
         {/* Traffic Overview (Spans 2 columns) */}
-        <motion.div {...cardHoverProps} style={{ gridColumn: 'span 2', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '16px', padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
+        <motion.div {...cardHoverProps} className="col-span-2" style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '16px', padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 700, color: '#0F172A' }}>Traffic Overview</h3>
@@ -919,7 +919,7 @@ export default function DashboardPage() {
           <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700, color: '#0F172A' }}>Reports Available</h3>
           <span style={{ fontSize: '0.75rem', color: '#94A3B8' }}>Click any report to view details</span>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px' }}>
+        <div className="grid-responsive grid-cols-4">
           {[
             { icon: <ShieldCheck size={20} color="#10B981" />, title: 'SEO Health', desc: 'Full audit with score breakdown', href: '/dashboard/lighthouse', bg: '#ECFDF5', border: '#A7F3D0' },
             { icon: <BarChart3 size={20} color="#3B82F6" />, title: 'Traffic Analytics', desc: 'GA4 traffic with trends', href: '/dashboard/analytics', bg: '#EFF6FF', border: '#BFDBFE' },
