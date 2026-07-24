@@ -178,10 +178,24 @@
   .issueDescRow { grid-template-columns: 1fr; }
 }
 
+@media (max-width: 768px) {
+  .header { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+  .title { font-size: 1.25rem; }
+  .reportHeader { flex-direction: column; gap: 1rem; }
+  .reportActions { width: 100%; }
+  .deviceTabs { overflow-x: auto; width: 100%; }
+  .issuesFilterBar { overflow-x: auto; flex-wrap: nowrap; padding: 0.75rem; }
+  .filterBtn { white-space: nowrap; }
+  .truncateUrl { max-width: 160px; }
+  .issueRight { flex-wrap: wrap; gap: 0.5rem; }
+  .issueSaving { display: none; }
+}
+
 @media (max-width: 600px) {
   .scoreCardsRow { flex-direction: column; }
   .scoreCardMain, .scoreCard { width: 100%; min-width: 100%; }
   .cwvGrid { grid-template-columns: 1fr; }
   .reportHeader { flex-direction: column; gap: 1rem; }
   .reportActions { width: 100%; justify-content: space-between; }
+  .deviceTabs { width: 100%; }
 }
