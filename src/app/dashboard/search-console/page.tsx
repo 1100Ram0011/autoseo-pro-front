@@ -53,8 +53,9 @@ export default function SearchConsoleDashboard() {
 
   useEffect(() => {
     const fetchSites = async () => {
+      if (!email) return;
       try {
-        const res = await fetch(`${API_BASE}/sites`);
+        const res = await fetch(`${API_BASE}/sites?email=${encodeURIComponent(email)}`);
         if (res.ok) {
           const data = await res.json();
           setSites(data);
@@ -72,7 +73,7 @@ export default function SearchConsoleDashboard() {
       }
     };
     fetchSites();
-  }, []);
+  }, [email]);
 
   useEffect(() => {
     if (!selectedSiteId) return;
