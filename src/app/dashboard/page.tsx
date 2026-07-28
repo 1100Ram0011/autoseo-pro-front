@@ -56,6 +56,11 @@ export default function DashboardPage() {
   const [alertStatus, setAlertStatus] = useState<'idle' | 'loading' | 'done'>('idle');
   const [aiAnalysis, setAiAnalysis] = useState<any>(null);
 
+  const [greeting, setGreeting] = useState('');
+  useEffect(() => {
+    setGreeting(getGreeting());
+  }, []);
+
   const handleGenerateAnalysis = async () => {
     if (!dashboardData) return;
     setAlertStatus('loading');
@@ -151,7 +156,7 @@ export default function DashboardPage() {
       <motion.div variants={itemVariants} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
           <h1 style={{ margin: 0, fontSize: '1.6rem', fontWeight: 700, color: 'var(--foreground)' }}>
-            {getGreeting()} 👋
+            {greeting || 'Good afternoon'} 👋
           </h1>
           <p style={{ margin: '0.25rem 0 0', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
             Here's how <span style={{ color: 'var(--primary)', fontWeight: 600 }}>{stats.site}</span> is performing today.

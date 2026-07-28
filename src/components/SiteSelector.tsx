@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Globe, ChevronDown } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 import { getSites } from '../lib/api';
 import styles from '../app/dashboard/layout.module.css'; // Reuse existing styles
 
@@ -12,14 +13,16 @@ interface Site {
 }
 
 export default function SiteSelector() {
+  const { data: session } = useSession();
   const [sites, setSites] = useState<Site[]>([]);
   const [activeSite, setActiveSite] = useState<Site | null>(null);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     async function fetchSites() {
+      if (!session?.user?.email) return;
       try {
-        const data = await getSites();
+        const data = await getSites(session.user.email);
         if (data && data.length > 0) {
           setSites(data);
           
@@ -40,7 +43,7 @@ export default function SiteSelector() {
       }
     }
     fetchSites();
-  }, []);
+  }, [session?.user?.email]);
 
   const handleSelect = (site: Site) => {
     setActiveSite(site);
