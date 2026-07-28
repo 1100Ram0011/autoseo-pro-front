@@ -1,0 +1,160 @@
+/* Responsive styles for Reports page */
+
+.container {
+  background: #F8FAFC;
+  min-height: 100vh;
+  color: #0F172A;
+  padding: 2rem 2.5rem;
+  font-family: Inter, sans-serif;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 16px;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  gap: 1rem;
+}
+
+.metricItem {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border-right: 1px solid #E2E8F0;
+  padding-right: 1.5rem;
+}
+
+.metricItem:last-child {
+  border-right: none;
+  padding-right: 0;
+}
+
+.tabsRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #E2E8F0;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.navTabs {
+  display: flex;
+  gap: 2rem;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding-bottom: 4px;
+}
+
+.reportCard {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.reportActions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+@media (max-width: 1024px) {
+  .metricsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .metricItem:nth-child(2) {
+    border-right: none;
+    padding-right: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+  
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .header button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .metricsGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .metricItem {
+    border-right: none;
+    border-bottom: 1px solid #E2E8F0;
+    padding-right: 0;
+    padding-bottom: 1rem;
+  }
+  
+  .metricItem:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .tabsRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .navTabs {
+    gap: 1rem;
+  }
+
+  .searchAndFilters {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .searchAndFilters input {
+    width: 100% !important;
+  }
+
+  .searchAndFilters button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .reportCard {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .reportActions {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .reportActions button {
+    flex: 1;
+    justify-content: center;
+  }
+}
