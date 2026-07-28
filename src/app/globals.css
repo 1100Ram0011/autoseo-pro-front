@@ -1,63 +1,87 @@
-:root {
-  --background: #0B0E14;
-  --foreground: #F8FAFC;
-  --card-bg: rgba(20, 25, 35, 0.6);
-  --card-border: rgba(255, 255, 255, 0.05);
-  --primary: #5A4AF4;
-  --primary-hover: #4B3BE3;
-  --success: #22C55E;
-  --success-bg: rgba(34, 197, 94, 0.1);
-  --warning: #F59E0B;
-  --warning-bg: rgba(245, 158, 11, 0.1);
-  --danger: #EF4444;
-  --danger-bg: rgba(239, 68, 68, 0.1);
-  --text-muted: #94A3B8;
-  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  --sidebar-bg: #0B0E14;
-}
+/* ==========================================
+   AutoSEO Pro — Unified White + Blue Design System
+   ========================================== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-* {
-  box-sizing: border-box;
+:root {
+  /* === Core Colors === */
+  --background: #F8FAFC;
+  --surface: #FFFFFF;
+  --surface-2: #F1F5F9;
+  --surface-hover: #EFF6FF;
+
+  /* === Text === */
+  --foreground: #0F172A;
+  --text-secondary: #334155;
+  --text-muted: #64748B;
+  --text-faint: #94A3B8;
+
+  /* === Primary Blue === */
+  --primary: #2563EB;
+  --primary-hover: #1D4ED8;
+  --primary-light: #DBEAFE;
+  --primary-light-hover: #BFDBFE;
+  --primary-subtle: #EFF6FF;
+
+  /* === Borders === */
+  --border: #E2E8F0;
+  --border-strong: #CBD5E1;
+  --border-focus: #93C5FD;
+
+  /* === Status Colors === */
+  --success: #10B981;
+  --success-bg: #ECFDF5;
+  --warning: #F59E0B;
+  --warning-bg: #FFFBEB;
+  --danger: #EF4444;
+  --danger-bg: #FEF2F2;
+  --info: #3B82F6;
+  --info-bg: #EFF6FF;
+
+  /* === Sidebar === */
+  --sidebar-bg: #0F172A;
+  --sidebar-text: #CBD5E1;
+  --sidebar-text-active: #FFFFFF;
+  --sidebar-active-bg: #1E3A5F;
+  --sidebar-hover-bg: rgba(255, 255, 255, 0.05);
+  --sidebar-border: rgba(255, 255, 255, 0.08);
+
+  /* === Card / Panel === */
+  --card-bg: #FFFFFF;
+  --card-border: #E2E8F0;
+  --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.06), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
+  --card-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+  /* === Font === */
+  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* === Radius === */
+  --radius-sm: 6px;
+  --radius: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
 }
 
 /* ==========================================
-   Utility Classes for Premium UI
+   Base Reset
    ========================================== */
-.glass-card {
-  background: var(--card-bg) !important;
-  backdrop-filter: blur(12px) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
-  border: 1px solid var(--card-border) !important;
-  color: var(--foreground) !important;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1) !important;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-.glass-panel {
-  background: rgba(11, 14, 20, 0.7) !important;
-  backdrop-filter: blur(16px) !important;
-  -webkit-backdrop-filter: blur(16px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  color: var(--foreground) !important;
-}
-
-.text-muted {
-  color: var(--text-muted) !important;
-}
-
-.text-primary {
-  color: var(--primary) !important;
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  background-image: radial-gradient(circle at 15% 0%, #1c1342 0%, var(--background) 50%, var(--background) 100%);
-  background-attachment: fixed;
   font-family: var(--font-main);
-  margin: 0;
-  padding: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
 }
 
 a {
@@ -70,6 +94,65 @@ button {
   border: none;
   background: none;
   font-family: inherit;
+}
+
+/* ==========================================
+   Utility Classes
+   ========================================== */
+.text-muted { color: var(--text-muted) !important; }
+.text-primary { color: var(--primary) !important; }
+.text-success { color: var(--success) !important; }
+.text-danger { color: var(--danger) !important; }
+
+/* ==========================================
+   Dashboard Page Wrapper (shared)
+   ========================================== */
+.dashPage {
+  background: var(--background);
+  min-height: 100vh;
+  padding: 2rem 2.5rem;
+  font-family: var(--font-main);
+  color: var(--foreground);
+}
+
+/* ==========================================
+   Cards & Panels (shared)
+   ========================================== */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--card-shadow);
+}
+
+/* ==========================================
+   Badges
+   ========================================== */
+.badge-blue {
+  background: var(--primary-light);
+  color: var(--primary);
+  font-size: 0.7rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.badge-green {
+  background: var(--success-bg);
+  color: var(--success);
+  font-size: 0.7rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.badge-red {
+  background: var(--danger-bg);
+  color: var(--danger);
+  font-size: 0.7rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 4px;
+  font-weight: 600;
 }
 
 /* ==========================================
@@ -86,31 +169,27 @@ button {
 .grid-cols-1 { grid-template-columns: 1fr; }
 .col-span-2 { grid-column: span 2; }
 
-/* Large Screens (Laptops & Desktops) */
 @media (max-width: 1200px) {
   .grid-cols-4 { grid-template-columns: repeat(3, 1fr); }
 }
 
-/* Tablets & Small Laptops */
 @media (max-width: 992px) {
   .grid-cols-4 { grid-template-columns: repeat(2, 1fr); }
   .grid-cols-3 { grid-template-columns: repeat(2, 1fr); }
 }
 
-/* Mobile Screens */
 @media (max-width: 768px) {
   .grid-cols-4 { grid-template-columns: 1fr; }
   .grid-cols-3 { grid-template-columns: 1fr; }
   .grid-cols-2 { grid-template-columns: 1fr; }
   .grid-responsive { gap: 1rem; }
   .col-span-2 { grid-column: span 1; }
+  .dashPage { padding: 1rem; }
 }
 
 /* ==========================================
-   Global Mobile Responsive Helpers
+   Tables — Mobile Scrollable
    ========================================== */
-
-/* Make tables horizontally scrollable on mobile */
 @media (max-width: 768px) {
   table {
     display: block;
@@ -121,38 +200,34 @@ button {
 }
 
 /* ==========================================
-   Skeleton Loading Animation
+   Skeleton Loading
    ========================================== */
 @keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
 
 .skeleton {
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.03) 25%, rgba(255, 255, 255, 0.08) 50%, rgba(255, 255, 255, 0.03) 75%);
+  background: linear-gradient(90deg, #F1F5F9 25%, #E2E8F0 50%, #F1F5F9 75%);
   background-size: 200% 100%;
-  animation: shimmer 2s infinite linear;
-  border-radius: 6px;
+  animation: shimmer 1.5s infinite linear;
+  border-radius: var(--radius-sm);
 }
 
 /* ==========================================
    Custom Scrollbar
    ========================================== */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--background);
+  background: var(--surface-2);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
+  background: var(--border-strong);
+  border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--text-faint);
 }

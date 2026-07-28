@@ -1,18 +1,20 @@
-/* Responsive styles for Reports page */
+/* ==========================================
+   Reports Page — White + Blue Theme
+   ========================================== */
 
 .container {
-  background: #F8FAFC;
+  background: var(--background);
   min-height: 100vh;
-  color: #0F172A;
+  color: var(--foreground);
   padding: 2rem 2.5rem;
-  font-family: Inter, sans-serif;
+  font-family: var(--font-main);
 }
 
 .header {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 2rem;
   align-items: flex-start;
+  margin-bottom: 2rem;
   flex-wrap: wrap;
   gap: 1rem;
 }
@@ -20,19 +22,20 @@
 .metricsGrid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  background: #FFFFFF;
-  border: 1px solid #E2E8F0;
-  border-radius: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
   margin-bottom: 2rem;
   padding: 1.5rem;
   gap: 1rem;
+  box-shadow: var(--card-shadow);
 }
 
 .metricItem {
   display: flex;
   align-items: center;
   gap: 1rem;
-  border-right: 1px solid #E2E8F0;
+  border-right: 1px solid var(--border);
   padding-right: 1.5rem;
 }
 
@@ -45,30 +48,41 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #E2E8F0;
+  border-bottom: 2px solid var(--border);
   margin-bottom: 1.5rem;
-  padding-bottom: 0.5rem;
+  padding-bottom: 0;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: 0.5rem;
 }
 
 .navTabs {
   display: flex;
-  gap: 2rem;
+  gap: 0;
   overflow-x: auto;
   white-space: nowrap;
-  padding-bottom: 4px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: -2px;
 }
 
+.navTabs::-webkit-scrollbar { display: none; }
+
 .reportCard {
-  background: #FFFFFF;
-  border: 1px solid #E2E8F0;
-  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
   padding: 1rem 1.5rem;
   display: flex;
   align-items: center;
   gap: 1.25rem;
+  box-shadow: var(--card-shadow);
+  transition: box-shadow 0.2s, border-color 0.2s;
   flex-wrap: wrap;
+}
+
+.reportCard:hover {
+  box-shadow: var(--card-shadow-hover);
+  border-color: var(--border-focus);
 }
 
 .reportActions {
@@ -77,6 +91,15 @@
   align-items: center;
 }
 
+.searchAndFilters {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+/* ==========================================
+   Responsive
+   ========================================== */
 @media (max-width: 1024px) {
   .metricsGrid {
     grid-template-columns: repeat(2, 1fr);
@@ -97,18 +120,13 @@
     align-items: stretch;
   }
   
-  .header button {
-    width: 100%;
-    justify-content: center;
-  }
-
   .metricsGrid {
     grid-template-columns: 1fr;
   }
   
   .metricItem {
     border-right: none;
-    border-bottom: 1px solid #E2E8F0;
+    border-bottom: 1px solid var(--border);
     padding-right: 0;
     padding-bottom: 1rem;
   }
@@ -123,23 +141,13 @@
     align-items: stretch;
   }
 
-  .navTabs {
-    gap: 1rem;
-  }
-
   .searchAndFilters {
-    display: flex;
     flex-direction: column;
     gap: 0.5rem;
   }
 
   .searchAndFilters input {
     width: 100% !important;
-  }
-
-  .searchAndFilters button {
-    width: 100%;
-    justify-content: center;
   }
 
   .reportCard {

@@ -1,8 +1,8 @@
 .container {
   padding: 2rem;
-  background-color: #F8FAFC;
+  background: var(--background);
   min-height: 100vh;
-  color: #0F172A;
+  color: var(--foreground);
   overflow-y: auto;
 }
 
@@ -37,44 +37,50 @@
 }
 
 .datePicker {
-  background: #FFFFFF;
-  border: 1px solid #0F172A;
+  background: var(--surface);
+  border: 1.5px solid var(--border-strong);
   padding: 0.5rem 1rem;
-  border-radius: 8px;
+  border-radius: var(--radius);
   display: flex;
   align-items: center;
   gap: 0.5rem;
   font-size: 0.85rem;
-  color: #CBD5E1;
+  color: var(--text-secondary);
   cursor: pointer;
 }
 
 .btnPrimary {
-  background: #5A4AF4;
-  color: #0F172A;
+  background: var(--primary);
+  color: #FFFFFF;
   border: none;
   padding: 0.5rem 1rem;
-  border-radius: 8px;
+  border-radius: var(--radius);
   font-size: 0.85rem;
   font-weight: 600;
   display: flex;
   align-items: center;
   gap: 0.5rem;
   cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btnPrimary:hover {
+  background: var(--primary-hover);
 }
 
 .iconBtn {
   background: transparent;
-  border: 1px solid #0F172A;
+  border: 1.5px solid var(--border-strong);
   width: 36px;
   height: 36px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #CBD5E1;
+  color: var(--text-muted);
   cursor: pointer;
   position: relative;
+  transition: border-color 0.2s;
 }
 
 .notificationBadge {
@@ -97,7 +103,8 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: #5A4AF4;
+  background: var(--primary);
+  color: #FFFFFF;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -115,12 +122,18 @@
 }
 
 .metricCard {
-  background: #FFFFFF;
-  border: 1px solid #0F172A;
-  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
+  box-shadow: var(--card-shadow);
+  transition: box-shadow 0.2s;
+}
+
+.metricCard:hover {
+  box-shadow: var(--card-shadow-hover);
 }
 
 .metricHeader {
@@ -178,12 +191,13 @@
 }
 
 .card {
-  background: #FFFFFF;
-  border: 1px solid #0F172A;
-  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
+  box-shadow: var(--card-shadow);
 }
 
 .cardHeader {
