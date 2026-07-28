@@ -6,6 +6,7 @@ import { Info } from "lucide-react";
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { toast } from 'react-hot-toast';
 import styles from './page.module.css';
 
 export default function SitesPage() {
@@ -34,22 +35,34 @@ export default function SitesPage() {
 
   const handleCrawl = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!url.trim()) return;
     setIsCrawling(true);
     
     try {
-      const res = await fetch(`${API_BASE}/crawl`, {
+      const email = session?.user?.email || '';
+      let formattedUrl = url.trim().toLowerCase();
+      if (!/^https?:\/\//i.test(formattedUrl)) {
+        formattedUrl = `https://${formattedUrl}`;
+      }
+
+      const res = await fetch(`${API_BASE}/sites?email=${encodeURIComponent(email)}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url, userId: (session?.user as any)?.id || '1' })
+        body: JSON.stringify({ url: formattedUrl })
       });
       
       if (res.ok) {
+        toast.success('Site added successfully!');
         await fetchSites();
         setIsModalOpen(false);
         setUrl('');
+      } else {
+        const data = await res.json();
+        toast.error(data.error || 'Failed to add site');
       }
     } catch (error) {
-      console.error('Failed to crawl', error);
+      console.error('Failed to add site', error);
+      toast.error('Something went wrong');
     } finally {
       setIsCrawling(false);
     }
