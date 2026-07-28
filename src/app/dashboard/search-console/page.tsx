@@ -697,25 +697,14 @@ export default function SearchConsoleDashboard() {
     <div className={styles.dashboardWrapper}>
       <div className={styles.header}>
         <h1 className={styles.title}>Search Console</h1>
-      {/* Auto-injected Info Block */}
-      <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', gap: '12px' }}>
-        <Info size={20} color="#0284C7" style={{ flexShrink: 0, marginTop: '2px' }} />
-        <div>
-          <h4 style={{ margin: '0 0 0.5rem 0', color: '#0369A1', fontSize: '0.95rem' }}>How does this work?</h4>
-          <p style={{ margin: 0, color: '#0C4A6E', fontSize: '0.85rem', lineHeight: '1.5' }}>
-             This page syncs directly with Google Search Console to show you how your website is performing in Google search results. It helps you track impressions, clicks, and rankings. <strong>Example:</strong> If your impressions are going up but clicks are low, you might need to improve your page titles to make them more clickable.
-          </p>
-        </div>
-      </div>
-  
-        <div style={{display: 'flex', gap: '1rem', alignItems: 'center'}}>
+        <div className={styles.headerControls}>
           {sites.length > 0 && (
             <select className={styles.siteSelector} value={selectedSiteId || ''} onChange={(e) => setSelectedSiteId(e.target.value)}>
               {sites.map(site => (<option key={site.id} value={site.id}>{site.url}</option>))}
             </select>
           )}
           {email ? (
-            <div style={{ display: 'flex', gap: '8px' }}>
+            <div className={styles.actionGroup}>
               <button 
                 onClick={() => setIsSettingsModalOpen(true)} 
                 className={styles.connectBtn} 
@@ -730,6 +719,17 @@ export default function SearchConsoleDashboard() {
           ) : (
             <button className={styles.connectBtn} disabled>Connect GSC (Login Required)</button>
           )}
+        </div>
+      </div>
+
+      {/* Auto-injected Info Block */}
+      <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', gap: '12px' }}>
+        <Info size={20} color="#0284C7" style={{ flexShrink: 0, marginTop: '2px' }} />
+        <div>
+          <h4 style={{ margin: '0 0 0.5rem 0', color: '#0369A1', fontSize: '0.95rem' }}>How does this work?</h4>
+          <p style={{ margin: 0, color: '#0C4A6E', fontSize: '0.85rem', lineHeight: '1.5' }}>
+             This page syncs directly with Google Search Console to show you how your website is performing in Google search results. It helps you track impressions, clicks, and rankings. <strong>Example:</strong> If your impressions are going up but clicks are low, you might need to improve your page titles to make them more clickable.
+          </p>
         </div>
       </div>
 
