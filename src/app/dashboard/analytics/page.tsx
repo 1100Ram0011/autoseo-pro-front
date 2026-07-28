@@ -82,7 +82,7 @@ export default function AnalyticsPage() {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`${API_BASE}/sites/${selectedSiteId}/ga4/overview?range=monthly`);
+        const res = await fetch(`${API_BASE}/sites/${selectedSiteId}/ga4/overview?range=monthly&email=${encodeURIComponent(email)}`);
         const data = await res.json();
 
         if (!res.ok) {

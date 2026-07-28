@@ -82,13 +82,13 @@ export default function SearchConsoleDashboard() {
       setError(null);
       try {
         const [ovRes, kwRes, pgRes, ctRes, dvRes, smRes, insRes] = await Promise.all([
-          fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/overview`),
-          fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/keywords`),
-          fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/pages`),
-          fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/countries`),
-          fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/devices`),
-          fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/sitemaps`),
-          fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/insights`),
+          fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/overview?email=${encodeURIComponent(email)}`),
+          fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/keywords?email=${encodeURIComponent(email)}`),
+          fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/pages?email=${encodeURIComponent(email)}`),
+          fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/countries?email=${encodeURIComponent(email)}`),
+          fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/devices?email=${encodeURIComponent(email)}`),
+          fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/sitemaps?email=${encodeURIComponent(email)}`),
+          fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/insights?email=${encodeURIComponent(email)}`),
         ]);
 
         const ovData = await ovRes.json();
@@ -117,7 +117,7 @@ export default function SearchConsoleDashboard() {
     setInspectLoading(true);
     setInspectResult(null);
     try {
-      const res = await fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/inspect`, {
+      const res = await fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/inspect?email=${encodeURIComponent(email)}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ inspectUrl: inspectUrl })
