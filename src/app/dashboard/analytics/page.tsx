@@ -137,12 +137,18 @@ export default function AnalyticsPage() {
     .slice(0, 15)
     .map(([name, value]) => ({ name, value: value as number })) : [], [ga4Overview]);
 
-  const pagesList = ga4Overview?.topPages || [];
-  const landingPagesList = ga4Overview?.landingPages || [];
-  const exitPagesList = ga4Overview?.exitPages || [];
-  const conversions = ga4Overview?.conversions || [];
+  const pagesList = Array.isArray(ga4Overview?.topPages) ? ga4Overview.topPages : [];
+  const landingPagesList = Array.isArray(ga4Overview?.landingPages) ? ga4Overview.landingPages : [];
+  const exitPagesList = Array.isArray(ga4Overview?.exitPages) ? ga4Overview.exitPages : [];
+  const conversions = Array.isArray(ga4Overview?.conversions) ? ga4Overview.conversions : [];
   const newReturning = ga4Overview?.newReturning || { new: 0, returning: 0 };
-  const realtimeDetail = ga4Overview?.realtimeDetail || { byPage: [], byCountry: [], byCity: [], byDevice: [] };
+  const rtRaw = ga4Overview?.realtimeDetail || {};
+  const realtimeDetail = {
+    byPage: Array.isArray(rtRaw.byPage) ? rtRaw.byPage : [],
+    byCountry: Array.isArray(rtRaw.byCountry) ? rtRaw.byCountry : [],
+    byCity: Array.isArray(rtRaw.byCity) ? rtRaw.byCity : [],
+    byDevice: Array.isArray(rtRaw.byDevice) ? rtRaw.byDevice : []
+  };
 
   const newReturningPie = [
     { name: 'New Users', value: newReturning.new, color: COLORS[0] },

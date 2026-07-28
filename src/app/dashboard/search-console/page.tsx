@@ -388,7 +388,8 @@ export default function SearchConsoleDashboard() {
 
   const renderCountries = () => {
     const totalClicks = gscCountries.reduce((s, c) => s + (c.clicks || 0), 0);
-    const chartData = gscCountries.slice(0, 10).map((c, i) => ({ ...c, color: COLORS[i % COLORS.length] }));
+    const safeGscCountries = Array.isArray(gscCountries) ? gscCountries : [];
+    const chartData = safeGscCountries.slice(0, 10).map((c, i) => ({ ...c, color: COLORS[i % COLORS.length] }));
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
@@ -646,7 +647,7 @@ export default function SearchConsoleDashboard() {
         <table className={styles.dataTable}>
           <thead><tr><th>Keyword</th><th className={styles.alignRight}>Clicks</th><th className={styles.alignRight}>Impressions</th><th className={styles.alignRight}>Position</th><th className={styles.alignRight}>Potential</th></tr></thead>
           <tbody>
-            {gscKeywords.filter(k => k.position > 3 && k.position <= 10).sort((a, b) => b.impressions - a.impressions).slice(0, 10).map((k, i) => (
+            {(Array.isArray(gscKeywords) ? gscKeywords : []).filter(k => k.position > 3 && k.position <= 10).sort((a, b) => b.impressions - a.impressions).slice(0, 10).map((k, i) => (
               <tr key={i}>
                 <td style={{ color: '#0F172A' }}>{k.keyword}</td>
                 <td className={styles.alignRight}>{k.clicks?.toLocaleString()}</td>
@@ -665,7 +666,7 @@ export default function SearchConsoleDashboard() {
         <table className={styles.dataTable}>
           <thead><tr><th>Keyword</th><th className={styles.alignRight}>Impressions</th><th className={styles.alignRight}>CTR</th><th className={styles.alignRight}>Clicks</th></tr></thead>
           <tbody>
-            {gscKeywords.filter(k => k.impressions > 500 && k.ctr < 2).sort((a, b) => b.impressions - a.impressions).slice(0, 10).map((k, i) => (
+            {(Array.isArray(gscKeywords) ? gscKeywords : []).filter(k => k.impressions > 500 && k.ctr < 2).sort((a, b) => b.impressions - a.impressions).slice(0, 10).map((k, i) => (
               <tr key={i}>
                 <td style={{ color: '#0F172A' }}>{k.keyword}</td>
                 <td className={styles.alignRight}>{k.impressions?.toLocaleString()}</td>

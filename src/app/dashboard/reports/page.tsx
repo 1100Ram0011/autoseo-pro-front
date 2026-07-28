@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, Variants } from 'framer-motion';
 import { Info, FileText, CheckCircle, Clock, Download, Search, Filter,
   BarChart2, TrendingUp, Link as LinkIcon, Trophy, Shield, 
@@ -76,8 +76,20 @@ export default function ReportsPage() {
   const [currentReport, setCurrentReport] = useState<any>(null);
 
   const { data: sites } = useSWR('/sites', fetcher);
-  // Default to first site for reporting
-  const activeSiteId = typeof window !== 'undefined' ? localStorage.getItem('activeSiteId') || sites?.[0]?.id : sites?.[0]?.id;
+  
+  const [activeSiteId, setActiveSiteId] = useState<string | null>(null);
+  
+  useEffect(() => {
+    if (sites && sites.length > 0) {
+      const saved = localStorage.getItem('autoseo-active-site-id');
+      if (saved && sites.some((s: any) => s.id === saved)) {
+        setActiveSiteId(saved);
+      } else {
+        setActiveSiteId(sites[0].id);
+      }
+    }
+  }, [sites]);
+
   const { data: dashboardData } = useSWR(activeSiteId ? `/sites/${activeSiteId}/dashboard?range=30d` : null, fetcher);
 
 
