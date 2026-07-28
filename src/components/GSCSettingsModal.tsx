@@ -38,7 +38,7 @@ export default function GSCSettingsModal({
     setLoading(true);
 
     Promise.all([
-      fetch(`${API_BASE}/sites/${siteId}/settings`).then(r => r.ok ? r.json() : null),
+      fetch(`${API_BASE}/sites/${siteId}/settings?email=${encodeURIComponent(email || '')}`).then(r => r.ok ? r.json() : null),
       fetch(`${API_BASE}/auth/google/gsc-properties?email=${encodeURIComponent(email)}`).then(r => r.ok ? r.json() : null)
     ])
       .then(([settingsData, propsData]) => {
@@ -61,7 +61,7 @@ export default function GSCSettingsModal({
     setError(null);
 
     try {
-      const res = await fetch(`${API_BASE}/sites/${siteId}/settings`, {
+      const res = await fetch(`${API_BASE}/sites/${siteId}/settings?email=${encodeURIComponent(email || '')}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ gscPropertyId: propertyId.trim() }),
