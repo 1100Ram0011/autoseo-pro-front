@@ -709,8 +709,8 @@ export default function DashboardPage() {
             <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><div style={{ width: 8, height: 8, borderRadius: '50%', background: '#3B82F6'}}/> Sessions</span>
           </div>
           <div style={{ height: 180, width: '100%' }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={dashboardData?.trafficTrend || []} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+            <ResponsiveContainer width="100%" height={150}>
+              <AreaChart data={Array.isArray(dashboardData?.trafficTrend) ? dashboardData.trafficTrend : []} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorUsers" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#A855F7" stopOpacity={0.2}/>
@@ -842,8 +842,8 @@ export default function DashboardPage() {
             <div style={{ width: 100, height: 50, position: 'relative', overflow: 'hidden' }}>
                <ResponsiveContainer width="100%" height="200%">
                  <PieChart>
-                   <Pie data={dashboardData?.cwvGauge || [{name:'Empty',value:100,fill:'var(--card-border)'}]} startAngle={180} endAngle={0} innerRadius={30} outerRadius={45} dataKey="value" stroke="none">
-                     {(dashboardData?.cwvGauge || [{name:'Empty',value:100,fill:'var(--card-border)'}]).map((entry: any, index: number) => <Cell key={`cell-${index}`} fill={entry.fill} />)}
+                   <Pie data={Array.isArray(dashboardData?.cwvGauge) ? dashboardData.cwvGauge : [{name:'Empty',value:100,fill:'var(--card-border)'}]} startAngle={180} endAngle={0} innerRadius={30} outerRadius={45} dataKey="value" stroke="none">
+                     {(Array.isArray(dashboardData?.cwvGauge) ? dashboardData.cwvGauge : [{name:'Empty',value:100,fill:'var(--card-border)'}]).map((entry: any, index: number) => <Cell key={`cell-${index}`} fill={entry.fill} />)}
                    </Pie>
                  </PieChart>
                </ResponsiveContainer>
