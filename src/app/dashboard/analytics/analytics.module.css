@@ -144,8 +144,6 @@
   border: 1.5px solid var(--border-strong);
   border-radius: 4px;
   padding: 0.3rem;
-}
-
 .navTab {
   padding: 0.5rem 1rem;
   font-size: 0.8rem;
@@ -154,6 +152,8 @@
   border-radius: 3px;
   transition: all 0.15s ease;
   user-select: none;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .navTab:hover {
@@ -528,6 +528,24 @@
 }
 
 /* ===== Responsive ===== */
+@media (max-width: 1024px) {
+  .chartsGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .metricsRow {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .metricCard {
+    border-bottom: 1.5px solid var(--border-strong);
+  }
+  
+  .metricCard:nth-child(3n) {
+    border-right: none;
+  }
+}
+
 @media (max-width: 1100px) {
   .metricsRow {
     grid-template-columns: repeat(3, 1fr);
@@ -572,10 +590,25 @@
     overflow-x: auto;
     width: 100%;
     flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  
+  .navTabs::-webkit-scrollbar {
+    display: none;
   }
 
   .pageTitle {
     font-size: 1.6rem;
+  }
+  
+  .siteSelect {
+    width: 100%;
+  }
+
+  .datePicker, .exportButton {
+    flex: 1;
+    justify-content: center;
   }
 }
 

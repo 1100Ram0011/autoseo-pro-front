@@ -9,7 +9,8 @@ import { Info, FileText, CheckCircle, Clock, Download, Search, Filter,
 import toast from 'react-hot-toast';
 import useSWR from 'swr';
 import { fetcher } from '@/lib/api';
-import jsPDF from 'jspdf';
+import styles from './page.module.css';
+import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 import ReportTemplate from '@/components/reports/ReportTemplate';
 
@@ -140,10 +141,10 @@ export default function ReportsPage() {
       variants={containerVariants}
       initial="hidden"
       animate="show"
-      style={{ background: '#F8FAFC', minHeight: '100vh', color: '#0F172A', padding: '2rem 2.5rem', fontFamily: 'Inter, sans-serif' }}
+      className={styles.container}
     >
       {/* Header */}
-      <motion.div variants={itemVariants} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2rem', alignItems: 'flex-start' }}>
+      <motion.div variants={itemVariants} className={styles.header}>
         <div>
           <h1 style={{ fontSize: '1.6rem', fontWeight: 700, margin: '0 0 0.4rem', color: '#0F172A', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
              📄 Reports
@@ -167,8 +168,8 @@ export default function ReportsPage() {
       </motion.div>
 
       {/* Top Metrics Row */}
-      <motion.div variants={itemVariants} style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '16px', marginBottom: '2rem', padding: '1.5rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', borderRight: '1px solid #E2E8F0', paddingRight: '1.5rem' }}>
+      <motion.div variants={itemVariants} className={styles.metricsGrid}>
+        <div className={styles.metricItem}>
           <div style={{ width: 48, height: 48, borderRadius: '12px', background: '#EFF6FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <FileText size={24} color="#3B82F6" />
           </div>
@@ -179,7 +180,7 @@ export default function ReportsPage() {
           </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', borderRight: '1px solid #E2E8F0', padding: '0 1.5rem' }}>
+        <div className={styles.metricItem}>
           <div style={{ width: 48, height: 48, borderRadius: '12px', background: '#ECFDF5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <CheckCircle size={24} color="#10B981" />
           </div>
@@ -190,7 +191,7 @@ export default function ReportsPage() {
           </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', borderRight: '1px solid #E2E8F0', padding: '0 1.5rem' }}>
+        <div className={styles.metricItem}>
           <div style={{ width: 48, height: 48, borderRadius: '12px', background: '#FFFBEB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Clock size={24} color="#F59E0B" />
           </div>
@@ -201,7 +202,7 @@ export default function ReportsPage() {
           </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', paddingLeft: '1.5rem' }}>
+        <div className={styles.metricItem}>
           <div style={{ width: 48, height: 48, borderRadius: '12px', background: '#EFF6FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Download size={24} color="#3B82F6" />
           </div>
@@ -214,8 +215,8 @@ export default function ReportsPage() {
       </motion.div>
 
       {/* Tabs and Search Row */}
-      <motion.div variants={itemVariants} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #E2E8F0', marginBottom: '1.5rem', paddingBottom: '0.5rem' }}>
-        <div style={{ display: 'flex', gap: '2rem' }}>
+      <motion.div variants={itemVariants} className={styles.tabsRow}>
+        <div className={styles.navTabs}>
           {['All Reports', 'Scheduled', 'Templates', 'Shared With Clients'].map((tab, i) => (
             <div 
               key={i}
@@ -237,7 +238,7 @@ export default function ReportsPage() {
           ))}
         </div>
         
-        <div style={{ display: 'flex', gap: '1rem' }}>
+        <div className={styles.searchAndFilters} style={{ display: 'flex', gap: '1rem' }}>
           <div style={{ position: 'relative' }}>
             <Search size={16} color="#64748B" style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)' }} />
             <input 
@@ -255,7 +256,7 @@ export default function ReportsPage() {
       {/* Reports List */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '2rem' }}>
         {reportsList.map((r, i) => (
-          <motion.div variants={itemVariants} key={i} style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '12px', padding: '1rem 1.5rem', display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+          <motion.div variants={itemVariants} key={i} className={styles.reportCard}>
             {/* Icon */}
             <div style={{ width: 44, height: 44, borderRadius: '10px', background: r.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
               {r.icon}
@@ -286,7 +287,7 @@ export default function ReportsPage() {
             </div>
 
             {/* Actions */}
-            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+            <div className={styles.reportActions}>
               <button onClick={() => generatePDF(r, 'preview')} disabled={isGenerating} style={{ background: 'transparent', border: '1px solid #CBD5E1', color: '#3B82F6', padding: '0.5rem 1rem', borderRadius: '8px', cursor: isGenerating ? 'not-allowed' : 'pointer', fontSize: '0.75rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.4rem', opacity: isGenerating ? 0.7 : 1 }}>
                 <Eye size={14} /> {isGenerating && currentReport?.name === r.name ? 'Preparing...' : 'Preview'}
               </button>
