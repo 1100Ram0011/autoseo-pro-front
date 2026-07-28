@@ -62,7 +62,7 @@ export default function SearchConsoleDashboard() {
           if (data.length > 0) {
             setSelectedSiteId(data[0].id);
           } else {
-            setLoading(false);
+            router.push('/dashboard/sites?add=true');
           }
         } else {
           setLoading(false);

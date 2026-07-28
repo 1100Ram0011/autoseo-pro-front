@@ -59,8 +59,7 @@ export default function AnalyticsPage() {
           if (data.length > 0) {
             setSelectedSiteId(data[0].id);
           } else {
-            setLoading(false);
-            setError('No sites found. Please add a site first.');
+            router.push('/dashboard/sites?add=true');
           }
         } else {
           setLoading(false);

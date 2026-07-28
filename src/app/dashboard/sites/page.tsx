@@ -5,13 +5,15 @@ import { Info } from "lucide-react";
 
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'react-hot-toast';
 import styles from './page.module.css';
 
 export default function SitesPage() {
   const { data: session } = useSession();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const searchParams = useSearchParams();
+  const [isModalOpen, setIsModalOpen] = useState(searchParams.get('add') === 'true');
   const [url, setUrl] = useState('');
   const [isCrawling, setIsCrawling] = useState(false);
 
