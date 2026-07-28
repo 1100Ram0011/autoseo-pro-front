@@ -39,12 +39,12 @@
   --info-bg: #EFF6FF;
 
   /* === Sidebar === */
-  --sidebar-bg: #0F172A;
-  --sidebar-text: #CBD5E1;
-  --sidebar-text-active: #FFFFFF;
-  --sidebar-active-bg: #1E3A5F;
-  --sidebar-hover-bg: rgba(255, 255, 255, 0.05);
-  --sidebar-border: rgba(255, 255, 255, 0.08);
+  --sidebar-bg: #FFFFFF;
+  --sidebar-text: #475569;
+  --sidebar-text-active: #2563EB;
+  --sidebar-active-bg: #EFF6FF;
+  --sidebar-hover-bg: #F1F5F9;
+  --sidebar-border: #E2E8F0;
 
   /* === Card / Panel === */
   --card-bg: #FFFFFF;
