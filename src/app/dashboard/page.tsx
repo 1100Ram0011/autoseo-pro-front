@@ -312,7 +312,7 @@ export default function DashboardPage() {
         <>
       {/* AI Smart Actions Feed */}
       <motion.div variants={itemVariants} className="mb-6">
-        <SmartActionsFeed siteId={dashboardData?.id || stats.site} />
+        <SmartActionsFeed siteId={site?.id || ''} />
       </motion.div>
 
       {/* AI Analysis Modal */}
