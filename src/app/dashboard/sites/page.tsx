@@ -3,14 +3,15 @@
 import { API_BASE } from '@/lib/apiConfig';
 import { Info } from "lucide-react";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSession } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'react-hot-toast';
 import styles from './page.module.css';
 
-export default function SitesPage() {
+// Inner component that uses useSearchParams — must be inside <Suspense>
+function SitesContent() {
   const { data: session } = useSession();
   const searchParams = useSearchParams();
   const [isModalOpen, setIsModalOpen] = useState(searchParams.get('add') === 'true');
@@ -133,5 +134,14 @@ export default function SitesPage() {
         </div>
       )}
     </div>
+  );
+}
+
+// Default export wraps the inner component in Suspense (required by Next.js for useSearchParams)
+export default function SitesPage() {
+  return (
+    <Suspense fallback={<div style={{ padding: '2rem', color: '#64748B' }}>Loading...</div>}>
+      <SitesContent />
+    </Suspense>
   );
 }
