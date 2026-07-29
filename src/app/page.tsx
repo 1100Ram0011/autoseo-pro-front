@@ -46,18 +46,21 @@ export default function LandingPage() {
           <Link href="#" className={styles.navLink}>Pricing</Link>
           <Link href="#" className={styles.navLink}>Resources <ChevronDown size={14} /></Link>
         </div>
-        <div className={styles.navActions}>
-          <Link href="/login" className={styles.loginLink}>Login</Link>
-          <Link href="/login" className={styles.getStartedBtn}>Get Started</Link>
-        </div>
+        
+        <div className={styles.rightNav}>
+          <div className={styles.navActions}>
+            <Link href="/login" className={styles.loginLink}>Login</Link>
+            <Link href="/login" className={styles.getStartedBtn}>Get Started</Link>
+          </div>
 
-        {/* Mobile Menu Button */}
-        <button 
-          className={styles.mobileMenuBtn} 
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        >
-          {isMobileMenuOpen ? <X size={24} color="#FFF" /> : <Menu size={24} color="#FFF" />}
-        </button>
+          {/* Mobile Menu Button */}
+          <button 
+            className={styles.mobileMenuBtn} 
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            {isMobileMenuOpen ? <X size={24} color="#FFF" /> : <Menu size={24} color="#FFF" />}
+          </button>
+        </div>
       </nav>
 
       {/* Mobile Menu Overlay */}

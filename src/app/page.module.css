@@ -112,6 +112,12 @@
   transform: translateY(-1px);
 }
 
+.rightNav {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
 .mobileMenuBtn {
   display: none;
   background: transparent;
@@ -505,8 +511,11 @@
   .navLinks {
     display: none;
   }
-  .navActions {
+  .getStartedBtn {
     display: none;
+  }
+  .rightNav {
+    gap: 1rem;
   }
   .mobileMenuBtn {
     display: block;
