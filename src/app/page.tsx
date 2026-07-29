@@ -61,28 +61,28 @@ export default function LandingPage() {
             {isMobileMenuOpen ? <X size={24} color="#FFF" /> : <Menu size={24} color="#FFF" />}
           </button>
         </div>
-      </nav>
 
-      {/* Mobile Menu Overlay */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className={styles.mobileMenu}
-          >
-            <Link href="#" className={styles.mobileNavLink} onClick={() => setIsMobileMenuOpen(false)}>Product</Link>
-            <Link href="#" className={styles.mobileNavLink} onClick={() => setIsMobileMenuOpen(false)}>Features</Link>
-            <Link href="#" className={styles.mobileNavLink} onClick={() => setIsMobileMenuOpen(false)}>Pricing</Link>
-            <Link href="#" className={styles.mobileNavLink} onClick={() => setIsMobileMenuOpen(false)}>Resources</Link>
-            <div className={styles.mobileNavActions}>
-              <Link href="/login" className={styles.mobileLoginBtn} onClick={() => setIsMobileMenuOpen(false)}>Login</Link>
-              <Link href="/login" className={styles.getStartedBtn} onClick={() => setIsMobileMenuOpen(false)}>Get Started</Link>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+        {/* Mobile Menu Overlay */}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div 
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className={styles.mobileMenu}
+            >
+              <Link href="#" className={styles.mobileNavLink} onClick={() => setIsMobileMenuOpen(false)}>Product</Link>
+              <Link href="#" className={styles.mobileNavLink} onClick={() => setIsMobileMenuOpen(false)}>Features</Link>
+              <Link href="#" className={styles.mobileNavLink} onClick={() => setIsMobileMenuOpen(false)}>Pricing</Link>
+              <Link href="#" className={styles.mobileNavLink} onClick={() => setIsMobileMenuOpen(false)}>Resources</Link>
+              <div className={styles.mobileNavActions}>
+                <Link href="/login" className={styles.mobileLoginBtn} onClick={() => setIsMobileMenuOpen(false)}>Login</Link>
+                <Link href="/login" className={styles.getStartedBtn} onClick={() => setIsMobileMenuOpen(false)}>Get Started</Link>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </nav>
 
       {/* Hero Section */}
       <section className={styles.hero}>
