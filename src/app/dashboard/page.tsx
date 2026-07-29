@@ -245,10 +245,8 @@ export default function DashboardPage() {
 
       {/* Phase 2: Premium Welcome Flow (How AutoSEO Works) */}
       {showWelcome && (
-        <motion.div variants={itemVariants} style={{
-          background: 'linear-gradient(135deg, #EEF2FF 0%, #F0F9FF 50%, #ECFDF5 100%)',
-          border: '1px solid #C7D2FE', borderRadius: '16px', padding: '1.5rem',
-          marginBottom: '1.5rem', position: 'relative'
+        <motion.div variants={itemVariants} className="glass-card" style={{
+          padding: '1.5rem', marginBottom: '1.5rem', position: 'relative'
         }}>
           <button onClick={() => setShowWelcome(false)} style={{
             position: 'absolute', top: '12px', right: '12px', background: '#FFFFFF',
@@ -287,7 +285,7 @@ export default function DashboardPage() {
 
       {/* Full Screen Google Connect Requirement */}
       {!isGoogleConnected ? (
-        <motion.div variants={itemVariants} style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '16px', padding: '4rem 2rem', textAlign: 'center', maxWidth: '600px', margin: '4rem auto', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.05)' }}>
+        <motion.div variants={itemVariants} className="glass-card" style={{ padding: '4rem 2rem', textAlign: 'center', maxWidth: '600px', margin: '4rem auto' }}>
           <div style={{ width: 80, height: 80, background: '#EFF6FF', borderRadius: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem' }}>
             <img src="https://www.gstatic.com/analytics-suite/header/suite/v2/ic_analytics.svg" alt="Google Analytics" style={{ width: 32, height: 32, marginRight: '8px' }} />
             <img src="https://www.gstatic.com/images/branding/product/1x/search_console_48dp.png" alt="Search Console" style={{ width: 32, height: 32 }} />
@@ -499,9 +497,7 @@ export default function DashboardPage() {
       {/* Phase 3: AI Health Pulse Card */}
       <motion.div variants={itemVariants} style={{ marginBottom: '1.5rem' }}>
         <div className="glass-card" style={{
-          borderRadius: '16px',
-          padding: '1.25rem 1.5rem', display: 'flex', alignItems: 'center', gap: '16px',
-          boxShadow: '0 2px 8px -2px rgba(0, 0, 0, 0.05)'
+          padding: '1.25rem 1.5rem', display: 'flex', alignItems: 'center', gap: '16px'
         }}>
           <div style={{
             background: 'linear-gradient(135deg, rgba(90, 74, 244, 0.2), rgba(90, 74, 244, 0.05))',
@@ -558,7 +554,7 @@ export default function DashboardPage() {
       <motion.div variants={itemVariants} className="grid-responsive grid-cols-2" style={{ marginBottom: '1.5rem' }}>
         
         {/* SEO Health Report */}
-        <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '16px', padding: '1.5rem' }}>
+        <div className="glass-card" style={{ padding: '1.5rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
             <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700, color: '#0F172A' }}>SEO Health Report</h3>
             <Link href="/dashboard/issues" style={{ fontSize: '0.8rem', color: '#3B82F6', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
@@ -602,7 +598,7 @@ export default function DashboardPage() {
         </div>
 
         {/* SEO Journey Roadmap */}
-        <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '16px', padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
+        <div className="glass-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
             <div>
               <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.1rem', fontWeight: 700, color: '#0F172A', display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -684,7 +680,7 @@ export default function DashboardPage() {
       <motion.div variants={itemVariants} className="grid-responsive grid-cols-3">
         
         {/* Traffic Overview (Spans 2 columns) */}
-        <motion.div {...cardHoverProps} className="col-span-2" style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '16px', padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
+        <motion.div {...cardHoverProps} className="glass-card col-span-2" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 700, color: '#0F172A' }}>Traffic Overview</h3>
@@ -750,7 +746,7 @@ export default function DashboardPage() {
         </motion.div>
 
         {/* Top Performing Pages */}
-        <motion.div {...cardHoverProps} style={{ gridColumn: 'span 1', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '16px', padding: '1.5rem' }}>
+        <motion.div {...cardHoverProps} className="glass-card" style={{ gridColumn: 'span 1', padding: '1.5rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
              <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 700, color: '#0F172A' }}>Top Performing Pages</h3>
              <span style={{ fontSize: '0.75rem', color: '#3B82F6', cursor: 'pointer' }}>View all →</span>
@@ -785,7 +781,7 @@ export default function DashboardPage() {
         </motion.div>
 
         {/* Keyword Rankings */}
-        <motion.div {...cardHoverProps} style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '16px', padding: '1.5rem' }}>
+        <motion.div {...cardHoverProps} className="glass-card" style={{ padding: '1.5rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
              <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 700, color: '#0F172A' }}>Keyword Rankings</h3>
              <span style={{ fontSize: '0.75rem', color: '#3B82F6', cursor: 'pointer' }}>View all →</span>
@@ -818,7 +814,7 @@ export default function DashboardPage() {
         </motion.div>
 
         {/* Core Web Vitals */}
-        <motion.div {...cardHoverProps} style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '16px', padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
+        <motion.div {...cardHoverProps} className="glass-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
              <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 700, color: '#0F172A' }}>Core Web Vitals</h3>
              <span style={{ fontSize: '0.75rem', color: '#3B82F6', cursor: 'pointer' }}>View report →</span>
@@ -858,7 +854,7 @@ export default function DashboardPage() {
         </motion.div>
 
         {/* Indexing Status */}
-        <motion.div {...cardHoverProps} style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '16px', padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
+        <motion.div {...cardHoverProps} className="glass-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
              <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 700, color: '#0F172A' }}>Indexing Status</h3>
              <span style={{ fontSize: '0.75rem', color: '#3B82F6', cursor: 'pointer' }}>View report →</span>
@@ -939,10 +935,10 @@ export default function DashboardPage() {
               <motion.div
                 whileHover={{ y: -4, boxShadow: '0 8px 20px -4px rgba(0, 0, 0, 0.1)' }}
                 transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                className="glass-card"
                 style={{
-                  background: '#FFFFFF', border: `1px solid ${report.border}`,
-                  borderRadius: '12px', padding: '1.25rem',
-                  cursor: 'pointer', transition: 'border-color 0.2s'
+                  padding: '1.25rem',
+                  cursor: 'pointer'
                 }}
               >
                 <div style={{

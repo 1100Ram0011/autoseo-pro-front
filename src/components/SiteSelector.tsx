@@ -85,10 +85,10 @@ export default function SiteSelector() {
           top: '100%',
           left: 0,
           right: 0,
-          backgroundColor: '#fff',
-          border: '1px solid #E2E8F0',
-          borderRadius: '8px',
-          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+          background: 'var(--surface)',
+          border: '1px solid var(--border)',
+          borderRadius: 'var(--radius)',
+          boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)',
           zIndex: 100,
           marginTop: '-1.5rem',
           marginBottom: '2rem',
@@ -102,17 +102,24 @@ export default function SiteSelector() {
               style={{
                 padding: '0.75rem 1rem',
                 cursor: 'pointer',
-                backgroundColor: activeSite.id === site.id ? '#EFF6FF' : 'transparent',
-                borderBottom: '1px solid #F1F5F9',
+                background: activeSite.id === site.id ? 'var(--primary-light)' : 'transparent',
+                borderBottom: '1px solid var(--border-faint)',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '0.5rem'
+                gap: '0.5rem',
+                transition: 'background 0.2s'
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#F8FAFC')}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = activeSite.id === site.id ? '#EFF6FF' : 'transparent')}
+              onMouseEnter={(e) => {
+                if (activeSite.id !== site.id) {
+                  e.currentTarget.style.background = 'var(--surface-hover)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = activeSite.id === site.id ? 'var(--primary-light)' : 'transparent';
+              }}
             >
-              <Globe size={14} color={activeSite.id === site.id ? '#3B82F6' : '#64748B'} />
-              <span style={{ fontSize: '0.85rem', fontWeight: activeSite.id === site.id ? 600 : 400, color: '#0F172A' }}>
+              <Globe size={14} color={activeSite.id === site.id ? 'var(--primary)' : 'var(--text-muted)'} />
+              <span style={{ fontSize: '0.85rem', fontWeight: activeSite.id === site.id ? 700 : 500, color: 'var(--foreground)' }}>
                 {site.url.replace(/^https?:\/\//, '')}
               </span>
             </div>
