@@ -1,6 +1,7 @@
 import useSWR from 'swr';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
+import { showActionToast } from '@/lib/toastUtils';
 
 const fetcher = (url: string) => axios.get(url).then(res => res.data);
 
@@ -14,6 +15,13 @@ export function useMapLeads() {
         geographicFocus,
         NumberOfLeads: numLeads
       });
+      
+      showActionToast({
+        message: `Generation started for ${numLeads} leads in ${geographicFocus}.`,
+        buttonText: "Got it",
+        onClick: () => {}
+      });
+      
       return response.data;
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Failed to start generation');
@@ -101,6 +109,7 @@ export function useLinkedinLead(mapLeadId: string) {
     isLoading,
     isError: error,
     generateLinkedinLead,
-    enrichEmployee
+    enrichEmployee,
+    mutate
   };
 }

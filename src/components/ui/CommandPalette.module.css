@@ -1,0 +1,109 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 15vh;
+}
+
+.dialog {
+  width: 100%;
+  max-width: 640px;
+  background: var(--bg-primary, #1e293b);
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+  border-radius: var(--radius-lg, 12px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+.command {
+  width: 100%;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--border-color, rgba(255,255,255,0.1));
+}
+
+.searchIcon {
+  color: var(--text-muted, #94a3b8);
+  margin-right: 12px;
+}
+
+.closeBtn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+}
+.closeBtn:hover {
+  background: rgba(255,255,255,0.1);
+  color: white;
+}
+
+.input {
+  flex: 1;
+  height: 56px;
+  border: none;
+  background: transparent;
+  color: var(--text-primary, white);
+  font-size: 1.1rem;
+  outline: none;
+}
+.input::placeholder {
+  color: var(--text-muted);
+}
+
+.list {
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.empty {
+  padding: 32px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.group {
+  margin-bottom: 12px;
+}
+.group [cmdk-group-heading] {
+  padding: 8px 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: var(--radius, 8px);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: all 0.15s ease;
+}
+
+/* cmdk automatically adds aria-selected="true" when using keyboard navigation or hover */
+.item[aria-selected="true"] {
+  background: rgba(59, 130, 246, 0.15);
+  color: var(--primary, #3b82f6);
+}

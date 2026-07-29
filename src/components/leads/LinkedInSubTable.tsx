@@ -1,20 +1,46 @@
 import React, { useState } from 'react';
 import { useLinkedinLead } from '@/hooks/useLeads';
-import { Loader2, Users, Sparkles, RefreshCcw } from 'lucide-react';
+import { Loader2, Users, Sparkles, RefreshCcw, Link2 } from 'lucide-react';
 import styles from './leads.module.css';
+import { EmptyState } from '../ui/EmptyState';
+import toast from 'react-hot-toast';
+import axios from 'axios';
 
 interface LinkedInSubTableProps {
   lead: any;
 }
 
 export default function LinkedInSubTable({ lead }: LinkedInSubTableProps) {
-    const { linkedinLead, isLoading, generateLinkedinLead, enrichEmployee } = useLinkedinLead(lead.id);
+    const { linkedinLead, isLoading, generateLinkedinLead, enrichEmployee, mutate } = useLinkedinLead(lead.id);
     const [enrichingEmpName, setEnrichingEmpName] = useState<string | null>(null);
+    const [manualUrl, setManualUrl] = useState('');
+    const [isRetrying, setIsRetrying] = useState(false);
 
     const handleEnrich = async (empName: string, profileUrl: string, compName: string) => {
         setEnrichingEmpName(empName);
         await enrichEmployee(empName, profileUrl, compName);
         setEnrichingEmpName(null);
+    };
+
+    const handleManualRetry = async () => {
+        if (!manualUrl.includes('linkedin.com/company/')) {
+            toast.error("Please enter a valid LinkedIn Company URL");
+            return;
+        }
+        
+        setIsRetrying(true);
+        try {
+            await axios.post('/api/leads/linkedin/retry', {
+                linkedinLeadId: linkedinLead.id,
+                manualUrl
+            });
+            toast.success("Retrying extraction with provided URL...");
+            mutate();
+        } catch (err: any) {
+            toast.error(err.response?.data?.message || "Failed to retry");
+        } finally {
+            setIsRetrying(false);
+        }
     };
 
     if (isLoading) {
@@ -28,15 +54,14 @@ export default function LinkedInSubTable({ lead }: LinkedInSubTableProps) {
 
     if (!linkedinLead) {
         return (
-            <div className={styles.subTableContainer} style={{ textAlign: 'center', padding: '32px' }}>
-                <p style={{ marginBottom: '16px' }}>No LinkedIn data extracted for this company yet.</p>
-                <button 
-                    className={styles.generateBtn} 
-                    style={{ margin: '0 auto' }}
-                    onClick={() => generateLinkedinLead(lead.name)}
-                >
-                    <Sparkles size={16} /> Fetch Employees via Apify
-                </button>
+            <div className={styles.subTableContainer}>
+                <EmptyState 
+                    title="No LinkedIn Data" 
+                    description="We haven't extracted LinkedIn data for this company yet. Click below to start the AI extraction process."
+                    icon="search"
+                    actionLabel="Extract Employees via AI"
+                    onAction={() => generateLinkedinLead(lead.name)}
+                />
             </div>
         );
     }
@@ -138,6 +163,36 @@ export default function LinkedInSubTable({ lead }: LinkedInSubTableProps) {
                 </table>
             </div>
 
+            {/* Human-in-the-Loop Fallback UI */}
+            {linkedinLead.status === 'failed' && (
+                <div style={{ padding: '16px', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '8px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <div style={{ flex: 1 }}>
+                        <h4 style={{ color: '#ef4444', fontWeight: 600, fontSize: '14px', marginBottom: '4px' }}>AI couldn't find the LinkedIn URL</h4>
+                        <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Please paste the company's LinkedIn URL manually to resume the extraction.</p>
+                    </div>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                        <div style={{ position: 'relative' }}>
+                            <Link2 size={16} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: '#9ca3af' }} />
+                            <input 
+                                type="text" 
+                                placeholder="https://linkedin.com/company/..."
+                                value={manualUrl}
+                                onChange={(e) => setManualUrl(e.target.value)}
+                                style={{ padding: '8px 12px 8px 32px', borderRadius: '6px', border: '1px solid var(--border-color)', background: 'var(--bg-primary)', color: 'var(--text-primary)', width: '300px', fontSize: '13px' }}
+                            />
+                        </div>
+                        <button 
+                            className={styles.generateBtn} 
+                            onClick={handleManualRetry}
+                            disabled={isRetrying || !manualUrl}
+                            style={{ padding: '8px 16px', height: 'auto' }}
+                        >
+                            {isRetrying ? <Loader2 size={14} className="animate-spin" /> : 'Retry'}
+                        </button>
+                    </div>
+                </div>
+            )}
+
             {/* Employees Table */}
             {linkedinLead.employees && linkedinLead.employees.length > 0 ? (
                 <div style={{ overflowX: 'auto', border: '1px solid var(--border-color)', borderRadius: '8px' }}>
@@ -184,9 +239,17 @@ export default function LinkedInSubTable({ lead }: LinkedInSubTableProps) {
                         </tbody>
                     </table>
                 </div>
+            ) : linkedinLead.status === 'completed' ? (
+                <EmptyState 
+                    title="No Employees Found" 
+                    description="We successfully scanned the company, but couldn't find any employees matching your criteria."
+                    icon="ghost"
+                />
             ) : (
-                <div style={{ padding: '16px', textAlign: 'center', fontSize: '14px', color: 'var(--text-secondary)', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', borderRadius: '8px' }}>
-                    No employees found for this company yet. Wait for extraction to complete.
+                <div style={{ padding: '32px', textAlign: 'center', background: 'var(--card-bg)', border: '1px dashed var(--border-color)', borderRadius: '8px' }}>
+                    <Loader2 size={24} className="animate-spin" style={{ margin: '0 auto 12px auto', color: '#3b82f6' }} />
+                    <p style={{ fontSize: '14px', color: 'var(--text-secondary)', fontWeight: 500 }}>AI is currently scanning LinkedIn...</p>
+                    <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '4px' }}>This may take 1-2 minutes depending on company size.</p>
                 </div>
             )}
         </div>
