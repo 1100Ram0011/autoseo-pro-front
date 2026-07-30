@@ -123,48 +123,51 @@ export default function SchemaGeneratorDashboard() {
 
   return (
     <div className={styles.dashboardWrapper}>
-      <div className={styles.header}>
-        <div>
-          <h1 className={styles.title} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Code size={24} color="#8b5cf6" /> Schema Markup Generator
-          </h1>
-          <p style={{ color: '#64748B', fontSize: '0.9rem', marginTop: '0.25rem' }}>
-            Generate structured data (JSON-LD) to help Google understand your content and show Rich Results.
-          </p>
-      {/* Auto-injected Info Block */}
-      <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', gap: '12px' }}>
-        <Info size={20} color="#0284C7" style={{ flexShrink: 0, marginTop: '2px' }} />
-        <div>
-          <h4 style={{ margin: '0 0 0.5rem 0', color: '#0369A1', fontSize: '0.95rem' }}>How does this work?</h4>
-          <p style={{ margin: 0, color: '#0C4A6E', fontSize: '0.85rem', lineHeight: '1.5' }}>
-             Generates structured data (Schema JSON-LD) that helps Google understand the context of your page (e.g., FAQ, Product, Recipe, Article). <strong>Example:</strong> Adding FAQ schema makes your questions appear directly in Google search results as rich snippets, increasing your click-through rate.
-          </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '1.5rem' }}>
+        <div className={styles.header} style={{ marginBottom: 0 }}>
+          <div>
+            <h1 className={styles.title} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <Code size={24} color="#8b5cf6" /> Schema Markup Generator
+            </h1>
+            <p style={{ color: '#64748B', fontSize: '0.9rem', marginTop: '0.25rem' }}>
+              Generate structured data (JSON-LD) to help Google understand your content and show Rich Results.
+            </p>
+          </div>
+          <button 
+            onClick={handleCopy}
+            style={{ 
+              padding: '0.6rem 1.25rem', 
+              background: copied ? '#10B981' : '#8b5cf6', 
+              color: '#0F172A', 
+              border: 'none', 
+              borderRadius: '8px', 
+              cursor: 'pointer', 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '8px',
+              fontWeight: 600,
+              transition: 'background 0.3s',
+              whiteSpace: 'nowrap'
+            }}
+          >
+            {copied ? <CheckCircle size={18} /> : <Copy size={18} />}
+            {copied ? 'Copied to Clipboard' : 'Copy Full Script'}
+          </button>
         </div>
-      </div>
-  
+
+        {/* Auto-injected Info Block */}
+        <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '8px', display: 'flex', gap: '12px' }}>
+          <Info size={20} color="#0284C7" style={{ flexShrink: 0, marginTop: '2px' }} />
+          <div>
+            <h4 style={{ margin: '0 0 0.5rem 0', color: '#0369A1', fontSize: '0.95rem' }}>How does this work?</h4>
+            <p style={{ margin: 0, color: '#0C4A6E', fontSize: '0.85rem', lineHeight: '1.5' }}>
+               Generates structured data (Schema JSON-LD) that helps Google understand the context of your page (e.g., FAQ, Product, Recipe, Article). <strong>Example:</strong> Adding FAQ schema makes your questions appear directly in Google search results as rich snippets, increasing your click-through rate.
+            </p>
+          </div>
         </div>
-        <button 
-          onClick={handleCopy}
-          style={{ 
-            padding: '0.6rem 1.25rem', 
-            background: copied ? '#10B981' : '#8b5cf6', 
-            color: '#0F172A', 
-            border: 'none', 
-            borderRadius: '8px', 
-            cursor: 'pointer', 
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: '8px',
-            fontWeight: 600,
-            transition: 'background 0.3s'
-          }}
-        >
-          {copied ? <CheckCircle size={18} /> : <Copy size={18} />}
-          {copied ? 'Copied to Clipboard' : 'Copy Full Script'}
-        </button>
       </div>
 
-      <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem' }}>
+      <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
         <button 
           onClick={() => setSchemaType('LocalBusiness')}
           style={{ padding: '0.75rem 1.25rem', background: schemaType === 'LocalBusiness' ? 'rgba(139, 92, 246, 0.2)' : '#FFFFFF', border: `1px solid ${schemaType === 'LocalBusiness' ? '#8b5cf6' : 'transparent'}`, color: schemaType === 'LocalBusiness' ? '#8b5cf6' : '#64748B', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600 }}
@@ -185,10 +188,10 @@ export default function SchemaGeneratorDashboard() {
         </button>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '2rem' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem', marginBottom: '2rem' }}>
         
         {/* INPUT FORM */}
-        <div className={styles.panel} style={{ flex: 1, height: 'fit-content' }}>
+        <div className={styles.panel} style={{ flex: '1 1 400px', minWidth: '300px', height: 'fit-content' }}>
           
           {schemaType === 'LocalBusiness' && (
             <div style={{ marginBottom: '2rem', padding: '1.25rem', background: '#FFFFFF', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
@@ -245,7 +248,7 @@ export default function SchemaGeneratorDashboard() {
                   <label style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 600 }}>Description</label>
                   <textarea value={lbDescription} onChange={e => setLbDescription(e.target.value)} style={{ padding: '0.75rem', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '8px', color: '#0F172A', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)', outline: 'none', minHeight: '80px' }} />
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
                   <div className={styles.formGroup} style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                     <label style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 600 }}>URL</label>
                     <input type="text" value={lbUrl} onChange={e => setLbUrl(e.target.value)} style={{ padding: '0.75rem', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '8px', color: '#0F172A', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)', outline: 'none' }} />
@@ -261,7 +264,7 @@ export default function SchemaGeneratorDashboard() {
                   <label style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 600 }}>Street Address</label>
                   <input type="text" value={lbStreet} onChange={e => setLbStreet(e.target.value)} style={{ padding: '0.75rem', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '8px', color: '#0F172A', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)', outline: 'none' }} />
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1rem' }}>
                   <div className={styles.formGroup} style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                     <label style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 600 }}>City</label>
                     <input type="text" value={lbCity} onChange={e => setLbCity(e.target.value)} style={{ padding: '0.75rem', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '8px', color: '#0F172A', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)', outline: 'none' }} />
@@ -288,7 +291,7 @@ export default function SchemaGeneratorDashboard() {
                   <label style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 600 }}>Image URL</label>
                   <input type="text" value={artImage} onChange={e => setArtImage(e.target.value)} style={{ padding: '0.75rem', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '8px', color: '#0F172A', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)', outline: 'none' }} />
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
                   <div className={styles.formGroup} style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                     <label style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 600 }}>Author Name</label>
                     <input type="text" value={artAuthor} onChange={e => setArtAuthor(e.target.value)} style={{ padding: '0.75rem', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '8px', color: '#0F172A', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)', outline: 'none' }} />
@@ -324,7 +327,7 @@ export default function SchemaGeneratorDashboard() {
         </div>
 
         {/* OUTPUT JSON-LD */}
-        <div className={styles.panel} style={{ height: 'fit-content', background: '#FFFFFF', border: '1px solid #E2E8F0', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }}>
+        <div className={styles.panel} style={{ flex: '1 1 400px', minWidth: '300px', height: 'fit-content', background: '#FFFFFF', border: '1px solid #E2E8F0', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }}>
           <div className={styles.panelHeader} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span><Code size={18} color="#10b981" /> Live Preview</span>
             <span style={{ fontSize: '0.75rem', background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', padding: '2px 8px', borderRadius: '12px' }}>Auto-updates</span>

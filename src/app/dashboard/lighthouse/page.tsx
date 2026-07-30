@@ -187,38 +187,40 @@ export default function Dashboard() {
 
   return (
     <div className={styles.dashboardWrapper}>
-      <div className={styles.header}>
-        <div>
-          <h1 className={styles.title}>PageSpeed Insights</h1>
-          <p style={{ color: '#64748B', fontSize: '0.9rem', marginTop: '0.25rem' }}>Lighthouse - Mobile + Desktop</p>
-      {/* Auto-injected Info Block */}
-      <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', gap: '12px' }}>
-        <Info size={20} color="#0284C7" style={{ flexShrink: 0, marginTop: '2px' }} />
-        <div>
-          <h4 style={{ margin: '0 0 0.5rem 0', color: '#0369A1', fontSize: '0.95rem' }}>How does this work?</h4>
-          <p style={{ margin: 0, color: '#0C4A6E', fontSize: '0.85rem', lineHeight: '1.5' }}>
-             Run Google Lighthouse audits for performance, accessibility, and SEO. <strong>Example:</strong> Check if your mobile page speed scores at least 90/100, which is critical for Google rankings.
-          </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '1.5rem' }}>
+        <div className={styles.header} style={{ marginBottom: 0 }}>
+          <div>
+            <h1 className={styles.title}>PageSpeed Insights</h1>
+            <p style={{ color: '#64748B', fontSize: '0.9rem', marginTop: '0.25rem' }}>Lighthouse - Mobile + Desktop</p>
+          </div>
+          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
+            {sites.length > 0 && (
+              <select className={styles.siteSelector} value={selectedSiteId || ''} onChange={(e) => setSelectedSiteId(e.target.value)}>
+                {sites.map(site => <option key={site.id} value={site.id}>{site.url}</option>)}
+              </select>
+            )}
+            <button onClick={syncGA4} disabled={isSyncing} className={styles.btnSecondary} style={{ background: '#E2E8F0', color: '#0F172A', border: '1px solid rgba(255,255,255,0.2)', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', display: 'flex', gap: '8px', alignItems: 'center', whiteSpace: 'nowrap' }}>
+              <RefreshCw size={14} className={isSyncing ? "spin" : ""} /> {isSyncing ? 'Syncing...' : 'Sync Analytics'}
+            </button>
+            <button onClick={crawlSiteUrls} disabled={isSyncing} className={styles.btnSecondary} style={{ background: '#E2E8F0', color: '#0F172A', border: '1px solid rgba(255,255,255,0.2)', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', display: 'flex', gap: '8px', alignItems: 'center', whiteSpace: 'nowrap' }}>
+              <Search size={14} /> Crawl URLs
+            </button>
+            <button onClick={runAllAudits} disabled={isAuditingAll || pages.length === 0} className={styles.btnPrimary} style={{ background: '#8b5cf6', color: '#0F172A', border: 'none', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', display: 'flex', gap: '8px', alignItems: 'center', whiteSpace: 'nowrap' }}>
+              {isAuditingAll ? <RefreshCw size={14} className="spin" /> : <Zap size={14} />} 
+              {isAuditingAll ? 'Auditing All...' : 'Run All Audits'}
+            </button>
+          </div>
         </div>
-      </div>
-  
-        </div>
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-          {sites.length > 0 && (
-            <select className={styles.siteSelector} value={selectedSiteId || ''} onChange={(e) => setSelectedSiteId(e.target.value)}>
-              {sites.map(site => <option key={site.id} value={site.id}>{site.url}</option>)}
-            </select>
-          )}
-          <button onClick={syncGA4} disabled={isSyncing} className={styles.btnSecondary} style={{ background: '#E2E8F0', color: '#0F172A', border: '1px solid rgba(255,255,255,0.2)', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', display: 'flex', gap: '8px', alignItems: 'center' }}>
-            <RefreshCw size={14} className={isSyncing ? "spin" : ""} /> {isSyncing ? 'Syncing...' : 'Sync Analytics'}
-          </button>
-          <button onClick={crawlSiteUrls} disabled={isSyncing} className={styles.btnSecondary} style={{ background: '#E2E8F0', color: '#0F172A', border: '1px solid rgba(255,255,255,0.2)', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', display: 'flex', gap: '8px', alignItems: 'center' }}>
-            <Search size={14} /> Crawl URLs
-          </button>
-          <button onClick={runAllAudits} disabled={isAuditingAll || pages.length === 0} className={styles.btnPrimary} style={{ background: '#8b5cf6', color: '#0F172A', border: 'none', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', display: 'flex', gap: '8px', alignItems: 'center' }}>
-            {isAuditingAll ? <RefreshCw size={14} className="spin" /> : <Zap size={14} />} 
-            {isAuditingAll ? 'Auditing All...' : 'Run All Audits'}
-          </button>
+
+        {/* Auto-injected Info Block */}
+        <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '8px', display: 'flex', gap: '12px' }}>
+          <Info size={20} color="#0284C7" style={{ flexShrink: 0, marginTop: '2px' }} />
+          <div>
+            <h4 style={{ margin: '0 0 0.5rem 0', color: '#0369A1', fontSize: '0.95rem' }}>How does this work?</h4>
+            <p style={{ margin: 0, color: '#0C4A6E', fontSize: '0.85rem', lineHeight: '1.5' }}>
+               Run Google Lighthouse audits for performance, accessibility, and SEO. <strong>Example:</strong> Check if your mobile page speed scores at least 90/100, which is critical for Google rankings.
+            </p>
+          </div>
         </div>
       </div>
 
@@ -231,59 +233,61 @@ export default function Dashboard() {
             </div>
           </div>
           
-          <table className={styles.dataTable}>
-            <thead>
-              <tr>
-                <th style={{ width: '40px' }}></th>
-                <th>URL</th>
-                <th>Status</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {pages.map(page => (
-                <tr key={page.id} style={{ cursor: 'pointer', transition: 'background 0.2s' }} onClick={() => {
-                  if (page.psi_data) {
-                    setSelectedData(JSON.parse(page.psi_data));
-                    setSelectedPageUrl(page.url);
-                  }
-                }}>
-                  <td>
-                    {page.psi_data ? <CheckCircle size={16} color="#10b981"/> : <Activity size={16} color="#475569"/>}
-                  </td>
-                  <td style={{ color: '#0F172A', fontWeight: 500 }}>
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                      <span>{new URL(page.url).pathname || '/'}</span>
-                      <span style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '2px' }}>{page.url}</span>
-                    </div>
-                  </td>
-                  <td>
-                    {page.psi_data ? (
-                      <span style={{ padding: '4px 8px', background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>Audited</span>
-                    ) : (
-                      <span style={{ padding: '4px 8px', background: '#FFFFFF', color: '#64748B', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>Not Audited</span>
-                    )}
-                  </td>
-                  <td>
-                    <button 
-                      onClick={(e) => { e.stopPropagation(); runAudit(page.id); }}
-                      disabled={isAuditing === page.id}
-                      style={{ padding: '6px 12px', background: '#E2E8F0', color: '#0F172A', border: '1px solid #E2E8F0', borderRadius: '6px', fontSize: '0.8rem', cursor: isAuditing === page.id ? 'not-allowed' : 'pointer' }}
-                    >
-                      {isAuditing === page.id ? 'Running...' : (page.psi_data ? 'Re-Audit' : 'Run Audit')}
-                    </button>
-                  </td>
-                </tr>
-              ))}
-              {pages.length === 0 && (
+          <div style={{ overflowX: 'auto', width: '100%' }}>
+            <table className={styles.dataTable}>
+              <thead>
                 <tr>
-                  <td colSpan={4} style={{ textAlign: 'center', padding: '3rem', color: '#64748B' }}>
-                    No pages found. Use the sync button above to fetch URLs.
-                  </td>
+                  <th style={{ width: '40px' }}></th>
+                  <th>URL</th>
+                  <th>Status</th>
+                  <th>Action</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {pages.map(page => (
+                  <tr key={page.id} style={{ cursor: 'pointer', transition: 'background 0.2s' }} onClick={() => {
+                    if (page.psi_data) {
+                      setSelectedData(JSON.parse(page.psi_data));
+                      setSelectedPageUrl(page.url);
+                    }
+                  }}>
+                    <td>
+                      {page.psi_data ? <CheckCircle size={16} color="#10b981"/> : <Activity size={16} color="#475569"/>}
+                    </td>
+                    <td style={{ color: '#0F172A', fontWeight: 500 }}>
+                      <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <span>{new URL(page.url).pathname || '/'}</span>
+                        <span style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '2px' }}>{page.url}</span>
+                      </div>
+                    </td>
+                    <td>
+                      {page.psi_data ? (
+                        <span style={{ padding: '4px 8px', background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>Audited</span>
+                      ) : (
+                        <span style={{ padding: '4px 8px', background: '#FFFFFF', color: '#64748B', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>Not Audited</span>
+                      )}
+                    </td>
+                    <td>
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); runAudit(page.id); }}
+                        disabled={isAuditing === page.id}
+                        style={{ padding: '6px 12px', background: '#E2E8F0', color: '#0F172A', border: '1px solid #E2E8F0', borderRadius: '6px', fontSize: '0.8rem', cursor: isAuditing === page.id ? 'not-allowed' : 'pointer', whiteSpace: 'nowrap' }}
+                      >
+                        {isAuditing === page.id ? 'Running...' : (page.psi_data ? 'Re-Audit' : 'Run Audit')}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+                {pages.length === 0 && (
+                  <tr>
+                    <td colSpan={4} style={{ textAlign: 'center', padding: '3rem', color: '#64748B' }}>
+                      No pages found. Use the sync button above to fetch URLs.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -310,9 +314,9 @@ export default function Dashboard() {
           </div>
 
           {/* Side-by-Side Mobile and Desktop */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
-            <StrategyPanel data={selectedData.mobile} strategy="mobile" />
-            <StrategyPanel data={selectedData.desktop} strategy="desktop" />
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem' }}>
+            <div style={{ flex: '1 1 300px' }}><StrategyPanel data={selectedData.mobile} strategy="mobile" /></div>
+            <div style={{ flex: '1 1 300px' }}><StrategyPanel data={selectedData.desktop} strategy="desktop" /></div>
           </div>
         </div>
       )}

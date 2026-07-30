@@ -43,32 +43,34 @@ export default function KeywordsPage() {
 
   return (
     <div style={{ background: 'transparent', minHeight: '100vh', color: 'var(--foreground)', padding: '1.75rem 2rem', fontFamily: 'Inter, sans-serif' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '2rem' }}>
-        <div>
-          <h1 style={{ fontSize: '1.5rem', fontWeight: 800, margin: '0 0 0.4rem', color: 'var(--foreground)' }}>🔑 Keyword Tracker</h1>
-          <p style={{ margin: 0, fontSize: '0.88rem', color: 'var(--text-muted)' }}>Tracking {displayKeywords?.length || 0} keywords for {site?.url || 'loading...'}</p>
-      {/* Auto-injected Info Block */}
-      <div className="glass-card" style={{ padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', gap: '12px', marginTop: '1rem' }}>
-        <Info size={20} color="var(--primary)" style={{ flexShrink: 0, marginTop: '2px' }} />
-        <div>
-          <h4 style={{ margin: '0 0 0.5rem 0', color: 'var(--primary)', fontSize: '0.95rem' }}>How does this work?</h4>
-          <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.85rem', lineHeight: '1.5' }}>
-             Your main keyword rank tracker and SERP monitoring tool. <strong>Example:</strong> Track your daily position on Google for your most profitable keywords and see if you move to Page 1.
-          </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '2rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
+          <div>
+            <h1 style={{ fontSize: '1.5rem', fontWeight: 800, margin: '0 0 0.4rem', color: 'var(--foreground)' }}>🔑 Keyword Tracker</h1>
+            <p style={{ margin: 0, fontSize: '0.88rem', color: 'var(--text-muted)' }}>Tracking {displayKeywords?.length || 0} keywords for {site?.url || 'loading...'}</p>
+          </div>
+          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+            <input 
+              value={newKw}
+              onChange={(e) => setNewKw(e.target.value)}
+              placeholder="Add new keyword..." 
+              style={{ padding: '0.55rem 1rem', borderRadius: 8, border: '1px solid var(--card-border)', background: 'rgba(255, 255, 255, 0.05)', color: 'var(--foreground)', outline: 'none', fontSize: '0.82rem', flex: '1 1 150px' }} 
+            />
+            <button onClick={handleAdd} disabled={isAdding} style={{ background: 'var(--primary)', border: 'none', color: '#FFFFFF', padding: '0.55rem 1rem', borderRadius: 8, cursor: 'pointer', fontSize: '0.82rem', fontWeight: 600, whiteSpace: 'nowrap' }}>
+              {isAdding ? 'Adding...' : '+ Add Keyword'}
+            </button>
+          </div>
         </div>
-      </div>
-  
-        </div>
-        <div style={{ display: 'flex', gap: '0.5rem' }}>
-          <input 
-            value={newKw}
-            onChange={(e) => setNewKw(e.target.value)}
-            placeholder="Add new keyword..." 
-            style={{ padding: '0.55rem 1rem', borderRadius: 8, border: '1px solid var(--card-border)', background: 'rgba(255, 255, 255, 0.05)', color: 'var(--foreground)', outline: 'none', fontSize: '0.82rem' }} 
-          />
-          <button onClick={handleAdd} disabled={isAdding} style={{ background: 'var(--primary)', border: 'none', color: '#FFFFFF', padding: '0.55rem 1rem', borderRadius: 8, cursor: 'pointer', fontSize: '0.82rem', fontWeight: 600 }}>
-            {isAdding ? 'Adding...' : '+ Add Keyword'}
-          </button>
+        
+        {/* Auto-injected Info Block */}
+        <div className="glass-card" style={{ padding: '1rem', borderRadius: '8px', display: 'flex', gap: '12px' }}>
+          <Info size={20} color="var(--primary)" style={{ flexShrink: 0, marginTop: '2px' }} />
+          <div>
+            <h4 style={{ margin: '0 0 0.5rem 0', color: 'var(--primary)', fontSize: '0.95rem' }}>How does this work?</h4>
+            <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.85rem', lineHeight: '1.5' }}>
+               Your main keyword rank tracker and SERP monitoring tool. <strong>Example:</strong> Track your daily position on Google for your most profitable keywords and see if you move to Page 1.
+            </p>
+          </div>
         </div>
       </div>
       <div className="grid-responsive grid-cols-4" style={{ marginBottom: '1.75rem' }}>

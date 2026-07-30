@@ -751,7 +751,8 @@ export default function DashboardPage() {
              <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 700, color: '#0F172A' }}>Top Performing Pages</h3>
              <span style={{ fontSize: '0.75rem', color: '#3B82F6', cursor: 'pointer' }}>View all →</span>
           </div>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem' }}>
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem', minWidth: '400px' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid #E2E8F0', color: '#64748B', textAlign: 'left' }}>
                 <th style={{ paddingBottom: '0.75rem', fontWeight: 500 }}>Page</th>
@@ -778,6 +779,7 @@ export default function DashboardPage() {
               )}
             </tbody>
           </table>
+          </div>
         </motion.div>
 
         {/* Keyword Rankings */}
@@ -786,7 +788,8 @@ export default function DashboardPage() {
              <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 700, color: '#0F172A' }}>Keyword Rankings</h3>
              <span style={{ fontSize: '0.75rem', color: '#3B82F6', cursor: 'pointer' }}>View all →</span>
           </div>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem' }}>
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem', minWidth: '350px' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid #E2E8F0', color: '#64748B', textAlign: 'left' }}>
                 <th style={{ paddingBottom: '0.75rem', fontWeight: 500 }}>Keyword</th>
@@ -811,6 +814,7 @@ export default function DashboardPage() {
               )}
             </tbody>
           </table>
+          </div>
         </motion.div>
 
         {/* Core Web Vitals */}
@@ -820,17 +824,17 @@ export default function DashboardPage() {
              <span style={{ fontSize: '0.75rem', color: '#3B82F6', cursor: 'pointer' }}>View report →</span>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.5rem' }}>
-             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem' }}>
+             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '4px', fontSize: '0.8rem' }}>
                 <span style={{ color: '#64748B' }}>Largest Contentful Paint (LCP)</span>
                 <span style={{ display: 'flex', gap: '8px', color: '#0F172A', fontWeight: 600 }}>2.1s <span style={{ background: '#ECFDF5', color: '#10B981', padding: '2px 6px', borderRadius: '4px', fontSize: '0.65rem' }}>Good</span></span>
              </div>
-             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem' }}>
+             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '4px', fontSize: '0.8rem' }}>
                 <span style={{ color: '#64748B' }}>First Input Delay (FID)</span>
                 <span style={{ display: 'flex', gap: '8px', color: '#0F172A', fontWeight: 600 }}>28ms <span style={{ background: '#ECFDF5', color: '#10B981', padding: '2px 6px', borderRadius: '4px', fontSize: '0.65rem' }}>Good</span></span>
              </div>
-             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem' }}>
+             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '4px', fontSize: '0.8rem' }}>
                 <span style={{ color: '#64748B' }}>Cumulative Layout Shift (CLS)</span>
-                <span style={{ display: 'flex', gap: '8px', color: '#0F172A', fontWeight: 600 }}>0.08 <span style={{ background: '#FEF3C7', color: '#F59E0B', padding: '2px 6px', borderRadius: '4px', fontSize: '0.65rem' }}>Needs Work</span></span>
+                <span style={{ display: 'flex', gap: '8px', color: '#0F172A', fontWeight: 600 }}>0.08 <span style={{ background: '#FEF3C7', color: '#F59E0B', padding: '2px 6px', borderRadius: '4px', fontSize: '0.65rem', whiteSpace: 'nowrap' }}>Needs Work</span></span>
              </div>
           </div>
           

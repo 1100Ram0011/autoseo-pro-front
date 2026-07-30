@@ -80,42 +80,44 @@ export default function TopPagesDashboard() {
 
   return (
     <div className={styles.dashboardWrapper}>
-      <div className={styles.header}>
-        <div>
-          <h1 className={styles.title}>Top Performing Pages</h1>
-          <p style={{ color: '#64748B', fontSize: '0.9rem', marginTop: '0.25rem' }}>
-            Analyze which pages drive the most organic traffic and impressions from Google Search.
-          </p>
-      {/* Auto-injected Info Block */}
-      <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', gap: '12px' }}>
-        <Info size={20} color="#0284C7" style={{ flexShrink: 0, marginTop: '2px' }} />
-        <div>
-          <h4 style={{ margin: '0 0 0.5rem 0', color: '#0369A1', fontSize: '0.95rem' }}>How does this work?</h4>
-          <p style={{ margin: 0, color: '#0C4A6E', fontSize: '0.85rem', lineHeight: '1.5' }}>
-             Monitors the most popular pages on your website based on traffic and engagement. It helps you identify your winning content. <strong>Example:</strong> If a specific blog post is getting 80% of your traffic, you should add more internal links from that post to your product pages.
-          </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '1.5rem' }}>
+        <div className={styles.header} style={{ marginBottom: 0 }}>
+          <div>
+            <h1 className={styles.title}>Top Performing Pages</h1>
+            <p style={{ color: '#64748B', fontSize: '0.9rem', marginTop: '0.25rem' }}>
+              Analyze which pages drive the most organic traffic and impressions from Google Search.
+            </p>
+          </div>
+          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
+            {sites.length > 0 && (
+              <select className={styles.siteSelector} value={selectedSiteId || ''} onChange={(e) => setSelectedSiteId(e.target.value)}>
+                {sites.map(site => <option key={site.id} value={site.id}>{site.url}</option>)}
+              </select>
+            )}
+            <button 
+              onClick={fetchPages}
+              disabled={loading}
+              style={{ padding: '0.5rem 1rem', background: 'transparent', color: '#0F172A', border: '1px solid #E2E8F0', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', whiteSpace: 'nowrap' }}
+            >
+              <RefreshCw size={14} className={loading ? 'spinner' : ''} /> Refresh Data
+            </button>
+          </div>
         </div>
-      </div>
-  
-        </div>
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-          {sites.length > 0 && (
-            <select className={styles.siteSelector} value={selectedSiteId || ''} onChange={(e) => setSelectedSiteId(e.target.value)}>
-              {sites.map(site => <option key={site.id} value={site.id}>{site.url}</option>)}
-            </select>
-          )}
-          <button 
-            onClick={fetchPages}
-            disabled={loading}
-            style={{ padding: '0.5rem 1rem', background: 'transparent', color: '#0F172A', border: '1px solid #E2E8F0', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
-          >
-            <RefreshCw size={14} className={loading ? 'spinner' : ''} /> Refresh Data
-          </button>
+
+        {/* Auto-injected Info Block */}
+        <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '8px', display: 'flex', gap: '12px' }}>
+          <Info size={20} color="#0284C7" style={{ flexShrink: 0, marginTop: '2px' }} />
+          <div>
+            <h4 style={{ margin: '0 0 0.5rem 0', color: '#0369A1', fontSize: '0.95rem' }}>How does this work?</h4>
+            <p style={{ margin: 0, color: '#0C4A6E', fontSize: '0.85rem', lineHeight: '1.5' }}>
+               Monitors the most popular pages on your website based on traffic and engagement. It helps you identify your winning content. <strong>Example:</strong> If a specific blog post is getting 80% of your traffic, you should add more internal links from that post to your product pages.
+            </p>
+          </div>
         </div>
       </div>
 
       {/* Aggregate Metric Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1.5rem', marginBottom: '1.5rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', marginBottom: '1.5rem' }}>
         <div className={styles.panel} style={{ padding: '1.5rem', borderTop: '4px solid #3b82f6', transition: 'all 0.3s ease', cursor: 'default', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)' }} onMouseOver={e => e.currentTarget.style.transform = 'translateY(-4px)'} onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}>
           <div style={{ color: '#64748B', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '0.5rem', textTransform: 'uppercase', fontWeight: 600 }}><MousePointerClick size={14} color="#3b82f6"/> Total Clicks</div>
           <div style={{ fontSize: '2.2rem', fontWeight: 800, color: '#0F172A' }}>{loading ? '-' : formatNumber(totals.totalClicks)}</div>
@@ -136,24 +138,24 @@ export default function TopPagesDashboard() {
 
       {/* Pages Table */}
       <div className={styles.panel} style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', minHeight: '500px' }}>
-        <div className={styles.panelHeader} style={{ justifyContent: 'space-between', padding: '1.25rem 1.5rem' }}>
+        <div className={styles.panelHeader} style={{ justifyContent: 'space-between', padding: '1.25rem 1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <FileText size={18} color="#0F172A" /> Page Performance Breakdown
           </div>
-          <div style={{ position: 'relative' }}>
+          <div style={{ position: 'relative', width: '100%', maxWidth: '250px' }}>
             <Search size={14} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: '#64748B' }} />
             <input 
               type="text" 
               placeholder="Filter pages..." 
               value={searchQuery} 
               onChange={e => setSearchQuery(e.target.value)}
-              style={{ padding: '8px 10px 8px 32px', borderRadius: '6px', border: '1px solid #E2E8F0', background: '#F8FAFC', color: '#0F172A', fontSize: '0.85rem', width: '250px', outline: 'none', boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.05)' }}
+              style={{ padding: '8px 10px 8px 32px', borderRadius: '6px', border: '1px solid #E2E8F0', background: '#F8FAFC', color: '#0F172A', fontSize: '0.85rem', width: '100%', outline: 'none', boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.05)', boxSizing: 'border-box' }}
             />
           </div>
         </div>
 
-        <div style={{ overflowY: 'auto', flex: 1 }}>
-          <table className={styles.dataTable} style={{ width: '100%' }}>
+        <div style={{ overflowX: 'auto', overflowY: 'auto', flex: 1 }}>
+          <table className={styles.dataTable} style={{ width: '100%', minWidth: '600px' }}>
             <thead>
               <tr>
                 <th style={{ width: '40%' }}>Page URL</th>

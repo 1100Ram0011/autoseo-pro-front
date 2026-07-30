@@ -189,8 +189,8 @@
 
 /* Responsive */
 @media (max-width: 992px) {
-  .splitLayout { flex-direction: column; }
-  .configPanel { flex: 1 1 auto; }
+  .splitLayout { flex-direction: column; align-items: stretch; }
+  .configPanel { flex: 1 1 auto; width: 100%; }
 }
 
 @media (max-width: 768px) {

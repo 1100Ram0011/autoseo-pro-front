@@ -91,7 +91,7 @@ export default function SmartActionsFeed({ siteId }: { siteId: string }) {
       boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)'
     }}>
       {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '16px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <div style={{
             background: 'linear-gradient(135deg, #EEF2FF, #E0E7FF)',

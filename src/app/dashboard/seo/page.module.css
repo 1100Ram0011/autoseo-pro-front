@@ -161,6 +161,7 @@
   .title { font-size: 1.25rem; }
   .metricsGrid { grid-template-columns: 1fr 1fr; gap: 1rem; }
   .metricValue { font-size: 1.35rem; }
+  .panel { overflow-x: auto; }
 }
 
 @media (max-width: 480px) {

@@ -89,43 +89,45 @@ export default function IndexCoverageDashboard() {
 
   return (
     <div className={styles.dashboardWrapper}>
-      <div className={styles.header}>
-        <div>
-          <h1 className={styles.title}>Index Coverage</h1>
-          <p style={{ color: '#64748B', fontSize: '0.9rem', marginTop: '0.25rem' }}>
-            See which pages Google has indexed and which have technical issues.
-          </p>
-      {/* Auto-injected Info Block */}
-      <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', gap: '12px' }}>
-        <Info size={20} color="#0284C7" style={{ flexShrink: 0, marginTop: '2px' }} />
-        <div>
-          <h4 style={{ margin: '0 0 0.5rem 0', color: '#0369A1', fontSize: '0.95rem' }}>How does this work?</h4>
-          <p style={{ margin: 0, color: '#0C4A6E', fontSize: '0.85rem', lineHeight: '1.5' }}>
-             Detailed report on which pages Google refuses to index and why. <strong>Example:</strong> Identify pages with 'Crawled - currently not indexed' status and improve their content quality.
-          </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '1.5rem' }}>
+        <div className={styles.header} style={{ marginBottom: 0 }}>
+          <div>
+            <h1 className={styles.title}>Index Coverage</h1>
+            <p style={{ color: '#64748B', fontSize: '0.9rem', marginTop: '0.25rem' }}>
+              See which pages Google has indexed and which have technical issues.
+            </p>
+          </div>
+          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
+            {sites.length > 0 && (
+              <select className={styles.siteSelector} value={selectedSiteId || ''} onChange={(e) => setSelectedSiteId(e.target.value)}>
+                {sites.map(site => <option key={site.id} value={site.id}>{site.url}</option>)}
+              </select>
+            )}
+            <button 
+              onClick={fetchCoverage}
+              disabled={loading}
+              style={{ padding: '0.5rem 1rem', background: 'transparent', color: '#0F172A', border: '1px solid #E2E8F0', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', whiteSpace: 'nowrap' }}
+            >
+              <RefreshCw size={14} className={loading ? 'spinner' : ''} /> Refresh Data
+            </button>
+          </div>
         </div>
-      </div>
-  
-        </div>
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-          {sites.length > 0 && (
-            <select className={styles.siteSelector} value={selectedSiteId || ''} onChange={(e) => setSelectedSiteId(e.target.value)}>
-              {sites.map(site => <option key={site.id} value={site.id}>{site.url}</option>)}
-            </select>
-          )}
-          <button 
-            onClick={fetchCoverage}
-            disabled={loading}
-            style={{ padding: '0.5rem 1rem', background: 'transparent', color: '#0F172A', border: '1px solid #E2E8F0', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
-          >
-            <RefreshCw size={14} className={loading ? 'spinner' : ''} /> Refresh Data
-          </button>
+
+        {/* Auto-injected Info Block */}
+        <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '8px', display: 'flex', gap: '12px' }}>
+          <Info size={20} color="#0284C7" style={{ flexShrink: 0, marginTop: '2px' }} />
+          <div>
+            <h4 style={{ margin: '0 0 0.5rem 0', color: '#0369A1', fontSize: '0.95rem' }}>How does this work?</h4>
+            <p style={{ margin: 0, color: '#0C4A6E', fontSize: '0.85rem', lineHeight: '1.5' }}>
+               Detailed report on which pages Google refuses to index and why. <strong>Example:</strong> Identify pages with 'Crawled - currently not indexed' status and improve their content quality.
+            </p>
+          </div>
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '1.5rem', marginBottom: '2rem' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem', marginBottom: '2rem' }}>
         {/* Pie Chart Widget */}
-        <div className={styles.panel}>
+        <div className={styles.panel} style={{ flex: '1 1 300px', minWidth: '280px' }}>
           <div className={styles.panelHeader}>
             <Layers size={18} color="#0F172A" /> Coverage Breakdown
           </div>
@@ -141,7 +143,7 @@ export default function IndexCoverageDashboard() {
                     ))}
                   </Pie>
                   <Tooltip contentStyle={{ backgroundColor: '#0F172A', border: '1px solid #0F172A', borderRadius: '8px' }} />
-                  <Legend verticalAlign="bottom" height={36} wrapperStyle={{ fontSize: '12px' }} />
+                  <Legend verticalAlign="bottom" height={60} wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }} />
                 </PieChart>
               </ResponsiveContainer>
             ) : (
@@ -151,7 +153,7 @@ export default function IndexCoverageDashboard() {
         </div>
 
         {/* Stats Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1rem', flex: '2 1 400px', minWidth: '280px' }}>
            <div className={styles.panel} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '1.5rem', background: 'rgba(16, 185, 129, 0.05)', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#10B981', marginBottom: '8px' }}>
                 <CheckCircle size={18} />
@@ -187,11 +189,11 @@ export default function IndexCoverageDashboard() {
       </div>
 
       {/* Error Pages Table */}
-      <div className={styles.panel} style={{ padding: 0, overflow: 'hidden' }}>
+      <div className={styles.panel} style={{ padding: 0, overflowX: 'auto', overflowY: 'hidden' }}>
         <div className={styles.panelHeader} style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid rgba(255,255,255,0.07)', background: 'rgba(255,255,255,0.01)' }}>
           <AlertTriangle size={18} color="#ef4444" /> Pages Needing Attention
         </div>
-        <table className={styles.dataTable}>
+        <table className={styles.dataTable} style={{ minWidth: '600px' }}>
           <thead>
             <tr>
               <th>Page URL</th>

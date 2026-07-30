@@ -50,7 +50,7 @@ const CWVPanel = ({ data, strategy }: { data: any, strategy: string }) => {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '1rem' }}>
         {renderMetric(field?.LCP || originField?.LCP, 'LCP (Largest Contentful Paint)')}
         {renderMetric(field?.FID || originField?.FID, 'FID (First Input Delay)')}
         {renderMetric(field?.CLS || originField?.CLS, 'CLS (Cumulative Layout Shift)')}
@@ -235,38 +235,40 @@ export default function Dashboard() {
 
   return (
     <div className={styles.dashboardWrapper}>
-      <div className={styles.header}>
-        <div>
-          <h1 className={styles.title}>Core Web Vitals</h1>
-          <p style={{ color: '#64748B', fontSize: '0.9rem', marginTop: '0.25rem' }}>Real User Experience (CrUX Field Data)</p>
-      {/* Auto-injected Info Block */}
-      <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', gap: '12px' }}>
-        <Info size={20} color="#0284C7" style={{ flexShrink: 0, marginTop: '2px' }} />
-        <div>
-          <h4 style={{ margin: '0 0 0.5rem 0', color: '#0369A1', fontSize: '0.95rem' }}>How does this work?</h4>
-          <p style={{ margin: 0, color: '#0C4A6E', fontSize: '0.85rem', lineHeight: '1.5' }}>
-             Analyzes Core Web Vitals (CWV) - Google's official speed and user experience metrics. Fast sites rank higher in search results. <strong>Example:</strong> If your LCP (Largest Contentful Paint) is high, it means your main image or text is loading too slowly and you should compress your images.
-          </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '1.5rem' }}>
+        <div className={styles.header} style={{ marginBottom: 0 }}>
+          <div>
+            <h1 className={styles.title}>Core Web Vitals</h1>
+            <p style={{ color: '#64748B', fontSize: '0.9rem', marginTop: '0.25rem' }}>Real User Experience (CrUX Field Data)</p>
+          </div>
+          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
+            {sites.length > 0 && (
+              <select className={styles.siteSelector} value={selectedSiteId || ''} onChange={(e) => setSelectedSiteId(e.target.value)}>
+                {sites.map(site => <option key={site.id} value={site.id}>{site.url}</option>)}
+              </select>
+            )}
+            <button onClick={syncGA4} disabled={isSyncing} className={styles.btnSecondary} style={{ background: '#E2E8F0', color: '#0F172A', border: '1px solid rgba(255,255,255,0.2)', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', display: 'flex', gap: '8px', alignItems: 'center', whiteSpace: 'nowrap' }}>
+              <RefreshCw size={14} className={isSyncing ? "spin" : ""} /> {isSyncing ? 'Syncing...' : 'Sync Analytics'}
+            </button>
+            <button onClick={crawlSiteUrls} disabled={isSyncing} className={styles.btnSecondary} style={{ background: '#E2E8F0', color: '#0F172A', border: '1px solid rgba(255,255,255,0.2)', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', display: 'flex', gap: '8px', alignItems: 'center', whiteSpace: 'nowrap' }}>
+              <Search size={14} /> Crawl URLs
+            </button>
+            <button onClick={runAllAudits} disabled={isAuditingAll || pages.length === 0} className={styles.btnPrimary} style={{ background: '#10b981', color: '#0F172A', border: 'none', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', display: 'flex', gap: '8px', alignItems: 'center', whiteSpace: 'nowrap' }}>
+              {isAuditingAll ? <RefreshCw size={14} className="spin" /> : <Activity size={14} />} 
+              {isAuditingAll ? 'Fetching...' : 'Fetch Field Data'}
+            </button>
+          </div>
         </div>
-      </div>
-  
-        </div>
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-          {sites.length > 0 && (
-            <select className={styles.siteSelector} value={selectedSiteId || ''} onChange={(e) => setSelectedSiteId(e.target.value)}>
-              {sites.map(site => <option key={site.id} value={site.id}>{site.url}</option>)}
-            </select>
-          )}
-          <button onClick={syncGA4} disabled={isSyncing} className={styles.btnSecondary} style={{ background: '#E2E8F0', color: '#0F172A', border: '1px solid rgba(255,255,255,0.2)', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', display: 'flex', gap: '8px', alignItems: 'center' }}>
-            <RefreshCw size={14} className={isSyncing ? "spin" : ""} /> {isSyncing ? 'Syncing...' : 'Sync Analytics'}
-          </button>
-          <button onClick={crawlSiteUrls} disabled={isSyncing} className={styles.btnSecondary} style={{ background: '#E2E8F0', color: '#0F172A', border: '1px solid rgba(255,255,255,0.2)', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', display: 'flex', gap: '8px', alignItems: 'center' }}>
-            <Search size={14} /> Crawl URLs
-          </button>
-          <button onClick={runAllAudits} disabled={isAuditingAll || pages.length === 0} className={styles.btnPrimary} style={{ background: '#10b981', color: '#0F172A', border: 'none', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', display: 'flex', gap: '8px', alignItems: 'center' }}>
-            {isAuditingAll ? <RefreshCw size={14} className="spin" /> : <Activity size={14} />} 
-            {isAuditingAll ? 'Fetching...' : 'Fetch Field Data'}
-          </button>
+
+        {/* Auto-injected Info Block */}
+        <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '8px', display: 'flex', gap: '12px' }}>
+          <Info size={20} color="#0284C7" style={{ flexShrink: 0, marginTop: '2px' }} />
+          <div>
+            <h4 style={{ margin: '0 0 0.5rem 0', color: '#0369A1', fontSize: '0.95rem' }}>How does this work?</h4>
+            <p style={{ margin: 0, color: '#0C4A6E', fontSize: '0.85rem', lineHeight: '1.5' }}>
+               Analyzes Core Web Vitals (CWV) - Google's official speed and user experience metrics. Fast sites rank higher in search results. <strong>Example:</strong> If your LCP (Largest Contentful Paint) is high, it means your main image or text is loading too slowly and you should compress your images.
+            </p>
+          </div>
         </div>
       </div>
 
@@ -279,7 +281,8 @@ export default function Dashboard() {
             </div>
           </div>
           
-          <table className={styles.dataTable}>
+          <div style={{ overflowX: 'auto', width: '100%' }}>
+            <table className={styles.dataTable} style={{ minWidth: '600px' }}>
             <thead>
               <tr>
                 <th style={{ width: '40px' }}></th>
@@ -332,6 +335,7 @@ export default function Dashboard() {
               )}
             </tbody>
           </table>
+          </div>
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -358,9 +362,9 @@ export default function Dashboard() {
           </div>
 
           {/* Side-by-Side Mobile and Desktop Field Data */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
-            <CWVPanel data={selectedData.mobile} strategy="mobile" />
-            <CWVPanel data={selectedData.desktop} strategy="desktop" />
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem' }}>
+            <div style={{ flex: '1 1 300px' }}><CWVPanel data={selectedData.mobile} strategy="mobile" /></div>
+            <div style={{ flex: '1 1 300px' }}><CWVPanel data={selectedData.desktop} strategy="desktop" /></div>
           </div>
         </div>
       )}

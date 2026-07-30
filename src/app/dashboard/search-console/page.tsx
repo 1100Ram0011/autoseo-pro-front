@@ -252,6 +252,7 @@ export default function SearchConsoleDashboard() {
           {/* Top Pages */}
           <div className={styles.panel}>
             <div className={styles.panelHeader}>Top Pages <span style={{ fontSize: '0.75rem', color: '#3b82f6', cursor: 'pointer', fontWeight: 'normal' }} onClick={() => setActiveTab('Pages')}>View all →</span></div>
+            <div style={{ overflowX: 'auto' }}>
             <table className={styles.dataTable}>
               <thead><tr><th>Page</th><th className={styles.alignRight}>Clicks</th><th className={styles.alignRight}>Impressions</th><th className={styles.alignRight}>CTR</th><th className={styles.alignRight}>Position</th></tr></thead>
               <tbody>
@@ -266,6 +267,7 @@ export default function SearchConsoleDashboard() {
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
         </div>
 
@@ -286,6 +288,7 @@ export default function SearchConsoleDashboard() {
           {/* Keyword Insights */}
           <div className={styles.panel}>
             <div className={styles.panelHeader}>Top Keywords <span style={{ fontSize: '0.75rem', color: '#3b82f6', cursor: 'pointer', fontWeight: 'normal' }} onClick={() => setActiveTab('Keywords')}>All →</span></div>
+            <div style={{ overflowX: 'auto' }}>
             <table className={styles.dataTable}>
               <thead><tr><th>Query</th><th className={styles.alignRight}>Pos</th><th className={styles.alignRight}>Clicks</th></tr></thead>
               <tbody>
@@ -298,6 +301,7 @@ export default function SearchConsoleDashboard() {
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
 
           {/* Index Coverage */}
@@ -336,6 +340,7 @@ export default function SearchConsoleDashboard() {
             ))}
           </div>
         </div>
+        <div style={{ overflowX: 'auto' }}>
         <table className={styles.dataTable}>
           <thead>
             <tr><th>#</th><th>Query</th><th className={styles.alignRight}>Clicks</th><th className={styles.alignRight}>Impressions</th><th className={styles.alignRight}>CTR</th><th className={styles.alignRight}>Position</th><th style={{textAlign:'center'}}>Action</th></tr>
@@ -356,6 +361,7 @@ export default function SearchConsoleDashboard() {
             ))}
           </tbody>
         </table>
+        </div>
       </div>
     </>
   );
@@ -363,6 +369,7 @@ export default function SearchConsoleDashboard() {
   const renderPages = () => (
     <div className={styles.panel}>
       <div className={styles.panelHeader}>All Pages Performance ({gscPages.length})</div>
+      <div style={{ overflowX: 'auto' }}>
       <table className={styles.dataTable}>
         <thead>
           <tr><th>#</th><th>Page URL</th><th className={styles.alignRight}>Clicks</th><th className={styles.alignRight}>Impressions</th><th className={styles.alignRight}>CTR</th><th className={styles.alignRight}>Position</th><th style={{textAlign:'center'}}>Inspect</th></tr>
@@ -383,6 +390,7 @@ export default function SearchConsoleDashboard() {
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 
@@ -441,6 +449,7 @@ export default function SearchConsoleDashboard() {
         {/* Full Table */}
         <div className={styles.panel}>
           <div className={styles.panelHeader}>All Countries Detail</div>
+          <div style={{ overflowX: 'auto' }}>
           <table className={styles.dataTable}>
             <thead><tr><th>#</th><th>Country</th><th className={styles.alignRight}>Clicks</th><th className={styles.alignRight}>Impressions</th><th className={styles.alignRight}>CTR</th></tr></thead>
             <tbody>
@@ -455,6 +464,7 @@ export default function SearchConsoleDashboard() {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       </div>
     );
@@ -487,6 +497,7 @@ export default function SearchConsoleDashboard() {
 
         <div className={styles.panel}>
           <div className={styles.panelHeader}>Device Comparison</div>
+          <div style={{ overflowX: 'auto' }}>
           <table className={styles.dataTable}>
             <thead><tr><th>Device</th><th className={styles.alignRight}>Clicks</th><th className={styles.alignRight}>Impressions</th></tr></thead>
             <tbody>
@@ -499,6 +510,7 @@ export default function SearchConsoleDashboard() {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       </div>
     );
@@ -508,6 +520,7 @@ export default function SearchConsoleDashboard() {
     <div className={styles.panel}>
       <div className={styles.panelHeader}><FileJson size={16} /> Submitted Sitemaps ({gscSitemaps.length})</div>
       {gscSitemaps.length > 0 ? (
+        <div style={{ overflowX: 'auto' }}>
         <table className={styles.dataTable}>
           <thead>
             <tr><th>Sitemap URL</th><th className={styles.alignRight}>Submitted</th><th className={styles.alignRight}>Indexed</th><th className={styles.alignRight}>Last Submitted</th><th className={styles.alignRight}>Status</th></tr>
@@ -526,6 +539,7 @@ export default function SearchConsoleDashboard() {
             ))}
           </tbody>
         </table>
+        </div>
       ) : (
         <div style={{ textAlign: 'center', padding: '3rem', color: '#64748b' }}>
           <FileJson size={40} color="#334155" />
@@ -644,6 +658,7 @@ export default function SearchConsoleDashboard() {
       <div className={styles.panel}>
         <div className={styles.panelHeader}><TrendingUp size={16} color="#10b981" /> Striking Distance Keywords (Position 4-10)</div>
         <p style={{ fontSize: '0.8rem', color: '#64748B', marginBottom: '1rem' }}>These keywords are close to Top 3. Push them with optimized content to boost traffic.</p>
+        <div style={{ overflowX: 'auto' }}>
         <table className={styles.dataTable}>
           <thead><tr><th>Keyword</th><th className={styles.alignRight}>Clicks</th><th className={styles.alignRight}>Impressions</th><th className={styles.alignRight}>Position</th><th className={styles.alignRight}>Potential</th></tr></thead>
           <tbody>
@@ -658,11 +673,13 @@ export default function SearchConsoleDashboard() {
             ))}
           </tbody>
         </table>
+        </div>
       </div>
 
       {/* Low CTR */}
       <div className={styles.panel}>
         <div className={styles.panelHeader}><AlertTriangle size={16} color="#ef4444" /> High Impressions, Low CTR — Fix Meta Titles</div>
+        <div style={{ overflowX: 'auto' }}>
         <table className={styles.dataTable}>
           <thead><tr><th>Keyword</th><th className={styles.alignRight}>Impressions</th><th className={styles.alignRight}>CTR</th><th className={styles.alignRight}>Clicks</th></tr></thead>
           <tbody>
@@ -676,6 +693,7 @@ export default function SearchConsoleDashboard() {
             ))}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   );

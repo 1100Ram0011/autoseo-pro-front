@@ -184,39 +184,41 @@ export default function GoogleKeywordsPage() {
 
   return (
     <div className={styles.dashboardWrapper}>
-      <div className={styles.header}>
-        <div>
-          <h1 className={styles.title}>Keyword Intelligence</h1>
-          <p style={{ color: '#64748B', fontSize: '0.9rem', marginTop: '0.25rem' }}>Track rankings, volume, and discover new keyword opportunities</p>
-      {/* Auto-injected Info Block */}
-      <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', gap: '12px' }}>
-        <Info size={20} color="#0284C7" style={{ flexShrink: 0, marginTop: '2px' }} />
-        <div>
-          <h4 style={{ margin: '0 0 0.5rem 0', color: '#0369A1', fontSize: '0.95rem' }}>How does this work?</h4>
-          <p style={{ margin: 0, color: '#0C4A6E', fontSize: '0.85rem', lineHeight: '1.5' }}>
-             Fetch real keyword search volume directly from the Google Ads API. <strong>Example:</strong> Find out if people are searching for 'buy shoes' more often than 'order shoes' before you write an article.
-          </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '1.5rem' }}>
+        <div className={styles.header} style={{ marginBottom: 0 }}>
+          <div>
+            <h1 className={styles.title}>Keyword Intelligence</h1>
+            <p style={{ color: '#64748B', fontSize: '0.9rem', marginTop: '0.25rem' }}>Track rankings, volume, and discover new keyword opportunities</p>
+          </div>
+          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
+            {sites.length > 0 && (
+              <select className={styles.siteSelector} value={selectedSiteId || ''} onChange={(e) => setSelectedSiteId(e.target.value)}>
+                {sites.map(site => <option key={site.id} value={site.id}>{site.url}</option>)}
+              </select>
+            )}
+            <button 
+              onClick={() => setDiscoveryOpen(true)}
+              style={{ padding: '0.5rem 1rem', background: '#8b5cf6', color: '#0F172A', border: 'none', borderRadius: '8px', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 0 15px rgba(139, 92, 246, 0.3)', whiteSpace: 'nowrap' }}
+            >
+              <Sparkles size={16} /> Discover Ideas
+            </button>
+          </div>
         </div>
-      </div>
-  
-        </div>
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-          {sites.length > 0 && (
-            <select className={styles.siteSelector} value={selectedSiteId || ''} onChange={(e) => setSelectedSiteId(e.target.value)}>
-              {sites.map(site => <option key={site.id} value={site.id}>{site.url}</option>)}
-            </select>
-          )}
-          <button 
-            onClick={() => setDiscoveryOpen(true)}
-            style={{ padding: '0.5rem 1rem', background: '#8b5cf6', color: '#0F172A', border: 'none', borderRadius: '8px', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 0 15px rgba(139, 92, 246, 0.3)' }}
-          >
-            <Sparkles size={16} /> Discover Ideas
-          </button>
+
+        {/* Auto-injected Info Block */}
+        <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '8px', display: 'flex', gap: '12px' }}>
+          <Info size={20} color="#0284C7" style={{ flexShrink: 0, marginTop: '2px' }} />
+          <div>
+            <h4 style={{ margin: '0 0 0.5rem 0', color: '#0369A1', fontSize: '0.95rem' }}>How does this work?</h4>
+            <p style={{ margin: 0, color: '#0C4A6E', fontSize: '0.85rem', lineHeight: '1.5' }}>
+               Fetch real keyword search volume directly from the Google Ads API. <strong>Example:</strong> Find out if people are searching for 'buy shoes' more often than 'order shoes' before you write an article.
+            </p>
+          </div>
         </div>
       </div>
 
       {/* Metrics Summary */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1.5rem', marginBottom: '1.5rem' }}>
+      <div className={styles.metricsGrid} style={{ marginBottom: '1.5rem' }}>
         <div className={styles.panel} style={{ padding: '1.25rem' }}>
           <div style={{ color: '#64748B', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '0.5rem' }}><Key size={14} color="#3b82f6"/> Tracked Keywords</div>
           <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#0F172A' }}>{keywords.length}</div>
@@ -236,10 +238,10 @@ export default function GoogleKeywordsPage() {
       </div>
 
       {/* Main Content Area */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 3fr', gap: '1.5rem' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem' }}>
         
         {/* Left Col: Actions */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', flex: '1 1 300px' }}>
           <div className={styles.panel}>
             <div className={styles.panelHeader}><Plus size={16} color="#3b82f6"/> Add Keyword</div>
             <form onSubmit={handleAddKeyword} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1rem' }}>
@@ -290,8 +292,8 @@ export default function GoogleKeywordsPage() {
             </div>
           </div>
 
-          <div style={{ overflowY: 'auto', flex: 1 }}>
-            <table className={styles.dataTable}>
+          <div style={{ overflowX: 'auto', overflowY: 'auto', flex: 1, minHeight: '300px' }}>
+            <table className={styles.dataTable} style={{ minWidth: '600px' }}>
               <thead>
                 <tr>
                   <th>Keyword</th>

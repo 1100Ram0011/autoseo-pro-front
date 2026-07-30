@@ -59,7 +59,7 @@
 
 .card {
   background: #FFFFFF;
-  border: 1px solid #FFFFFF;
+  border: 1px solid #E2E8F0;
   border-radius: 16px;
   padding: 1.5rem;
   transition: all 0.3s ease;
@@ -67,11 +67,14 @@
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
 }
 
 .card:hover {
-  border-color: rgba(90, 74, 244, 0.4);
+  border-color: #A5B4FC;
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+  transform: translateY(-2px);
 }
 
 .suggestionInfo {
@@ -83,38 +86,55 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
 }
 
 .pageBox {
-  background: rgba(0, 0, 0, 0.3);
+  background: #EEF2FF;
   padding: 0.5rem 0.75rem;
   border-radius: 6px;
-  color: #0F172A;
-  font-size: 0.9rem;
-  font-family: monospace;
+  color: #4F46E5;
+  font-size: 0.85rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  border: 1px solid #C7D2FE;
+  font-weight: 500;
+  word-break: break-all;
+}
+
+.pageBoxTarget {
+  background: #ECFDF5;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  color: #059669;
+  font-size: 0.85rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  border: 1px solid #A7F3D0;
+  font-weight: 500;
+  word-break: break-all;
 }
 
 .arrow {
-  color: #5A4AF4;
-  font-weight: bold;
+  color: #94A3B8;
+  flex-shrink: 0;
 }
 
 .anchorWrapper {
   display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-size: 0.95rem;
-  color: #64748B;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .anchorText {
   color: #0F172A;
   font-weight: 600;
-  background: rgba(90, 74, 244, 0.15);
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  border: 1px dashed rgba(90, 74, 244, 0.5);
+  background: #F8FAFC;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #E2E8F0;
+  font-style: italic;
+  font-size: 1rem;
+  display: inline-block;
 }
 
 .actions {
@@ -123,33 +143,43 @@
 }
 
 .btnAccept {
-  background: rgba(16, 185, 129, 0.15);
-  color: #10B981;
-  border: 1px solid rgba(16, 185, 129, 0.4);
+  background: #10B981;
+  color: #FFFFFF;
+  border: none;
   padding: 0.6rem 1.25rem;
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);
 }
 
 .btnAccept:hover {
-  background: rgba(16, 185, 129, 0.25);
+  background: #059669;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 8px -1px rgba(16, 185, 129, 0.3);
 }
 
 .btnReject {
-  background: rgba(239, 68, 68, 0.1);
+  background: #FFFFFF;
   color: #EF4444;
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  border: 1px solid #FECACA;
   padding: 0.6rem 1.25rem;
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .btnReject:hover {
-  background: rgba(239, 68, 68, 0.2);
+  background: #FEF2F2;
+  border-color: #F87171;
 }
 
 .noData {
@@ -186,11 +216,10 @@
   .header { flex-direction: column; align-items: flex-start; gap: 1rem; }
   .header h1 { font-size: 1.5rem; }
   .scanButton { width: 100%; justify-content: center; }
-  .card { flex-direction: column; }
-  .urls { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
-  .pageBox { font-size: 0.75rem; word-break: break-all; white-space: normal; }
+  .card { flex-direction: column; align-items: stretch; gap: 1.5rem; }
+  .urls { gap: 0.5rem; }
   .suggestionInfo { min-width: unset; }
-  .actions { width: 100%; }
-  .btnAccept, .btnReject { flex: 1; text-align: center; justify-content: center; }
+  .actions { width: 100%; flex-direction: row; }
+  .btnAccept, .btnReject { flex: 1; justify-content: center; }
 }
 

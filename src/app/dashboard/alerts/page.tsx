@@ -17,7 +17,10 @@ interface Alert {
   createdAt: string;
 }
 
+import { useRouter } from 'next/navigation';
+
 export default function AlertsDashboard() {
+  const router = useRouter();
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [loading, setLoading] = useState(false);
   const [siteId, setSiteId] = useState<string | null>(null);
@@ -101,44 +104,48 @@ export default function AlertsDashboard() {
 
   return (
     <div className={styles.dashboardWrapper}>
-      <div className={styles.header}>
-        <div>
-          <h1 className={styles.title} style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#0F172A' }}>
-            <Bell size={24} color="#F59E0B" /> SEO Alerts & Notifications
-          </h1>
-          <p style={{ color: '#64748B', fontSize: '0.9rem', marginTop: '0.25rem' }}>
-            Stay on top of critical changes to your traffic, rankings, and website health.
-          </p>
-      {/* Auto-injected Info Block */}
-      <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', gap: '12px' }}>
-        <Info size={20} color="#0284C7" style={{ flexShrink: 0, marginTop: '2px' }} />
-        <div>
-          <h4 style={{ margin: '0 0 0.5rem 0', color: '#0369A1', fontSize: '0.95rem' }}>How does this work?</h4>
-          <p style={{ margin: 0, color: '#0C4A6E', fontSize: '0.85rem', lineHeight: '1.5' }}>
-             This page continuously monitors your website's uptime and critical SEO health. It sends you instant notifications if anything goes wrong. <strong>Example:</strong> If your server goes down (503 error), you'll get an immediate alert here so you can fix it before Google drops your rankings.
-          </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '1.5rem' }}>
+        <div className={styles.header} style={{ marginBottom: 0 }}>
+          <div>
+            <h1 className={styles.title} style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#0F172A' }}>
+              <Bell size={24} color="#F59E0B" /> SEO Alerts & Notifications
+            </h1>
+            <p style={{ color: '#64748B', fontSize: '0.9rem', marginTop: '0.25rem' }}>
+              Stay on top of critical changes to your traffic, rankings, and website health.
+            </p>
+          </div>
+          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
+            <button 
+              onClick={simulateUptimeCheck}
+              disabled={loading}
+              style={{ 
+                padding: '0.6rem 1rem', background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)', 
+                color: '#0F172A', border: 'none', borderRadius: '6px', cursor: 'pointer', 
+                display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.85rem', fontWeight: 600, whiteSpace: 'nowrap'
+              }}>
+              {loading ? 'Checking...' : <><Zap size={16} /> Run Uptime Check</>}
+            </button>
+            <button 
+              onClick={() => router.push('/dashboard/settings')}
+              style={{ padding: '0.6rem 1rem', background: '#F8FAFC', color: '#0F172A', border: '1px solid #0F172A', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.85rem', whiteSpace: 'nowrap' }}>
+              <Settings size={16} /> Configure
+            </button>
+          </div>
         </div>
-      </div>
-  
-        </div>
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-          <button 
-            onClick={simulateUptimeCheck}
-            disabled={loading}
-            style={{ 
-              padding: '0.6rem 1rem', background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)', 
-              color: '#0F172A', border: 'none', borderRadius: '6px', cursor: 'pointer', 
-              display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.85rem', fontWeight: 600 
-            }}>
-            {loading ? 'Checking...' : <><Zap size={16} /> Run Uptime Check</>}
-          </button>
-          <button style={{ padding: '0.6rem 1rem', background: '#F8FAFC', color: '#0F172A', border: '1px solid #0F172A', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.85rem' }}>
-            <Settings size={16} /> Configure
-          </button>
+
+        {/* Auto-injected Info Block */}
+        <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '8px', display: 'flex', gap: '12px' }}>
+          <Info size={20} color="#0284C7" style={{ flexShrink: 0, marginTop: '2px' }} />
+          <div>
+            <h4 style={{ margin: '0 0 0.5rem 0', color: '#0369A1', fontSize: '0.95rem' }}>How does this work?</h4>
+            <p style={{ margin: 0, color: '#0C4A6E', fontSize: '0.85rem', lineHeight: '1.5' }}>
+               This page continuously monitors your website's uptime and critical SEO health. It sends you instant notifications if anything goes wrong. <strong>Example:</strong> If your server goes down (503 error), you'll get an immediate alert here so you can fix it before Google drops your rankings.
+            </p>
+          </div>
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: '2rem' }}>
+      <div className={styles.mainLayout}>
         
         {/* MAIN ALERTS LIST */}
         <div className={styles.panel} style={{ padding: 0, overflow: 'hidden', background: '#FFFFFF', border: '1px solid #0F172A' }}>

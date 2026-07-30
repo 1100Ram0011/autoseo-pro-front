@@ -288,15 +288,17 @@ export default function AnalyticsPage() {
         <div className={styles.twoColRow}>
           <div className={styles.panel}>
             <div className={styles.panelHeader}>Traffic Acquisition</div>
-            <div style={{ display: 'flex', alignItems: 'center', height: '220px', gap: '2rem', marginTop: '0.5rem' }}>
-              <ResponsiveContainer width="40%" height="100%">
-                <PieChart>
-                  <Pie data={trafficData} innerRadius={50} outerRadius={70} dataKey="value" stroke="none">
-                    {trafficData.map((e, i) => <Cell key={i} fill={e.color} />)}
-                  </Pie>
-                  <RechartsTooltip contentStyle={tooltipStyle} />
-                </PieChart>
-              </ResponsiveContainer>
+            <div className={styles.pieChartRow}>
+              <div className={styles.pieChartWrapper}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie data={trafficData} innerRadius={50} outerRadius={70} dataKey="value" stroke="none">
+                      {trafficData.map((e, i) => <Cell key={i} fill={e.color} />)}
+                    </Pie>
+                    <RechartsTooltip contentStyle={tooltipStyle} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
                 {trafficData.slice(0, 6).map((t, i, arr) => {
                   const total = arr.reduce((s, a) => s + a.value, 0);
@@ -321,15 +323,17 @@ export default function AnalyticsPage() {
 
           <div className={styles.panel}>
             <div className={styles.panelHeader}>New vs Returning Users</div>
-            <div style={{ display: 'flex', alignItems: 'center', height: '220px', gap: '2rem', marginTop: '0.5rem' }}>
-              <ResponsiveContainer width="40%" height="100%">
-                <PieChart>
-                  <Pie data={newReturningPie} innerRadius={50} outerRadius={70} dataKey="value" stroke="none">
-                    {newReturningPie.map((e, i) => <Cell key={i} fill={e.color} />)}
-                  </Pie>
-                  <RechartsTooltip contentStyle={tooltipStyle} />
-                </PieChart>
-              </ResponsiveContainer>
+            <div className={styles.pieChartRow}>
+              <div className={styles.pieChartWrapper}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie data={newReturningPie} innerRadius={50} outerRadius={70} dataKey="value" stroke="none">
+                      {newReturningPie.map((e, i) => <Cell key={i} fill={e.color} />)}
+                    </Pie>
+                    <RechartsTooltip contentStyle={tooltipStyle} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '1.4rem' }}>
                 <div>
                   <div className={styles.miniLabel}>New Users</div>
@@ -809,16 +813,7 @@ export default function AnalyticsPage() {
           <div className={styles.eyebrow}>Analytics · Live GA4 Data</div>
           <h1 className={styles.pageTitle}>Good afternoon, Rajesh</h1>
           <p className={styles.pageSubtitle}>Here's how your website is performing today.</p>
-      {/* Auto-injected Info Block */}
-      <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', gap: '12px' }}>
-        <Info size={20} color="#0284C7" style={{ flexShrink: 0, marginTop: '2px' }} />
-        <div>
-          <h4 style={{ margin: '0 0 0.5rem 0', color: '#0369A1', fontSize: '0.95rem' }}>How does this work?</h4>
-          <p style={{ margin: 0, color: '#0C4A6E', fontSize: '0.85rem', lineHeight: '1.5' }}>
-             Connects to Google Analytics 4 (GA4) to track real human traffic, visitor countries, devices, and bounce rates. It tells you exactly who is visiting your site. <strong>Example:</strong> You can see if a recent marketing campaign brought in new users or if visitors are leaving your site too quickly.
-          </p>
-        </div>
-      </div>
+
   
         </div>
         <div className={styles.headerControls}>
@@ -836,9 +831,27 @@ export default function AnalyticsPage() {
           <div className={styles.datePicker}>
             <Calendar size={14} /> Last 30 Days <span style={{ marginLeft: '4px' }}>▾</span>
           </div>
+          <button 
+            onClick={() => router.push('/dashboard/integrations')}
+            className={styles.exportButton}
+            style={{ background: '#3B82F6', color: '#FFFFFF', border: 'none', padding: '0.5rem 1rem', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', borderRadius: '8px', fontWeight: 600, fontSize: '0.85rem' }}
+          >
+            <Activity size={14} /> Connect GA4
+          </button>
           <button className={styles.exportButton}>
             <Download size={14} /> Export Report
           </button>
+        </div>
+      </div>
+
+      {/* Auto-injected Info Block */}
+      <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', gap: '12px' }}>
+        <Info size={20} color="#0284C7" style={{ flexShrink: 0, marginTop: '2px' }} />
+        <div>
+          <h4 style={{ margin: '0 0 0.5rem 0', color: '#0369A1', fontSize: '0.95rem' }}>How does this work?</h4>
+          <p style={{ margin: 0, color: '#0C4A6E', fontSize: '0.85rem', lineHeight: '1.5' }}>
+             Connects to Google Analytics 4 (GA4) to track real human traffic, visitor countries, devices, and bounce rates. It tells you exactly who is visiting your site. <strong>Example:</strong> You can see if a recent marketing campaign brought in new users or if visitors are leaving your site too quickly.
+          </p>
         </div>
       </div>
 

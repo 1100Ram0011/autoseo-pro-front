@@ -34,7 +34,7 @@ export default function ContentCalendarPage() {
 
   return (
     <div style={{ padding: '2rem', fontFamily: "'Inter', sans-serif", color: 'var(--foreground)', minHeight: '100vh', background: 'transparent' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', marginBottom: '2rem' }}>
         <div>
           <h1 style={{ margin: 0, fontSize: '1.8rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '10px' }}>
             <CalendarIcon size={28} color="#3B82F6" />
@@ -44,7 +44,7 @@ export default function ContentCalendarPage() {
             Auto-generate and schedule content based on competitor gaps and keyword opportunities.
           </p>
         </div>
-        <div style={{ display: 'flex', gap: '12px' }}>
+        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', background: '#E2E8F0', padding: '4px', borderRadius: '8px' }}>
             <button 
               onClick={() => setView('list')}
@@ -70,8 +70,8 @@ export default function ContentCalendarPage() {
         </div>
       </div>
 
-      <div className="glass-card" style={{ borderRadius: '12px', overflow: 'hidden' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+      <div className="glass-card" style={{ borderRadius: '12px', overflowX: 'auto', width: '100%' }}>
+        <table style={{ width: '100%', minWidth: '800px', borderCollapse: 'collapse' }}>
           <thead style={{ background: 'rgba(255, 255, 255, 0.05)', borderBottom: '1px solid var(--card-border)' }}>
             <tr>
               <th style={{ padding: '1rem', textAlign: 'left', fontWeight: 600, color: '#475569', fontSize: '0.85rem' }}>DATE</th>

@@ -10,18 +10,7 @@ export default function AIBlogWriterPage() {
   const [title, setTitle] = useState('10 Best SEO Tools to Grow Your Business in 2024');
   const [isGenerating, setIsGenerating] = useState(false);
   const [content, setContent] = useState(`<h1>10 Best SEO Tools to Grow Your Business in 2024</h1>
-<p>SEO tools are essential for any business that wants to rank higher on search engines and drive more organic traffic. In this top guide, we'll explore the 10 best SEO tools that can help you find purpose, analyze your competitors, and grow your brand online.</p>
-      {/* Auto-injected Info Block */}
-      <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', gap: '12px' }}>
-        <Info size={20} color="#0284C7" style={{ flexShrink: 0, marginTop: '2px' }} />
-        <div>
-          <h4 style={{ margin: '0 0 0.5rem 0', color: '#0369A1', fontSize: '0.95rem' }}>How does this work?</h4>
-          <p style={{ margin: 0, color: '#0C4A6E', fontSize: '0.85rem', lineHeight: '1.5' }}>
-             Manage and optimize your existing blog content for better search visibility. <strong>Example:</strong> Identify articles that haven't been updated in a year and refresh them for a quick ranking boost.
-          </p>
-        </div>
-      </div>
-  `);
+<p>SEO tools are essential for any business that wants to rank higher on search engines and drive more organic traffic. In this top guide, we'll explore the 10 best SEO tools that can help you find purpose, analyze your competitors, and grow your brand online.</p>`);
 
   const handleGenerate = async () => {
     if (!title) return;
@@ -53,10 +42,20 @@ export default function AIBlogWriterPage() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <div className={styles.title}>
+      <div className={styles.header} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '2rem' }}>
+        <div className={styles.title} style={{ marginBottom: 0 }}>
           <PenTool size={24} color="#5A4AF4" />
           AI Blog Writer
+        </div>
+        {/* Auto-injected Info Block */}
+        <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '8px', display: 'flex', gap: '12px' }}>
+          <Info size={20} color="#0284C7" style={{ flexShrink: 0, marginTop: '2px' }} />
+          <div>
+            <h4 style={{ margin: '0 0 0.5rem 0', color: '#0369A1', fontSize: '0.95rem' }}>How does this work?</h4>
+            <p style={{ margin: 0, color: '#0C4A6E', fontSize: '0.85rem', lineHeight: '1.5' }}>
+               Manage and optimize your existing blog content for better search visibility. <strong>Example:</strong> Identify articles that haven't been updated in a year and refresh them for a quick ranking boost.
+            </p>
+          </div>
         </div>
       </div>
 

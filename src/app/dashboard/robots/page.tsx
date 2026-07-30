@@ -124,48 +124,51 @@ Sitemap: https://yoursite.com/sitemap_index.xml`
       animate="show"
       style={{ padding: '2rem', maxWidth: '1400px', margin: '0 auto', color: '#0F172A', fontFamily: "'Inter', sans-serif" }}
     >
-      <motion.div variants={itemVariants} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem' }}>
-        <div>
-          <h1 style={{ margin: 0, fontSize: '1.75rem', fontWeight: 700, color: '#0F172A', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <FileCode size={28} color="#f59e0b" /> Robots.txt Editor
-          </h1>
-          <p style={{ margin: '0.5rem 0 0', fontSize: '0.9rem', color: '#64748B' }}>
-            Control how search engines crawl and index your site's content.
-          </p>
-      {/* Auto-injected Info Block */}
-      <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', gap: '12px' }}>
-        <Info size={20} color="#0284C7" style={{ flexShrink: 0, marginTop: '2px' }} />
-        <div>
-          <h4 style={{ margin: '0 0 0.5rem 0', color: '#0369A1', fontSize: '0.95rem' }}>How does this work?</h4>
-          <p style={{ margin: 0, color: '#0C4A6E', fontSize: '0.85rem', lineHeight: '1.5' }}>
-             Manage your robots.txt file to control what Google can and cannot crawl. <strong>Example:</strong> Block Googlebot from crawling your private /admin pages or internal search result pages.
-          </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '1.5rem' }}>
+        <motion.div variants={itemVariants} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+          <div>
+            <h1 style={{ margin: 0, fontSize: '1.75rem', fontWeight: 700, color: '#0F172A', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <FileCode size={28} color="#f59e0b" /> Robots.txt Editor
+            </h1>
+            <p style={{ margin: '0.5rem 0 0', fontSize: '0.9rem', color: '#64748B' }}>
+              Control how search engines crawl and index your site's content.
+            </p>
+          </div>
+          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+            <button 
+              onClick={handleDownload}
+              style={{ padding: '0.75rem 1.25rem', background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#0F172A', border: 'none', borderRadius: '8px', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 4px 14px 0 rgba(245,158,11,0.39)', whiteSpace: 'nowrap' }}
+            >
+              <Download size={16} /> Download
+            </button>
+          </div>
+        </motion.div>
+
+        {/* Auto-injected Info Block */}
+        <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '8px', display: 'flex', gap: '12px' }}>
+          <Info size={20} color="#0284C7" style={{ flexShrink: 0, marginTop: '2px' }} />
+          <div>
+            <h4 style={{ margin: '0 0 0.5rem 0', color: '#0369A1', fontSize: '0.95rem' }}>How does this work?</h4>
+            <p style={{ margin: 0, color: '#0C4A6E', fontSize: '0.85rem', lineHeight: '1.5' }}>
+               Manage your robots.txt file to control what Google can and cannot crawl. <strong>Example:</strong> Block Googlebot from crawling your private /admin pages or internal search result pages.
+            </p>
+          </div>
         </div>
       </div>
-  
-        </div>
-        <div style={{ display: 'flex', gap: '1rem' }}>
-          <button 
-            onClick={handleDownload}
-            style={{ padding: '0.75rem 1.25rem', background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#0F172A', border: 'none', borderRadius: '8px', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 4px 14px 0 rgba(245,158,11,0.39)' }}
-          >
-            <Download size={16} /> Download
-          </button>
-        </div>
-      </motion.div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '2rem' }}>
+
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem' }}>
         
         {/* Editor Area */}
-        <motion.div variants={itemVariants} style={{ background: '#FFFFFF', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '16px', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        <motion.div variants={itemVariants} style={{ flex: '2 1 400px', minWidth: '280px', background: '#FFFFFF', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '16px', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
           <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid #FFFFFF', background: '#FFFFFF', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600, color: '#0F172A' }}>
               <FileCode size={18} color="#f59e0b" /> Edit robots.txt
             </div>
-            <div style={{ display: 'flex', gap: '10px' }}>
+            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
               <button 
                 onClick={handleGenerateBasic}
-                style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', color: '#0F172A', padding: '6px 12px', borderRadius: '8px', fontSize: '0.8rem', cursor: 'pointer', fontWeight: 600, transition: 'all 0.2s' }}
+                style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', color: '#0F172A', padding: '6px 12px', borderRadius: '8px', fontSize: '0.8rem', cursor: 'pointer', fontWeight: 600, transition: 'all 0.2s', whiteSpace: 'nowrap' }}
                 onMouseEnter={(e) => e.currentTarget.style.background = '#E2E8F0'}
                 onMouseLeave={(e) => e.currentTarget.style.background = '#FFFFFF'}
               >
@@ -173,7 +176,7 @@ Sitemap: https://yoursite.com/sitemap_index.xml`
               </button>
               <button 
                 onClick={handleGenerateWordPress}
-                style={{ background: 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.3)', color: '#f59e0b', padding: '6px 12px', borderRadius: '8px', fontSize: '0.8rem', cursor: 'pointer', fontWeight: 600, transition: 'all 0.2s' }}
+                style={{ background: 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.3)', color: '#f59e0b', padding: '6px 12px', borderRadius: '8px', fontSize: '0.8rem', cursor: 'pointer', fontWeight: 600, transition: 'all 0.2s', whiteSpace: 'nowrap' }}
                 onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(245, 158, 11, 0.15)'}
                 onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(245, 158, 11, 0.1)'}
               >
@@ -207,7 +210,7 @@ Sitemap: https://yoursite.com/sitemap_index.xml`
         </motion.div>
 
         {/* Tester Area */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+        <div style={{ flex: '1 1 300px', minWidth: '280px', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
           <motion.div variants={itemVariants} style={{ background: '#FFFFFF', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '16px', padding: '1.5rem' }}>
             <div style={{ fontSize: '1.05rem', fontWeight: 600, color: '#0F172A', display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.5rem' }}>
               <Bot size={20} color="#3b82f6" /> Test URL Blocking

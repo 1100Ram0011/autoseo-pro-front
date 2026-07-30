@@ -47,7 +47,7 @@ export default function UrlInspectionDashboard() {
       const res = await fetch(`${API_BASE}/sites/${siteId}/gsc/inspect`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ inspectUrl })
+        body: JSON.stringify({ url: inspectUrl })
       });
       
       const data = await res.json();
@@ -86,32 +86,34 @@ export default function UrlInspectionDashboard() {
 
   return (
     <div className={styles.dashboardWrapper}>
-      <div className={styles.header}>
-        <div>
-          <h1 className={styles.title} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <FileSearch size={24} color="#3b82f6" /> URL Inspection Tool
-          </h1>
-          <p style={{ color: '#64748B', fontSize: '0.9rem', marginTop: '0.25rem' }}>
-            Check the current index status of any URL directly from Google Search Console.
-          </p>
-      {/* Auto-injected Info Block */}
-      <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', gap: '12px' }}>
-        <Info size={20} color="#0284C7" style={{ flexShrink: 0, marginTop: '2px' }} />
-        <div>
-          <h4 style={{ margin: '0 0 0.5rem 0', color: '#0369A1', fontSize: '0.95rem' }}>How does this work?</h4>
-          <p style={{ margin: 0, color: '#0C4A6E', fontSize: '0.85rem', lineHeight: '1.5' }}>
-             Inspect a specific URL exactly how Googlebot sees it. <strong>Example:</strong> Check if Google can successfully render the JavaScript on your new product page.
-          </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '1.5rem' }}>
+        <div className={styles.header} style={{ marginBottom: 0 }}>
+          <div>
+            <h1 className={styles.title} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <FileSearch size={24} color="#3b82f6" /> URL Inspection Tool
+            </h1>
+            <p style={{ color: '#64748B', fontSize: '0.9rem', marginTop: '0.25rem' }}>
+              Check the current index status of any URL directly from Google Search Console.
+            </p>
+          </div>
+          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
+            {sites.length > 0 && (
+              <select className={styles.siteSelector} value={selectedSiteId || ''} onChange={(e) => setSelectedSiteId(e.target.value)}>
+                {sites.map(site => <option key={site.id} value={site.id}>{site.url}</option>)}
+              </select>
+            )}
+          </div>
         </div>
-      </div>
-  
-        </div>
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-          {sites.length > 0 && (
-            <select className={styles.siteSelector} value={selectedSiteId || ''} onChange={(e) => setSelectedSiteId(e.target.value)}>
-              {sites.map(site => <option key={site.id} value={site.id}>{site.url}</option>)}
-            </select>
-          )}
+
+        {/* Auto-injected Info Block */}
+        <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '8px', display: 'flex', gap: '12px' }}>
+          <Info size={20} color="#0284C7" style={{ flexShrink: 0, marginTop: '2px' }} />
+          <div>
+            <h4 style={{ margin: '0 0 0.5rem 0', color: '#0369A1', fontSize: '0.95rem' }}>How does this work?</h4>
+            <p style={{ margin: 0, color: '#0C4A6E', fontSize: '0.85rem', lineHeight: '1.5' }}>
+               Inspect a specific URL exactly how Googlebot sees it. <strong>Example:</strong> Check if Google can successfully render the JavaScript on your new product page.
+            </p>
+          </div>
         </div>
       </div>
 
@@ -122,8 +124,8 @@ export default function UrlInspectionDashboard() {
           <div className={styles.panelHeader} style={{ marginBottom: '1rem' }}>
             Enter URL to Inspect
           </div>
-          <form onSubmit={(e) => { e.preventDefault(); if (selectedSiteId) runInspect(url, selectedSiteId); }} style={{ display: 'flex', gap: '1rem' }}>
-            <div style={{ flex: 1, position: 'relative' }}>
+          <form onSubmit={(e) => { e.preventDefault(); if (selectedSiteId) runInspect(url, selectedSiteId); }} style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+            <div style={{ flex: '1 1 250px', position: 'relative' }}>
               <div style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#64748b', display: 'flex' }}>
                 <Search size={18} />
               </div>
@@ -141,7 +143,8 @@ export default function UrlInspectionDashboard() {
                   color: '#0F172A', 
                   fontSize: '0.95rem',
                   outline: 'none',
-                  transition: 'border 0.2s'
+                  transition: 'border 0.2s',
+                  boxSizing: 'border-box'
                 }}
                 required
               />
@@ -150,7 +153,7 @@ export default function UrlInspectionDashboard() {
               type="submit" 
               disabled={loading || !url.trim()}
               style={{ 
-                padding: '0 1.5rem', 
+                padding: '12px 1.5rem', 
                 background: '#3b82f6', 
                 color: '#0F172A', 
                 border: 'none', 
@@ -160,7 +163,8 @@ export default function UrlInspectionDashboard() {
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
-                opacity: loading || !url.trim() ? 0.7 : 1
+                opacity: loading || !url.trim() ? 0.7 : 1,
+                whiteSpace: 'nowrap'
               }}
             >
               {loading ? <RefreshCw size={18} className="spinner" /> : <Search size={18} />}
@@ -176,7 +180,7 @@ export default function UrlInspectionDashboard() {
               <ShieldCheck size={20} color="#10b981" /> Inspection Results
             </div>
             
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem' }}>
               {/* Index Status */}
               <div style={{ background: '#F8FAFC', padding: '1.5rem', borderRadius: '12px', border: '1px solid #E2E8F0', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px', color: '#64748B', fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase' }}>

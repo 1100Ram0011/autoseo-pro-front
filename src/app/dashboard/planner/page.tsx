@@ -26,17 +26,17 @@ export default function PlannerPage() {
   
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         {plan.map((p,i)=>(
-          <div key={i} style={{ background: '#FFFFFF', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 16, padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+          <div key={i} style={{ background: '#FFFFFF', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 16, padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
             <div style={{ textAlign: 'center', flexShrink: 0, minWidth: 80 }}>
               <div style={{ fontSize: '1.5rem' }}>{p.emoji}</div>
               <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#A5B4FC', marginTop: '0.25rem' }}>{p.week}</div>
               <div style={{ fontSize: '0.7rem', color: '#64748B' }}>{p.date}</div>
             </div>
-            <div style={{ flex: 1 }}>
+            <div style={{ flex: '1 1 auto', minWidth: '200px' }}>
               <div style={{ fontWeight: 700, fontSize: '0.95rem', color: '#0F172A', marginBottom: '0.35rem' }}>{p.topic}</div>
               <div style={{ fontSize: '0.78rem', color: '#64748B' }}>Target: <span style={{ color: '#93C5FD', fontWeight: 600 }}>{p.kw}</span> {p.score && <span style={{ color: '#10B981', marginLeft: '0.5rem' }}>SEO Score: {p.score}/100</span>}</div>
             </div>
-            <div style={{ display: 'flex', gap: '0.5rem', flexShrink: 0 }}>
+            <div style={{ display: 'flex', gap: '0.5rem', flexShrink: 0, flexWrap: 'wrap' }}>
               <span style={{ background: sc[p.status], color: tc[p.status], padding: '0.25rem 0.75rem', borderRadius: 20, fontSize: '0.75rem', fontWeight: 700 }}>{p.status}</span>
               {p.status !== 'Published' && <button style={{ background: 'rgba(90,74,244,0.2)', border: '1px solid rgba(90,74,244,0.3)', color: '#A5B4FC', padding: '0.25rem 0.75rem', borderRadius: 20, cursor: 'pointer', fontSize: '0.75rem', fontWeight: 600 }}>Generate ✨</button>}
             </div>

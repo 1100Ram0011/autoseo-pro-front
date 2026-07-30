@@ -4,6 +4,7 @@ import { API_BASE } from '@/lib/apiConfig';
 import { Info } from "lucide-react";
 
 import { useState, useEffect } from 'react';
+import { toast } from 'react-hot-toast';
 import styles from './gmb.module.css';
 
 export default function LocalSeoPage() {
@@ -41,9 +42,14 @@ export default function LocalSeoPage() {
       if (res.ok) {
         const data = await res.json();
         setProfile(data);
+        toast.success('GMB Data Synced Successfully!');
+      } else {
+        const errData = await res.json().catch(() => ({}));
+        toast.error(errData.error || 'Failed to sync with backend database');
       }
     } catch (error) {
       console.error('Failed to sync profile:', error);
+      toast.error('Network error while syncing GMB data');
     } finally {
       setLoading(false);
     }
@@ -51,26 +57,28 @@ export default function LocalSeoPage() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <div>
-          <h1>Local SEO Profile</h1>
-          <p>Sync your Google My Business data to track local performance.</p>
-      {/* Auto-injected Info Block */}
-      <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', gap: '12px' }}>
-        <Info size={20} color="#0284C7" style={{ flexShrink: 0, marginTop: '2px' }} />
-        <div>
-          <h4 style={{ margin: '0 0 0.5rem 0', color: '#0369A1', fontSize: '0.95rem' }}>How does this work?</h4>
-          <p style={{ margin: 0, color: '#0C4A6E', fontSize: '0.85rem', lineHeight: '1.5' }}>
-             Manage your Google Business Profile and local citations. <strong>Example:</strong> Ensure your business address and phone number are consistent across the web to rank in Google Maps.
-          </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '1.5rem' }}>
+        <div className={styles.header} style={{ marginBottom: 0 }}>
+          <div>
+            <h1>Local SEO Profile</h1>
+            <p>Sync your Google My Business data to track local performance.</p>
+          </div>
+          
+          <button onClick={handleSync} className={styles.syncButton} disabled={loading}>
+            {loading ? 'Syncing...' : '🔄 Sync GMB Data'}
+          </button>
         </div>
-      </div>
-  
+
+        {/* Auto-injected Info Block */}
+        <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '8px', display: 'flex', gap: '12px' }}>
+          <Info size={20} color="#0284C7" style={{ flexShrink: 0, marginTop: '2px' }} />
+          <div>
+            <h4 style={{ margin: '0 0 0.5rem 0', color: '#0369A1', fontSize: '0.95rem' }}>How does this work?</h4>
+            <p style={{ margin: 0, color: '#0C4A6E', fontSize: '0.85rem', lineHeight: '1.5' }}>
+               Manage your Google Business Profile and local citations. <strong>Example:</strong> Ensure your business address and phone number are consistent across the web to rank in Google Maps.
+            </p>
+          </div>
         </div>
-        
-        <button onClick={handleSync} className={styles.syncButton} disabled={loading}>
-          {loading ? 'Syncing...' : '🔄 Sync GMB Data'}
-        </button>
       </div>
 
       {!profile ? (

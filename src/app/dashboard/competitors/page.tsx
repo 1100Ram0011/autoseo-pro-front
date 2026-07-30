@@ -71,34 +71,37 @@ export default function CompetitorsPage() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <h1>Competitor Analysis</h1>
-      {/* Auto-injected Info Block */}
-      <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', gap: '12px' }}>
-        <Info size={20} color="#0284C7" style={{ flexShrink: 0, marginTop: '2px' }} />
-        <div>
-          <h4 style={{ margin: '0 0 0.5rem 0', color: '#0369A1', fontSize: '0.95rem' }}>How does this work?</h4>
-          <p style={{ margin: 0, color: '#0C4A6E', fontSize: '0.85rem', lineHeight: '1.5' }}>
-             Analyzes what your competitors are doing right. It compares your metrics with theirs to find content gaps. <strong>Example:</strong> If a competitor is ranking for "Best Running Shoes" and you are not, this tool will highlight that gap.
-          </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '1.5rem' }}>
+        <div className={styles.header} style={{ marginBottom: 0 }}>
+          <h1>Competitor Analysis</h1>
+          
+          <form onSubmit={handleAddCompetitor} className={styles.addForm}>
+            <input 
+              type="text" 
+              placeholder="Enter competitor domain (e.g. ahrefs.com)" 
+              value={newDomain}
+              onChange={(e) => setNewDomain(e.target.value)}
+              className={styles.input}
+              required
+            />
+            <button type="submit" className={styles.button} disabled={loading}>
+              {loading ? 'Analyzing...' : 'Add Competitor'}
+            </button>
+          </form>
+        </div>
+
+        {/* Auto-injected Info Block */}
+        <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '8px', display: 'flex', gap: '12px' }}>
+          <Info size={20} color="#0284C7" style={{ flexShrink: 0, marginTop: '2px' }} />
+          <div>
+            <h4 style={{ margin: '0 0 0.5rem 0', color: '#0369A1', fontSize: '0.95rem' }}>How does this work?</h4>
+            <p style={{ margin: 0, color: '#0C4A6E', fontSize: '0.85rem', lineHeight: '1.5' }}>
+               Analyzes what your competitors are doing right. It compares your metrics with theirs to find content gaps. <strong>Example:</strong> If a competitor is ranking for "Best Running Shoes" and you are not, this tool will highlight that gap.
+            </p>
+          </div>
         </div>
       </div>
-  
-        
-        <form onSubmit={handleAddCompetitor} className={styles.addForm}>
-          <input 
-            type="text" 
-            placeholder="Enter competitor domain (e.g. ahrefs.com)" 
-            value={newDomain}
-            onChange={(e) => setNewDomain(e.target.value)}
-            className={styles.input}
-            required
-          />
-          <button type="submit" className={styles.button} disabled={loading}>
-            {loading ? 'Analyzing...' : 'Add Competitor'}
-          </button>
-        </form>
-      </div>
+
 
       <div className={styles.grid}>
         {isLoading ? (

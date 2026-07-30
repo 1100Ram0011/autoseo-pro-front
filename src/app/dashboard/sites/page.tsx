@@ -17,6 +17,7 @@ function SitesContent() {
   const [isModalOpen, setIsModalOpen] = useState(searchParams.get('add') === 'true');
   const [url, setUrl] = useState('');
   const [isCrawling, setIsCrawling] = useState(false);
+  const [editingSiteId, setEditingSiteId] = useState<string | null>(null);
 
   const [sites, setSites] = useState<any[]>([]);
 
@@ -48,20 +49,27 @@ function SitesContent() {
         formattedUrl = `https://${formattedUrl}`;
       }
 
-      const res = await fetch(`${API_BASE}/sites?email=${encodeURIComponent(email)}`, {
-        method: 'POST',
+      const endpoint = editingSiteId 
+        ? `${API_BASE}/sites/${editingSiteId}/settings` 
+        : `${API_BASE}/sites?email=${encodeURIComponent(email)}`;
+        
+      const method = editingSiteId ? 'PUT' : 'POST';
+
+      const res = await fetch(endpoint, {
+        method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url: formattedUrl })
       });
       
       if (res.ok) {
-        toast.success('Site added successfully!');
+        toast.success(editingSiteId ? 'Site updated successfully!' : 'Site added successfully!');
         await fetchSites();
         setIsModalOpen(false);
         setUrl('');
+        setEditingSiteId(null);
       } else {
         const data = await res.json();
-        toast.error(data.error || 'Failed to add site');
+        toast.error(data.error || (editingSiteId ? 'Failed to update site' : 'Failed to add site'));
       }
     } catch (error) {
       console.error('Failed to add site', error);
@@ -100,6 +108,17 @@ function SitesContent() {
               <p>Last Crawled: {site.lastCrawled}</p>
             </div>
             <div className={styles.siteActions}>
+              <button 
+                className={styles.actionBtn} 
+                onClick={() => {
+                  setEditingSiteId(site.id);
+                  setUrl(site.url);
+                  setIsModalOpen(true);
+                }}
+                style={{ background: '#F8FAFC', color: '#64748B', border: '1px solid #E2E8F0' }}
+              >
+                Edit URL
+              </button>
               <Link href={`/dashboard/sites/${site.id}`} className={styles.actionBtn}>View SEO Files</Link>
               <button className={styles.actionBtn} onClick={() => alert('Recrawling...')}>Re-Crawl</button>
             </div>
@@ -110,7 +129,7 @@ function SitesContent() {
       {isModalOpen && (
         <div className={styles.modalOverlay}>
           <div className={styles.modal}>
-            <h2 className={styles.modalTitle}>Add Website</h2>
+            <h2 className={styles.modalTitle}>{editingSiteId ? 'Edit Website URL' : 'Add Website'}</h2>
             <form onSubmit={handleCrawl}>
               <div className={styles.inputGroup}>
                 <label className={styles.label}>Website URL</label>
@@ -124,9 +143,9 @@ function SitesContent() {
                 />
               </div>
               <div className={styles.modalActions}>
-                <button type="button" className={styles.cancelBtn} onClick={() => setIsModalOpen(false)}>Cancel</button>
+                <button type="button" className={styles.cancelBtn} onClick={() => { setIsModalOpen(false); setEditingSiteId(null); setUrl(''); }}>Cancel</button>
                 <button type="submit" className={styles.addBtn} disabled={isCrawling}>
-                  {isCrawling ? 'Adding...' : 'Add Site'}
+                  {isCrawling ? 'Saving...' : (editingSiteId ? 'Update Site' : 'Add Site')}
                 </button>
               </div>
             </form>

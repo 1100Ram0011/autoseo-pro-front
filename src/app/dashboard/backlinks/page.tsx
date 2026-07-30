@@ -82,32 +82,36 @@ export default function BacklinksPage() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <div>
-          <h1>Backlink Monitoring</h1>
-          <p>Track your inbound links and automatically generate a Disavow file for Google Search Console.</p>
-      {/* Auto-injected Info Block */}
-      <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', gap: '12px' }}>
-        <Info size={20} color="#0284C7" style={{ flexShrink: 0, marginTop: '2px' }} />
-        <div>
-          <h4 style={{ margin: '0 0 0.5rem 0', color: '#0369A1', fontSize: '0.95rem' }}>How does this work?</h4>
-          <p style={{ margin: 0, color: '#0C4A6E', fontSize: '0.85rem', lineHeight: '1.5' }}>
-             Monitors who is linking to your website (backlinks) and tracks your Domain Authority. <strong>Example:</strong> If a high-authority news site links to you, your domain authority and rankings will increase.
-          </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '1.5rem' }}>
+        <div className={styles.header} style={{ marginBottom: 0 }}>
+          <div>
+            <h1>Backlink Monitoring</h1>
+            <p>Track your inbound links and automatically generate a Disavow file for Google Search Console.</p>
+          </div>
+          
+          <div className={styles.actionGroup}>
+            <button onClick={handleScan} className={styles.btnScan} disabled={loading}>
+              {loading ? 'Scanning...' : '🔍 Run Backlink Scan'}
+            </button>
+            <button onClick={handleExportDisavow} className={styles.btnExport} disabled={disavowedCount === 0}>
+              📄 Export Disavow File
+            </button>
+          </div>
+        </div>
+
+        {/* Auto-injected Info Block */}
+        <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '8px', display: 'flex', gap: '12px' }}>
+          <Info size={20} color="#0284C7" style={{ flexShrink: 0, marginTop: '2px' }} />
+          <div>
+            <h4 style={{ margin: '0 0 0.5rem 0', color: '#0369A1', fontSize: '0.95rem' }}>How does this work?</h4>
+            <p style={{ margin: 0, color: '#0C4A6E', fontSize: '0.85rem', lineHeight: '1.5' }}>
+               Monitors who is linking to your website (backlinks) and tracks your Domain Authority. <strong>Example:</strong> If a high-authority news site links to you, your domain authority and rankings will increase.
+            </p>
+          </div>
         </div>
       </div>
-  
-        </div>
         
-        <div className={styles.actionGroup}>
-          <button onClick={handleScan} className={styles.btnScan} disabled={loading}>
-            {loading ? 'Scanning...' : '🔍 Run Backlink Scan'}
-          </button>
-          <button onClick={handleExportDisavow} className={styles.btnExport} disabled={disavowedCount === 0}>
-            📄 Export Disavow File
-          </button>
-        </div>
-      </div>
+
 
       <div className={styles.statsGrid}>
         <div className={styles.statCard}>

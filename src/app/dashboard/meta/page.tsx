@@ -39,38 +39,40 @@ ${imageUrl ? `<meta property="twitter:image" content="${imageUrl}" />` : ''}
 
   return (
     <div className={styles.dashboardWrapper}>
-      <div className={styles.header}>
-        <div>
-          <h1 className={styles.title}>Meta Tags Generator & Preview</h1>
-          <p style={{ color: '#64748B', fontSize: '0.9rem', marginTop: '0.25rem' }}>
-            Create and preview perfect meta tags for Search, Facebook, and Twitter.
-          </p>
-      {/* Auto-injected Info Block */}
-      <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', gap: '12px' }}>
-        <Info size={20} color="#0284C7" style={{ flexShrink: 0, marginTop: '2px' }} />
-        <div>
-          <h4 style={{ margin: '0 0 0.5rem 0', color: '#0369A1', fontSize: '0.95rem' }}>How does this work?</h4>
-          <p style={{ margin: 0, color: '#0C4A6E', fontSize: '0.85rem', lineHeight: '1.5' }}>
-             Helps you craft the perfect SEO Title and Meta Description. This is the first thing users see on Google. <strong>Example:</strong> Keep your title under 60 characters so it doesn't get cut off in Google results, and include your main keyword.
-          </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '1.5rem' }}>
+        <div className={styles.header} style={{ marginBottom: 0 }}>
+          <div>
+            <h1 className={styles.title}>Meta Tags Generator & Preview</h1>
+            <p style={{ color: '#64748B', fontSize: '0.9rem', marginTop: '0.25rem' }}>
+              Create and preview perfect meta tags for Search, Facebook, and Twitter.
+            </p>
+          </div>
+          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+            <button 
+              onClick={handleCopy}
+              style={{ padding: '0.5rem 1rem', background: '#3b82f6', color: '#0F172A', border: 'none', borderRadius: '8px', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}
+            >
+              <Copy size={16} /> Copy Code
+            </button>
+          </div>
         </div>
-      </div>
-  
-        </div>
-        <div style={{ display: 'flex', gap: '1rem' }}>
-          <button 
-            onClick={handleCopy}
-            style={{ padding: '0.5rem 1rem', background: '#3b82f6', color: '#0F172A', border: 'none', borderRadius: '8px', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
-          >
-            <Copy size={16} /> Copy Code
-          </button>
+
+        {/* Auto-injected Info Block */}
+        <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '8px', display: 'flex', gap: '12px' }}>
+          <Info size={20} color="#0284C7" style={{ flexShrink: 0, marginTop: '2px' }} />
+          <div>
+            <h4 style={{ margin: '0 0 0.5rem 0', color: '#0369A1', fontSize: '0.95rem' }}>How does this work?</h4>
+            <p style={{ margin: 0, color: '#0C4A6E', fontSize: '0.85rem', lineHeight: '1.5' }}>
+               Helps you craft the perfect SEO Title and Meta Description. This is the first thing users see on Google. <strong>Example:</strong> Keep your title under 60 characters so it doesn't get cut off in Google results, and include your main keyword.
+            </p>
+          </div>
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem' }}>
         
         {/* Editor Area */}
-        <div className={styles.panel} style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <div className={styles.panel} style={{ flex: '1 1 300px', display: 'flex', flexDirection: 'column' }}>
           <div className={styles.panelHeader}>
             <Type size={18} color="#3b82f6" /> Editor
           </div>
@@ -132,7 +134,7 @@ ${imageUrl ? `<meta property="twitter:image" content="${imageUrl}" />` : ''}
         </div>
 
         {/* Previews */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+        <div style={{ flex: '1 1 300px', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           
           {/* Google Preview */}
           <div className={styles.panel}>
@@ -182,7 +184,7 @@ ${imageUrl ? `<meta property="twitter:image" content="${imageUrl}" />` : ''}
         </div>
 
         {/* Code Output (Full Width) */}
-        <div className={styles.panel} style={{ gridColumn: '1 / -1' }}>
+        <div className={styles.panel} style={{ flex: '1 1 100%' }}>
           <div className={styles.panelHeader}>
             <Code size={18} color="#10b981" /> Generated Meta Tags
           </div>

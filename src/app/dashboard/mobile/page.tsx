@@ -98,44 +98,46 @@ export default function MobileUsabilityDashboard() {
 
   return (
     <div className={styles.dashboardWrapper}>
-      <div className={styles.header}>
-        <div>
-          <h1 className={styles.title}>Mobile Usability & Devices</h1>
-          <p style={{ color: '#64748B', fontSize: '0.9rem', marginTop: '0.25rem' }}>
-            Analyze search performance across devices and monitor mobile-friendliness.
-          </p>
-      {/* Auto-injected Info Block */}
-      <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', gap: '12px' }}>
-        <Info size={20} color="#0284C7" style={{ flexShrink: 0, marginTop: '2px' }} />
-        <div>
-          <h4 style={{ margin: '0 0 0.5rem 0', color: '#0369A1', fontSize: '0.95rem' }}>How does this work?</h4>
-          <p style={{ margin: 0, color: '#0C4A6E', fontSize: '0.85rem', lineHeight: '1.5' }}>
-             Checks if your website is perfectly optimized for mobile devices. <strong>Example:</strong> Identify if your text is too small to read on an iPhone or if buttons are too close together.
-          </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '1.5rem' }}>
+        <div className={styles.header} style={{ marginBottom: 0 }}>
+          <div>
+            <h1 className={styles.title}>Mobile Usability & Devices</h1>
+            <p style={{ color: '#64748B', fontSize: '0.9rem', marginTop: '0.25rem' }}>
+              Analyze search performance across devices and monitor mobile-friendliness.
+            </p>
+          </div>
+          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
+            {sites.length > 0 && (
+              <select className={styles.siteSelector} value={selectedSiteId || ''} onChange={(e) => setSelectedSiteId(e.target.value)}>
+                {sites.map(site => <option key={site.id} value={site.id}>{site.url}</option>)}
+              </select>
+            )}
+            <button 
+              onClick={fetchDeviceData}
+              disabled={loading}
+              style={{ padding: '0.5rem 1rem', background: 'transparent', color: '#0F172A', border: '1px solid #E2E8F0', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', whiteSpace: 'nowrap' }}
+            >
+              <RefreshCw size={14} className={loading ? 'spinner' : ''} /> Refresh Data
+            </button>
+          </div>
         </div>
-      </div>
-  
-        </div>
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-          {sites.length > 0 && (
-            <select className={styles.siteSelector} value={selectedSiteId || ''} onChange={(e) => setSelectedSiteId(e.target.value)}>
-              {sites.map(site => <option key={site.id} value={site.id}>{site.url}</option>)}
-            </select>
-          )}
-          <button 
-            onClick={fetchDeviceData}
-            disabled={loading}
-            style={{ padding: '0.5rem 1rem', background: 'transparent', color: '#0F172A', border: '1px solid #E2E8F0', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
-          >
-            <RefreshCw size={14} className={loading ? 'spinner' : ''} /> Refresh Data
-          </button>
+
+        {/* Auto-injected Info Block */}
+        <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '8px', display: 'flex', gap: '12px' }}>
+          <Info size={20} color="#0284C7" style={{ flexShrink: 0, marginTop: '2px' }} />
+          <div>
+            <h4 style={{ margin: '0 0 0.5rem 0', color: '#0369A1', fontSize: '0.95rem' }}>How does this work?</h4>
+            <p style={{ margin: 0, color: '#0C4A6E', fontSize: '0.85rem', lineHeight: '1.5' }}>
+               Checks if your website is perfectly optimized for mobile devices. <strong>Example:</strong> Identify if your text is too small to read on an iPhone or if buttons are too close together.
+            </p>
+          </div>
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem', marginBottom: '2rem' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem', marginBottom: '2rem' }}>
         
         {/* Device Breakdown (Clicks) */}
-        <div className={styles.panel} style={{ gridColumn: 'span 1' }}>
+        <div className={styles.panel} style={{ flex: '1 1 300px', minWidth: '300px' }}>
           <div className={styles.panelHeader}>
             <MousePointerClick size={18} color="#3b82f6" /> Traffic by Device (Clicks)
           </div>
@@ -161,8 +163,8 @@ export default function MobileUsabilityDashboard() {
         </div>
 
         {/* Device Performance Table */}
-        <div className={styles.panel} style={{ gridColumn: 'span 2', padding: 0, overflow: 'hidden' }}>
-          <div className={styles.panelHeader} style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid rgba(255,255,255,0.07)', background: 'rgba(255,255,255,0.01)' }}>
+        <div className={styles.panel} style={{ flex: '2 1 400px', minWidth: '300px', padding: 0, overflowX: 'auto' }}>
+          <div className={styles.panelHeader} style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid rgba(255,255,255,0.07)', background: 'rgba(255,255,255,0.01)', margin: 0 }}>
             <Eye size={18} color="#8b5cf6" /> Device Performance Metrics
           </div>
           <table className={styles.dataTable} style={{ margin: 0, width: '100%' }}>
@@ -211,40 +213,42 @@ export default function MobileUsabilityDashboard() {
       </div>
 
       {/* Mobile Usability Checks */}
-      <div className={styles.panel} style={{ overflow: 'hidden', padding: 0 }}>
-        <div className={styles.panelHeader} style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid rgba(255,255,255,0.07)', background: 'rgba(255,255,255,0.01)' }}>
+      <div className={styles.panel} style={{ overflowX: 'auto', padding: 0 }}>
+        <div className={styles.panelHeader} style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid rgba(255,255,255,0.07)', background: 'rgba(255,255,255,0.01)', margin: 0 }}>
           <Smartphone size={18} color="#10b981" /> Mobile Usability Checks
         </div>
-        <table className={styles.dataTable} style={{ width: '100%' }}>
-          <thead>
-            <tr>
-              <th>Usability Issue</th>
-              <th>Status</th>
-              <th style={{ textAlign: 'right' }}>Affected Pages</th>
-            </tr>
-          </thead>
-          <tbody>
-            {mobileIssues.map((issue, i) => (
-              <tr key={i}>
-                <td style={{ color: '#0F172A', fontWeight: 500 }}>{issue.issue}</td>
-                <td>
-                  {issue.status === 'Passed' ? (
-                    <span style={{ color: '#10b981', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.8rem', fontWeight: 600 }}>
-                      <CheckCircle size={14} /> Passed
-                    </span>
-                  ) : (
-                    <span style={{ color: '#f59e0b', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.8rem', fontWeight: 600 }}>
-                      <AlertTriangle size={14} /> Needs Work
-                    </span>
-                  )}
-                </td>
-                <td style={{ textAlign: 'right', fontWeight: 600, color: issue.pages > 0 ? '#f59e0b' : '#64748B' }}>
-                  {issue.pages} pages
-                </td>
+        <div style={{ minWidth: '400px' }}>
+          <table className={styles.dataTable} style={{ width: '100%', margin: 0 }}>
+            <thead>
+              <tr>
+                <th>Usability Issue</th>
+                <th>Status</th>
+                <th style={{ textAlign: 'right' }}>Affected Pages</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {mobileIssues.map((issue, i) => (
+                <tr key={i}>
+                  <td style={{ color: '#0F172A', fontWeight: 500 }}>{issue.issue}</td>
+                  <td>
+                    {issue.status === 'Passed' ? (
+                      <span style={{ color: '#10b981', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.8rem', fontWeight: 600 }}>
+                        <CheckCircle size={14} /> Passed
+                      </span>
+                    ) : (
+                      <span style={{ color: '#f59e0b', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.8rem', fontWeight: 600 }}>
+                        <AlertTriangle size={14} /> Needs Work
+                      </span>
+                    )}
+                  </td>
+                  <td style={{ textAlign: 'right', fontWeight: 600, color: issue.pages > 0 ? '#f59e0b' : '#64748B' }}>
+                    {issue.pages} pages
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
       
       <style dangerouslySetInnerHTML={{__html: `

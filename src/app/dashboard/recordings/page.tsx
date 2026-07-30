@@ -54,29 +54,31 @@ export default function RecordingsPage() {
 
   return (
     <div style={{ background: '#F8FAFC', minHeight: '100vh', color: '#0F172A', padding: '1.75rem 2rem', fontFamily: 'Inter, sans-serif' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.75rem' }}>
-        <div>
-          <h1 style={{ fontSize: '1.5rem', fontWeight: 800, margin: '0 0 0.4rem', color: '#0F172A' }}>🎬 UX Issues & Frustration Signals</h1>
-          <p style={{ margin: 0, fontSize: '0.88rem', color: '#64748B' }}>Identify where users are getting stuck based on Microsoft Clarity data.</p>
-      {/* Auto-injected Info Block */}
-      <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', gap: '12px' }}>
-        <Info size={20} color="#0284C7" style={{ flexShrink: 0, marginTop: '2px' }} />
-        <div>
-          <h4 style={{ margin: '0 0 0.5rem 0', color: '#0369A1', fontSize: '0.95rem' }}>How does this work?</h4>
-          <p style={{ margin: 0, color: '#0C4A6E', fontSize: '0.85rem', lineHeight: '1.5' }}>
-             Watch session recordings of real users navigating your site. <strong>Example:</strong> See exactly where a user got frustrated and left your checkout page so you can fix the UX.
-          </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '1.75rem' }}>
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
+          <div>
+            <h1 style={{ fontSize: '1.5rem', fontWeight: 800, margin: '0 0 0.4rem', color: '#0F172A' }}>🎬 UX Issues & Frustration Signals</h1>
+            <p style={{ margin: 0, fontSize: '0.88rem', color: '#64748B' }}>Identify where users are getting stuck based on Microsoft Clarity data.</p>
+          </div>
+          <button 
+            onClick={handleSync}
+            disabled={syncing}
+            style={{ background: 'rgba(90,74,244,0.15)', border: '1px solid rgba(90,74,244,0.3)', color: '#A5B4FC', padding: '0.6rem 1.2rem', borderRadius: 8, cursor: syncing ? 'not-allowed' : 'pointer', fontSize: '0.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem', whiteSpace: 'nowrap' }}
+          >
+            {syncing ? '🔄 Syncing Data...' : '🔄 Pull Latest Data'}
+          </button>
         </div>
-      </div>
-  
+
+        {/* Auto-injected Info Block */}
+        <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '8px', display: 'flex', gap: '12px' }}>
+          <Info size={20} color="#0284C7" style={{ flexShrink: 0, marginTop: '2px' }} />
+          <div>
+            <h4 style={{ margin: '0 0 0.5rem 0', color: '#0369A1', fontSize: '0.95rem' }}>How does this work?</h4>
+            <p style={{ margin: 0, color: '#0C4A6E', fontSize: '0.85rem', lineHeight: '1.5' }}>
+               Watch session recordings of real users navigating your site. <strong>Example:</strong> See exactly where a user got frustrated and left your checkout page so you can fix the UX.
+            </p>
+          </div>
         </div>
-        <button 
-          onClick={handleSync}
-          disabled={syncing}
-          style={{ background: 'rgba(90,74,244,0.15)', border: '1px solid rgba(90,74,244,0.3)', color: '#A5B4FC', padding: '0.6rem 1.2rem', borderRadius: 8, cursor: syncing ? 'not-allowed' : 'pointer', fontSize: '0.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}
-        >
-          {syncing ? '🔄 Syncing Data...' : '🔄 Pull Latest Data'}
-        </button>
       </div>
 
       {loading ? (
@@ -90,13 +92,13 @@ export default function RecordingsPage() {
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
           {issues.map((issue, i) => (
-            <div key={i} style={{ background: '#FFFFFF', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 14, padding: '1.25rem 1.5rem', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+            <div key={i} style={{ background: '#FFFFFF', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 14, padding: '1.25rem 1.5rem', display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
               <div style={{ width: 48, height: 48, borderRadius: 12, background: 'rgba(239,68,68,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', flexShrink: 0 }}>😡</div>
               
-              <div style={{ flex: 1 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.4rem' }}>
-                  <span style={{ fontWeight: 700, fontSize: '1rem', color: '#0F172A' }}>{issue.url}</span>
-                  {issue.rageClicks > 10 && <span style={{ background: 'rgba(239,68,68,0.15)', color: '#EF4444', fontSize: '0.65rem', fontWeight: 700, padding: '0.1rem 0.5rem', borderRadius: 4 }}>HIGH RAGE CLICKS</span>}
+              <div style={{ flex: 1, minWidth: '200px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.4rem', flexWrap: 'wrap' }}>
+                  <span style={{ fontWeight: 700, fontSize: '1rem', color: '#0F172A', wordBreak: 'break-all' }}>{issue.url}</span>
+                  {issue.rageClicks > 10 && <span style={{ background: 'rgba(239,68,68,0.15)', color: '#EF4444', fontSize: '0.65rem', fontWeight: 700, padding: '0.1rem 0.5rem', borderRadius: 4, whiteSpace: 'nowrap' }}>HIGH RAGE CLICKS</span>}
                 </div>
                 <div style={{ fontSize: '0.85rem', color: '#64748B' }}>
                   <strong style={{ color: '#F87171' }}>{issue.rageClicks}</strong> Rage Clicks · <strong style={{ color: '#FBBF24' }}>{issue.deadClicks}</strong> Dead Clicks
@@ -104,7 +106,7 @@ export default function RecordingsPage() {
                 <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: '0.3rem' }}>Based on {issue.sessions} recorded sessions</div>
               </div>
 
-              <a href={`https://clarity.microsoft.com/projects/view/`} target="_blank" rel="noreferrer" style={{ background: 'rgba(90,74,244,0.2)', border: '1px solid rgba(90,74,244,0.4)', color: '#A5B4FC', padding: '0.5rem 1rem', borderRadius: 8, cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600, textDecoration: 'none' }}>
+              <a href={`https://clarity.microsoft.com/projects/view/`} target="_blank" rel="noreferrer" style={{ background: 'rgba(90,74,244,0.2)', border: '1px solid rgba(90,74,244,0.4)', color: '#A5B4FC', padding: '0.5rem 1rem', borderRadius: 8, cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600, textDecoration: 'none', whiteSpace: 'nowrap' }}>
                 View Recordings →
               </a>
             </div>

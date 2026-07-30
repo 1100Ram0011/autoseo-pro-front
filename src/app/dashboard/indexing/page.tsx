@@ -170,28 +170,31 @@ export default function IndexingDashboard() {
 
   return (
     <div className={styles.dashboardWrapper}>
-      <div className={styles.header}>
-        <div>
-          <h1 className={styles.title}>Google Indexing API</h1>
-          <p style={{ color: '#64748B', fontSize: '0.9rem', marginTop: '0.25rem' }}>Push URLs to Google for fast discovery and get actual metadata.</p>
-      {/* Auto-injected Info Block */}
-      <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', gap: '12px' }}>
-        <Info size={20} color="#0284C7" style={{ flexShrink: 0, marginTop: '2px' }} />
-        <div>
-          <h4 style={{ margin: '0 0 0.5rem 0', color: '#0369A1', fontSize: '0.95rem' }}>How does this work?</h4>
-          <p style={{ margin: 0, color: '#0C4A6E', fontSize: '0.85rem', lineHeight: '1.5' }}>
-             Uses the Google Indexing API to push new or updated pages directly to Google so they can be discovered instantly without waiting for natural crawling. <strong>Example:</strong> When you publish a new article, use the Batch Submit button here to force Google to index it within hours instead of weeks.
-          </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '1.5rem' }}>
+        <div className={styles.header} style={{ marginBottom: 0 }}>
+          <div>
+            <h1 className={styles.title}>Google Indexing API</h1>
+            <p style={{ color: '#64748B', fontSize: '0.9rem', marginTop: '0.25rem' }}>Push URLs to Google for fast discovery and get actual metadata.</p>
+          </div>
+          {sites.length > 0 && (
+            <select className={styles.siteSelector} value={selectedSiteId || ''} onChange={(e) => setSelectedSiteId(e.target.value)}>
+              {sites.map(site => (<option key={site.id} value={site.id}>{site.url}</option>))}
+            </select>
+          )}
+        </div>
+
+        {/* Auto-injected Info Block */}
+        <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '8px', display: 'flex', gap: '12px' }}>
+          <Info size={20} color="#0284C7" style={{ flexShrink: 0, marginTop: '2px' }} />
+          <div>
+            <h4 style={{ margin: '0 0 0.5rem 0', color: '#0369A1', fontSize: '0.95rem' }}>How does this work?</h4>
+            <p style={{ margin: 0, color: '#0C4A6E', fontSize: '0.85rem', lineHeight: '1.5' }}>
+               Uses the Google Indexing API to push new or updated pages directly to Google so they can be discovered instantly without waiting for natural crawling. <strong>Example:</strong> When you publish a new article, use the Batch Submit button here to force Google to index it within hours instead of weeks.
+            </p>
+          </div>
         </div>
       </div>
-  
-        </div>
-        {sites.length > 0 && (
-          <select className={styles.siteSelector} value={selectedSiteId || ''} onChange={(e) => setSelectedSiteId(e.target.value)}>
-            {sites.map(site => (<option key={site.id} value={site.id}>{site.url}</option>))}
-          </select>
-        )}
-      </div>
+
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
         
@@ -277,8 +280,8 @@ export default function IndexingDashboard() {
             Store notify time and use GSC to verify the actual indexing status below.
           </p>
 
-          <div style={{ overflowY: 'auto', flex: 1, maxHeight: '600px', paddingRight: '0.5rem' }}>
-            <table className={styles.dataTable}>
+          <div style={{ overflowX: 'auto', overflowY: 'auto', flex: 1, maxHeight: '600px', paddingRight: '0.5rem' }}>
+            <table className={styles.dataTable} style={{ minWidth: '500px' }}>
               <thead>
                 <tr>
                   <th>URL</th>

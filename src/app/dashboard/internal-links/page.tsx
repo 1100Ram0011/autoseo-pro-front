@@ -1,7 +1,7 @@
 "use client";
 
 import { API_BASE } from '@/lib/apiConfig';
-import { Info } from "lucide-react";
+import { Info, ArrowRight, CheckCircle, XCircle } from "lucide-react";
 
 import { useState, useEffect } from 'react';
 import styles from './links.module.css';
@@ -87,27 +87,30 @@ export default function InternalLinksPage() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <div>
-          <h1>Automated Internal Linking</h1>
-          <p>Discover contextual link opportunities to boost your topical authority.</p>
-      {/* Auto-injected Info Block */}
-      <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', gap: '12px' }}>
-        <Info size={20} color="#0284C7" style={{ flexShrink: 0, marginTop: '2px' }} />
-        <div>
-          <h4 style={{ margin: '0 0 0.5rem 0', color: '#0369A1', fontSize: '0.95rem' }}>How does this work?</h4>
-          <p style={{ margin: 0, color: '#0C4A6E', fontSize: '0.85rem', lineHeight: '1.5' }}>
-             Analyzes your site's internal linking structure and finds orphan pages. <strong>Example:</strong> Find pages with zero internal links pointing to them and link them from your homepage to boost their authority.
-          </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '1.5rem' }}>
+        <div className={styles.header} style={{ marginBottom: 0 }}>
+          <div>
+            <h1>Automated Internal Linking</h1>
+            <p>Discover contextual link opportunities to boost your topical authority.</p>
+          </div>
+          
+          <button onClick={handleGenerate} className={styles.scanButton} disabled={loading}>
+            {loading ? 'Analyzing Content...' : '✨ Run AI Scan'}
+          </button>
+        </div>
+
+        {/* Auto-injected Info Block */}
+        <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '8px', display: 'flex', gap: '12px' }}>
+          <Info size={20} color="#0284C7" style={{ flexShrink: 0, marginTop: '2px' }} />
+          <div>
+            <h4 style={{ margin: '0 0 0.5rem 0', color: '#0369A1', fontSize: '0.95rem' }}>How does this work?</h4>
+            <p style={{ margin: 0, color: '#0C4A6E', fontSize: '0.85rem', lineHeight: '1.5' }}>
+               Analyzes your site's internal linking structure and finds orphan pages. <strong>Example:</strong> Find pages with zero internal links pointing to them and link them from your homepage to boost their authority.
+            </p>
+          </div>
         </div>
       </div>
-  
-        </div>
-        
-        <button onClick={handleGenerate} className={styles.scanButton} disabled={loading}>
-          {loading ? 'Analyzing Content...' : '✨ Run AI Scan'}
-        </button>
-      </div>
+
 
       <div className={styles.grid}>
         {suggestions.length === 0 ? (
@@ -121,13 +124,13 @@ export default function InternalLinksPage() {
               <div className={styles.suggestionInfo}>
                 <div className={styles.urls}>
                   <div className={styles.pageBox}>{sug.sourcePageUrl}</div>
-                  <div className={styles.arrow}>→</div>
-                  <div className={styles.pageBox}>{sug.targetPageUrl}</div>
+                  <ArrowRight size={18} className={styles.arrow} />
+                  <div className={styles.pageBoxTarget}>{sug.targetPageUrl}</div>
                 </div>
                 
                 <div className={styles.anchorWrapper}>
-                  <span>Suggested Anchor Text:</span>
-                  <span className={styles.anchorText}>"{sug.suggestedAnchorText}"</span>
+                  <span style={{ fontSize: '0.85rem', textTransform: 'uppercase', fontWeight: 600, color: '#64748B' }}>Suggested Anchor Text</span>
+                  <div className={styles.anchorText}>"{sug.suggestedAnchorText}"</div>
                 </div>
               </div>
 
@@ -138,13 +141,13 @@ export default function InternalLinksPage() {
                       onClick={() => handleUpdateStatus(sug.id, 'Accepted')}
                       className={styles.btnAccept}
                     >
-                      ✓ Accept
+                      <CheckCircle size={16} /> Accept
                     </button>
                     <button 
                       onClick={() => handleUpdateStatus(sug.id, 'Rejected')}
                       className={styles.btnReject}
                     >
-                      ✕ Reject
+                      <XCircle size={16} /> Reject
                     </button>
                   </>
                 ) : (
