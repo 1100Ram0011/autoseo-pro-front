@@ -2,15 +2,16 @@ import useSWR from 'swr';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import { showActionToast } from '@/lib/toastUtils';
+import { API_BASE } from '@/lib/apiConfig';
 
 const fetcher = (url: string) => axios.get(url).then(res => res.data);
 
 export function useMapLeads() {
-  const { data, error, mutate, isLoading } = useSWR('/api/leads/map', fetcher);
+  const { data, error, mutate, isLoading } = useSWR(`${API_BASE}/leads/map`, fetcher);
 
   const generateLeads = async (targetMarket: string, geographicFocus: string, numLeads: number) => {
     try {
-      const response = await axios.post('/api/leads/map/generate', {
+      const response = await axios.post(`${API_BASE}/leads/map/generate`, {
         targetMarket,
         geographicFocus,
         NumberOfLeads: numLeads
@@ -31,7 +32,7 @@ export function useMapLeads() {
 
   const deleteLead = async (id: string) => {
     try {
-      await axios.delete(`/api/leads/map/${id}`);
+      await axios.delete(`${API_BASE}/leads/map/${id}`);
       mutate(); // Refresh the list
       toast.success('Lead deleted');
     } catch (err: any) {
@@ -41,7 +42,7 @@ export function useMapLeads() {
 
   const verifyWhatsApp = async (id: string) => {
     try {
-      const response = await axios.post(`/api/leads/map/${id}/verify-wa`);
+      const response = await axios.post(`${API_BASE}/leads/map/${id}/verify-wa`);
       mutate();
       return response.data.isWhatsAppNumber;
     } catch (err: any) {
@@ -51,7 +52,7 @@ export function useMapLeads() {
   };
 
   const checkProgress = async (jobId: string) => {
-    const response = await axios.get(`/api/leads/map/progress?jobId=${jobId}`);
+    const response = await axios.get(`${API_BASE}/leads/map/progress?jobId=${jobId}`);
     return response.data;
   };
 
@@ -70,7 +71,7 @@ export function useMapLeads() {
 
 export function useLinkedinLead(mapLeadId: string) {
   const { data, error, mutate, isLoading } = useSWR(
-    mapLeadId ? `/api/leads/linkedin/${mapLeadId}` : null, 
+    mapLeadId ? `${API_BASE}/leads/linkedin/${mapLeadId}` : null, 
     fetcher,
     { refreshInterval: (data) => 
         (data?.data?.status && !['completed', 'failed'].includes(data.data.status)) ? 3000 : 0 
@@ -79,7 +80,7 @@ export function useLinkedinLead(mapLeadId: string) {
 
   const generateLinkedinLead = async (companyName: string) => {
     try {
-      await axios.post('/api/leads/linkedin/generate', {
+      await axios.post(`${API_BASE}/leads/linkedin/generate`, {
         mapLeadId,
         companyName
       });
@@ -91,7 +92,7 @@ export function useLinkedinLead(mapLeadId: string) {
 
   const enrichEmployee = async (employeeName: string, profileUrl: string, companyName: string) => {
     try {
-      const res = await axios.post('/api/leads/linkedin/enrich', {
+      const res = await axios.post(`${API_BASE}/leads/linkedin/enrich`, {
         leadId: data?.data?.id,
         employeeName,
         profileUrl,
