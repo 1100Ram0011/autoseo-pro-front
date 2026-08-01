@@ -9,9 +9,6 @@ import { LineChart, Line, ResponsiveContainer, YAxis } from 'recharts';
 import KeywordDiscoveryModal from '../../../components/KeywordDiscoveryModal';
 import styles from '../search-console/page.module.css';
 
-// Generate a random sparkline for visual flair
-const generateSparkline = () => Array.from({ length: 10 }).map((_, i) => ({ val: Math.random() * 100 + 20 }));
-
 export default function GoogleKeywordsPage() {
   const [sites, setSites] = useState<any[]>([]);
   const [selectedSiteId, setSelectedSiteId] = useState<string | null>(null);
@@ -53,9 +50,17 @@ export default function GoogleKeywordsPage() {
       const res = await fetch(`${API_BASE}/sites/${selectedSiteId}/keywords`);
       if (res.ok) {
         const data = await res.json();
-        // Append a random sparkline to each for the UI
-        const withSparklines = data.map((kw: any) => ({ ...kw, sparkline: generateSparkline() }));
-        setKeywords(withSparklines);
+        const withHistory = data.map((kw: any) => {
+          let sparkline = [];
+          if (kw.history && kw.history.length > 0) {
+            sparkline = kw.history.map((h: any) => ({ val: h.position || 100 }));
+          } else {
+            // Fallback flatline if no history exists yet
+            sparkline = [{ val: kw.position || 100 }, { val: kw.position || 100 }];
+          }
+          return { ...kw, sparkline };
+        });
+        setKeywords(withHistory);
       }
     } catch (error) {
       console.error('Failed to fetch keywords', error);
@@ -320,7 +325,7 @@ export default function GoogleKeywordsPage() {
                       <div style={{ width: '100px', height: '30px' }}>
                         <ResponsiveContainer width="100%" height="100%">
                           <LineChart data={kw.sparkline}>
-                            <YAxis domain={['dataMin - 10', 'dataMax + 10']} hide />
+                            <YAxis reversed={true} domain={['dataMin', 'dataMax']} hide />
                             <Line type="monotone" dataKey="val" stroke={kw.position && kw.position <= 10 ? "#10B981" : "#3B82F6"} strokeWidth={2} dot={false} isAnimationActive={false} />
                           </LineChart>
                         </ResponsiveContainer>

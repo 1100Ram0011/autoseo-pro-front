@@ -430,6 +430,21 @@
   z-index: 10;
 }
 
+.visionSection::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(90, 74, 244, 0.15) 0%, rgba(11, 14, 20, 0) 70%);
+  pointer-events: none;
+  z-index: -1;
+  border-radius: 50%;
+  filter: blur(50px);
+}
+
 .visionContainer {
   max-width: 800px;
   text-align: center;
@@ -444,37 +459,59 @@
 }
 
 .visionCard {
-  background: rgba(20, 25, 35, 0.6);
-  padding: 3.5rem;
-  border-radius: 24px;
+  background: linear-gradient(145deg, rgba(30, 35, 45, 0.7) 0%, rgba(15, 20, 25, 0.9) 100%);
+  padding: 4rem;
+  border-radius: 32px;
   border: 1px solid rgba(255, 255, 255, 0.08);
+  border-top-color: rgba(255, 255, 255, 0.15);
   text-align: left;
   color: #94A3B8;
   font-size: 1.15rem;
   line-height: 1.9;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(16px);
+  box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(90, 74, 244, 0.1) inset;
+  backdrop-filter: blur(20px);
   position: relative;
   overflow: hidden;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.visionCard:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 40px 80px -20px rgba(90, 74, 244, 0.3), 0 0 0 1px rgba(90, 74, 244, 0.3) inset;
+  border-color: rgba(90, 74, 244, 0.4);
 }
 
 .visionCard::before {
   content: '';
   position: absolute;
   top: 0; left: 0; width: 100%; height: 4px;
-  background: linear-gradient(90deg, #A78BFA, #5A4AF4);
+  background: linear-gradient(90deg, #A78BFA, #5A4AF4, #7C3AED, #A78BFA);
+  background-size: 200% 100%;
+  animation: shimmer 3s linear infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
 }
 
 .highlightText {
   color: #FFFFFF;
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 1.25rem;
+  display: block;
+  margin-bottom: 0.5rem;
 }
 
 .successText {
   color: #34D399;
   font-weight: 700;
   display: inline-block;
-  margin-top: 1rem;
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  background: rgba(52, 211, 153, 0.1);
+  border-left: 4px solid #34D399;
+  border-radius: 0 12px 12px 0;
 }
 
 /* Responsive Design */

@@ -9,7 +9,7 @@ import {
   Search, Key, Code, AlertCircle, BarChart, Users, MousePointer, 
   Video, PenTool, MessageSquare, Calendar, Target, Mail, 
   UsersRound, FileText, Puzzle, Settings, CreditCard, Link as LinkIcon, 
-  Smartphone, LineChart, ShieldAlert, Sparkles, FileText as FileTextIcon, UploadCloud, Zap, BookOpen, Store, Bot, Menu, X, MapPin
+  Smartphone, LineChart, ShieldAlert, Sparkles, FileText as FileTextIcon, UploadCloud, Zap, BookOpen, Store, Bot, Menu, X, MapPin, LogOut
 } from 'lucide-react';
 import SiteSelector from '@/components/SiteSelector';
 import styles from './layout.module.css';
@@ -184,6 +184,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <Link href="/dashboard/billing" className={`${styles.navItem} ${isRouteActive('/dashboard/billing') ? styles.active : ''}`}>
             <CreditCard size={18} /> Billing & Plan
           </Link>
+          <div style={{ height: '1px', background: 'var(--border)', margin: '0.5rem 0' }}></div>
+          <Link href="/" className={styles.navItem}>
+            <LogOut size={18} /> Logout
+          </Link>
         </div>
 
         <div className={styles.upgradeCard}>
@@ -196,15 +200,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </div>
 
       <div className={styles.mainContent}>
-        {/* Mobile Header (Only visible on small screens) */}
         <div className={styles.mobileHeader}>
+          <button className={styles.mobileMenuBtn} onClick={() => setIsMobileMenuOpen(true)}>
+            <Menu size={24} />
+          </button>
           <div className={styles.logoGroup}>
             <Activity size={24} color="#5A4AF4" />
             AutoSEO Pro
           </div>
-          <button className={styles.mobileMenuBtn} onClick={() => setIsMobileMenuOpen(true)}>
-            <Menu size={24} />
-          </button>
         </div>
 
         <AnimatePresence mode="wait">

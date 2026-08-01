@@ -1,7 +1,7 @@
 "use client";
 
 import Link from 'next/link';
-import { Activity, Sparkles, Check, ChevronDown, ArrowRight, Menu, X } from 'lucide-react';
+import { Activity, Sparkles, Check, ChevronDown, ArrowRight, Menu, X, Target } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import styles from './page.module.css';
@@ -197,21 +197,26 @@ export default function LandingPage() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
+            <div style={{ background: 'rgba(90, 74, 244, 0.1)', padding: '1rem', borderRadius: '50%', border: '1px solid rgba(90, 74, 244, 0.25)', boxShadow: '0 0 20px rgba(90, 74, 244, 0.2)' }}>
+              <Target size={36} color="#A78BFA" />
+            </div>
+          </div>
           <h2 className={styles.visionTitle}>
-            Hamara Vision
+            Our Vision
           </h2>
           <div className={styles.visionCard}>
             <p style={{ marginBottom: '1.5rem' }}>
-              <span className={styles.highlightText}>Main ek aisa software bana raha hoon jo logon ki websites ko Google par upar laane mein madad karta hai — isse SEO kehte hain.</span>
+              <span className={styles.highlightText}>We are building a platform that helps people rank their websites higher on Google — this is called SEO.</span>
             </p>
             <p style={{ marginBottom: '1.5rem' }}>
-              Jaise maan lo kisi ka restaurant hai aur uski website hai, lekin Google mein wo kahin nazar nahi aati. Mera tool unki website ko check karega, batayega ki kya kami hai, aur AI (jaisa ki ChatGPT) ki madad se khud hi unke liye blog posts likh dega, keywords dhoondega, aur unki website ko sudharne ke tips dega.
+              Imagine a restaurant with a website that's nowhere to be found on Google. Our tool will audit their website, identify areas for improvement, and use AI (like ChatGPT) to automatically write blog posts, discover keywords, and provide actionable tips to optimize their site.
             </p>
             <p style={{ marginBottom: '1.5rem' }}>
-              Isme ek robot jaisa system bhi hai jo khud hi customers dhoondta hai, unhe email bhejta hai, aur unka kaam automatic kar deta hai — bina kisi insaan ke baar baar click kiye.
+              It also features an AI agent system that autonomously finds potential customers, sends them targeted emails, and automates marketing workflows — without requiring constant human intervention.
             </p>
             <p className={styles.successText}>
-              Matlab simple bhasha mein: yeh ek 'digital marketing assistant' hai jo chhote business walon ka kaam AI se aasan bana deta hai, taaki unhe expensive agency hire na karni pade.
+              In simple terms: it's a 'digital marketing assistant' that simplifies tasks for small businesses using AI, empowering them to grow without having to hire expensive marketing agencies.
             </p>
           </div>
         </motion.div>

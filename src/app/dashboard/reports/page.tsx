@@ -15,48 +15,18 @@ import html2canvas from 'html2canvas';
 import ReportTemplate from '@/components/reports/ReportTemplate';
 
 
-const reportsList = [
-  { 
-    name: 'Monthly SEO Report — June 2026', date: 'Jun 30, 2026', size: '2.4 MB', 
-    type: 'Monthly', scope: 'example.com', 
-    icon: <BarChart2 size={20} color="#9333EA" />, bg: '#FAF5FF', tagBg: '#FAF5FF', tagCol: '#9333EA'
-  },
-  { 
-    name: 'Keyword Ranking Report — Week 26', date: 'Jun 28, 2026', size: '0.8 MB', 
-    type: 'Weekly', scope: 'example.com', 
-    icon: <TrendingUp size={20} color="#D97706" />, bg: '#FFFBEB', tagBg: '#FFFBEB', tagCol: '#D97706'
-  },
-  { 
-    name: 'Backlink Audit Report', date: 'Jun 25, 2026', size: '1.2 MB', 
-    type: 'Audit', scope: 'example.com', 
-    icon: <LinkIcon size={20} color="#059669" />, bg: '#ECFDF5', tagBg: '#ECFDF5', tagCol: '#059669'
-  },
-  { 
-    name: 'Competitor Analysis — June 2026', date: 'Jun 20, 2026', size: '1.8 MB', 
-    type: 'Analysis', scope: 'example.com', 
-    icon: <Trophy size={20} color="#DC2626" />, bg: '#FEF2F2', tagBg: '#FEF2F2', tagCol: '#DC2626'
-  },
-  { 
-    name: 'Technical SEO Audit Report', date: 'Jun 15, 2026', size: '3.1 MB', 
-    type: 'Audit', scope: 'example.com', 
-    icon: <Shield size={20} color="#2563EB" />, bg: '#EFF6FF', tagBg: '#EFF6FF', tagCol: '#2563EB'
-  },
-  { 
-    name: 'Core Web Vitals Report — May 2026', date: 'Jun 10, 2026', size: '1.6 MB', 
-    type: 'Performance', scope: 'example.com', 
-    icon: <Layout size={20} color="#9333EA" />, bg: '#FAF5FF', tagBg: '#FAF5FF', tagCol: '#9333EA'
-  },
-  { 
-    name: 'Local SEO Report — Q2 2026', date: 'Jun 05, 2026', size: '2.0 MB', 
-    type: 'Local SEO', scope: 'example.com', 
-    icon: <MapPin size={20} color="#0D9488" />, bg: '#F0FDFA', tagBg: '#F0FDFA', tagCol: '#0D9488'
-  },
-  { 
-    name: 'Index Coverage Report', date: 'Jun 01, 2026', size: '1.3 MB', 
-    type: 'Crawling', scope: 'example.com', 
-    icon: <Bot size={20} color="#CA8A04" />, bg: '#FEFCE8', tagBg: '#FEFCE8', tagCol: '#CA8A04'
-  },
-];
+const getReportConfig = (type: string) => {
+  switch (type) {
+    case 'Monthly': return { icon: <BarChart2 size={20} color="#9333EA" />, bg: '#FAF5FF', tagBg: '#FAF5FF', tagCol: '#9333EA' };
+    case 'Weekly': return { icon: <TrendingUp size={20} color="#D97706" />, bg: '#FFFBEB', tagBg: '#FFFBEB', tagCol: '#D97706' };
+    case 'Audit': return { icon: <LinkIcon size={20} color="#059669" />, bg: '#ECFDF5', tagBg: '#ECFDF5', tagCol: '#059669' };
+    case 'Analysis': return { icon: <Trophy size={20} color="#DC2626" />, bg: '#FEF2F2', tagBg: '#FEF2F2', tagCol: '#DC2626' };
+    case 'Performance': return { icon: <Layout size={20} color="#9333EA" />, bg: '#FAF5FF', tagBg: '#FAF5FF', tagCol: '#9333EA' };
+    case 'Local SEO': return { icon: <MapPin size={20} color="#0D9488" />, bg: '#F0FDFA', tagBg: '#F0FDFA', tagCol: '#0D9488' };
+    case 'Crawling': return { icon: <Bot size={20} color="#CA8A04" />, bg: '#FEFCE8', tagBg: '#FEFCE8', tagCol: '#CA8A04' };
+    default: return { icon: <FileText size={20} color="#3B82F6" />, bg: '#EFF6FF', tagBg: '#EFF6FF', tagCol: '#3B82F6' };
+  }
+};
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -71,7 +41,9 @@ const itemVariants: Variants = {
 export default function ReportsPage() {
   const [activeTab, setActiveTab] = useState('All Reports');
   const [showFeatureModal, setShowFeatureModal] = useState(false);
+  const [showScheduleModal, setShowScheduleModal] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [scheduleForm, setScheduleForm] = useState({ name: '', frequency: 'Monthly', emails: '' });
   const reportRef = useRef<HTMLDivElement>(null);
   const [currentReport, setCurrentReport] = useState<any>(null);
 
@@ -91,8 +63,17 @@ export default function ReportsPage() {
   }, [sites]);
 
   const { data: dashboardData } = useSWR(activeSiteId ? `/sites/${activeSiteId}/dashboard?range=30d` : null, fetcher);
-
-
+  const { data: realReports, mutate: mutateReports } = useSWR(activeSiteId ? `/sites/${activeSiteId}/reports` : null, fetcher);
+  
+  const [searchQuery, setSearchQuery] = useState('');
+  
+  const reportsList = realReports || [];
+  
+  const filteredReports = reportsList.filter((r: any) => {
+    if (activeTab === 'Scheduled') return r.status === 'Scheduled';
+    if (searchQuery) return r.name.toLowerCase().includes(searchQuery.toLowerCase());
+    return true;
+  });
   const generatePDF = async (report: any, action: 'download' | 'preview' = 'download') => {
     if (isGenerating) return;
     
@@ -137,6 +118,27 @@ export default function ReportsPage() {
         toast.success('Preview opened!', { id: loadingToast });
       } else {
         pdf.save(`${report.name.replace(/[^a-zA-Z0-9 ]/g, '')}.pdf`);
+        
+        // Only save to backend if it's an actual generation (download), not just a preview
+        // And only if it's a new generation (not downloading a previously saved one)
+        if (!report.id && activeSiteId) {
+          try {
+             await fetch(`/api/sites/${activeSiteId}/reports`, {
+               method: 'POST',
+               headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('autoseo-token')}` },
+               body: JSON.stringify({
+                 name: report.name,
+                 type: report.type,
+                 size: '2.5 MB', // Approximated
+                 status: 'Generated'
+               })
+             });
+             mutateReports();
+          } catch(e) {
+             console.error("Failed to save report to backend", e);
+          }
+        }
+        
         toast.success('Downloaded successfully!', { id: loadingToast });
       }
     } catch (error) {
@@ -145,6 +147,24 @@ export default function ReportsPage() {
     } finally {
       setIsGenerating(false);
       setCurrentReport(null);
+    }
+  };
+
+  const handleScheduleReport = async () => {
+    if (!scheduleForm.name || !scheduleForm.emails) return toast.error('Name and Emails are required');
+    const loadingToast = toast.loading('Scheduling report...');
+    try {
+      await fetch(`/api/sites/${activeSiteId}/reports/schedule`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('autoseo-token')}` },
+        body: JSON.stringify(scheduleForm)
+      });
+      toast.success('Report scheduled successfully!', { id: loadingToast });
+      setShowScheduleModal(false);
+      setScheduleForm({ name: '', frequency: 'Monthly', emails: '' });
+      // You could mutate a scheduled reports endpoint here if we fetched them separately
+    } catch(e) {
+      toast.error('Failed to schedule report', { id: loadingToast });
     }
   };
 
@@ -174,8 +194,14 @@ export default function ReportsPage() {
       </div>
   
         </div>
-        <button style={{ background: '#3B82F6', border: 'none', color: '#FFFFFF', padding: '0.65rem 1.25rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem', boxShadow: '0 4px 14px 0 rgba(59,130,246,0.39)' }}>
-          <Plus size={16} /> Generate Report
+        <button 
+          onClick={() => {
+            const dateStr = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+            generatePDF({ name: `Monthly SEO Report — ${dateStr}`, type: 'Monthly', scope: sites?.find((s:any) => s.id === activeSiteId)?.url || 'example.com' }, 'download');
+          }}
+          disabled={isGenerating}
+          style={{ background: '#3B82F6', border: 'none', color: '#FFFFFF', padding: '0.65rem 1.25rem', borderRadius: '8px', cursor: isGenerating ? 'not-allowed' : 'pointer', fontSize: '0.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem', boxShadow: '0 4px 14px 0 rgba(59,130,246,0.39)', opacity: isGenerating ? 0.7 : 1 }}>
+          <Plus size={16} /> {isGenerating ? 'Generating...' : 'Generate Report'}
         </button>
       </motion.div>
 
@@ -186,7 +212,7 @@ export default function ReportsPage() {
             <FileText size={24} color="#3B82F6" />
           </div>
           <div>
-            <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#0F172A' }}>12</div>
+            <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#0F172A' }}>{reportsList.length}</div>
             <div style={{ fontSize: '0.75rem', color: '#64748B', fontWeight: 600 }}>Reports Generated</div>
             <div style={{ fontSize: '0.7rem', color: '#64748B' }}>This Month</div>
           </div>
@@ -256,6 +282,8 @@ export default function ReportsPage() {
             <input 
               type="text" 
               placeholder="Search reports..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', color: '#0F172A', padding: '0.5rem 1rem 0.5rem 2rem', borderRadius: '8px', fontSize: '0.8rem', width: '220px', outline: 'none' }}
             />
           </div>
@@ -267,25 +295,33 @@ export default function ReportsPage() {
 
       {/* Reports List */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '2rem' }}>
-        {reportsList.map((r, i) => (
-          <motion.div variants={itemVariants} key={i} className={styles.reportCard}>
+        {filteredReports.length === 0 ? (
+          <div style={{ padding: '3rem', textAlign: 'center', background: '#F8FAFC', borderRadius: '12px', border: '1px dashed #CBD5E1' }}>
+            <FileText size={48} color="#94A3B8" style={{ margin: '0 auto 1rem' }} />
+            <div style={{ fontSize: '1.1rem', fontWeight: 600, color: '#0F172A', marginBottom: '0.5rem' }}>No reports found</div>
+            <div style={{ fontSize: '0.85rem', color: '#64748B' }}>Try generating a new report or adjusting your search.</div>
+          </div>
+        ) : filteredReports.map((r: any, i: number) => {
+          const config = getReportConfig(r.type);
+          return (
+          <motion.div variants={itemVariants} key={r.id || i} className={styles.reportCard}>
             {/* Icon */}
-            <div style={{ width: 44, height: 44, borderRadius: '10px', background: r.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              {r.icon}
+            <div style={{ width: 44, height: 44, borderRadius: '10px', background: config.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              {config.icon}
             </div>
             
             {/* Title & Info */}
             <div style={{ flex: 1 }}>
               <div style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '0.25rem', color: '#0F172A' }}>{r.name}</div>
               <div style={{ fontSize: '0.75rem', color: '#64748B' }}>
-                {r.date} &nbsp;•&nbsp; {r.size} &nbsp;•&nbsp; PDF
+                {new Date(r.createdAt || new Date()).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} &nbsp;•&nbsp; {r.size || '2.5 MB'} &nbsp;•&nbsp; PDF
               </div>
             </div>
 
             {/* Type Badge */}
             <div style={{ width: '120px' }}>
               <div style={{ fontSize: '0.65rem', color: '#64748B', marginBottom: '4px' }}>Type</div>
-              <span style={{ background: r.tagBg, color: r.tagCol, fontSize: '0.7rem', padding: '0.2rem 0.5rem', borderRadius: '4px', fontWeight: 600 }}>
+              <span style={{ background: config.tagBg, color: config.tagCol, fontSize: '0.7rem', padding: '0.2rem 0.5rem', borderRadius: '4px', fontWeight: 600 }}>
                 {r.type}
               </span>
             </div>
@@ -294,7 +330,7 @@ export default function ReportsPage() {
             <div style={{ width: '150px' }}>
               <div style={{ fontSize: '0.65rem', color: '#64748B', marginBottom: '4px' }}>Scope</div>
               <span style={{ background: '#F8FAFC', color: '#64748B', border: '1px solid #E2E8F0', fontSize: '0.7rem', padding: '0.2rem 0.5rem', borderRadius: '4px', fontWeight: 500 }}>
-                {r.scope}
+                {sites?.find((s:any) => s.id === activeSiteId)?.url || 'example.com'}
               </span>
             </div>
 
@@ -311,7 +347,7 @@ export default function ReportsPage() {
               </button>
             </div>
           </motion.div>
-        ))}
+        )})}
       </div>
 
       {/* Bottom CTA Card */}
@@ -326,11 +362,18 @@ export default function ReportsPage() {
             Build a custom report or use our templates to generate branded SEO reports for your clients.
           </p>
           <div style={{ display: 'flex', gap: '1rem' }}>
-            <button style={{ background: '#3B82F6', border: 'none', color: '#FFFFFF', padding: '0.6rem 1.25rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Plus size={16} /> Generate New Report
+            <button 
+              onClick={() => {
+                const dateStr = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                generatePDF({ name: `Monthly SEO Report — ${dateStr}`, type: 'Monthly', scope: sites?.find((s:any) => s.id === activeSiteId)?.url || 'example.com' }, 'download');
+              }}
+              style={{ background: '#3B82F6', border: 'none', color: '#FFFFFF', padding: '0.6rem 1.25rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Plus size={16} /> Generate Now
             </button>
-            <button style={{ background: 'transparent', border: '1px solid #93C5FD', color: '#1E3A8A', padding: '0.6rem 1.25rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Layout size={16} /> View Templates
+            <button 
+              onClick={() => setShowScheduleModal(true)}
+              style={{ background: 'transparent', border: '1px solid #93C5FD', color: '#1E3A8A', padding: '0.6rem 1.25rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Clock size={16} /> Schedule Automated Report
             </button>
           </div>
         </div>
@@ -385,6 +428,57 @@ export default function ReportsPage() {
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <button onClick={() => setShowFeatureModal(false)} style={{ background: '#3B82F6', border: 'none', color: '#FFFFFF', padding: '0.6rem 1.25rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600 }}>
                 Understood
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Schedule Report Modal */}
+      {showScheduleModal && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(4px)' }}>
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9, y: 20 }} 
+            animate={{ opacity: 1, scale: 1, y: 0 }} 
+            style={{ background: '#FFFFFF', padding: '2rem', borderRadius: '16px', width: '450px', maxWidth: '90vw', boxShadow: '0 20px 40px -10px rgba(0,0,0,0.2)', border: '1px solid #E2E8F0', position: 'relative' }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 700, color: '#0F172A', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <Clock size={20} color="#3B82F6" /> Schedule Automated Report
+              </h3>
+              <button onClick={() => setShowScheduleModal(false)} style={{ background: 'transparent', border: 'none', cursor: 'pointer' }}><X size={20} color="#64748B" /></button>
+            </div>
+            
+            <p style={{ margin: '0 0 1.5rem', fontSize: '0.85rem', color: '#64748B', lineHeight: 1.5 }}>
+              Set up a recurring report to be generated on the server and emailed automatically to your clients.
+            </p>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2rem' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#0F172A', marginBottom: '0.5rem' }}>Report Name</label>
+                <input type="text" value={scheduleForm.name} onChange={e => setScheduleForm({...scheduleForm, name: e.target.value})} placeholder="e.g. Acme Corp Monthly SEO" style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #E2E8F0', fontSize: '0.85rem', outline: 'none' }} />
+              </div>
+              
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#0F172A', marginBottom: '0.5rem' }}>Frequency</label>
+                <select value={scheduleForm.frequency} onChange={e => setScheduleForm({...scheduleForm, frequency: e.target.value})} style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #E2E8F0', fontSize: '0.85rem', outline: 'none', background: '#FFFFFF' }}>
+                  <option value="Weekly">Weekly (Every Monday)</option>
+                  <option value="Monthly">Monthly (1st of Month)</option>
+                </select>
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#0F172A', marginBottom: '0.5rem' }}>Send to Email(s)</label>
+                <input type="text" value={scheduleForm.emails} onChange={e => setScheduleForm({...scheduleForm, emails: e.target.value})} placeholder="client@acme.com, boss@acme.com" style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #E2E8F0', fontSize: '0.85rem', outline: 'none' }} />
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
+              <button onClick={() => setShowScheduleModal(false)} style={{ background: 'transparent', border: '1px solid #E2E8F0', color: '#64748B', padding: '0.6rem 1.25rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600 }}>
+                Cancel
+              </button>
+              <button onClick={handleScheduleReport} style={{ background: '#3B82F6', border: 'none', color: '#FFFFFF', padding: '0.6rem 1.25rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600, boxShadow: '0 4px 14px 0 rgba(59,130,246,0.39)' }}>
+                Save Schedule
               </button>
             </div>
           </motion.div>
