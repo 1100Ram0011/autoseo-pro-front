@@ -5,7 +5,7 @@ import { motion, Variants } from 'framer-motion';
 import { Info, FileText, CheckCircle, Clock, Download, Search, Filter,
   BarChart2, TrendingUp, Link as LinkIcon, Trophy, Shield, 
   Layout, MapPin, Bot, Eye, MoreVertical, Plus, FileStack,
-  ChevronLeft, ChevronRight, Users} from 'lucide-react';
+  ChevronLeft, ChevronRight, Users, X} from 'lucide-react';
 import toast from 'react-hot-toast';
 import useSWR from 'swr';
 import { fetcher } from '@/lib/api';
