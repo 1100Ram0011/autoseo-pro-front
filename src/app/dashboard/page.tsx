@@ -1,8 +1,7 @@
 "use client";
 
-
 import { API_BASE } from '@/lib/apiConfig';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
@@ -21,6 +20,7 @@ import {
 } from 'recharts';
 import { SkeletonCard } from '@/components/ui/SkeletonCard';
 import SmartActionsFeed from './SmartActionsFeed';
+import DateRangePicker, { DateRangeValue } from '@/components/DateRangePicker';
 
 // Fallback data removed completely to strictly use real backend API data
 
@@ -86,7 +86,7 @@ export default function DashboardPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
 
-  const [dateRange, setDateRange] = useState('7d');
+  const [dateRange, setDateRange] = useState<DateRangeValue>('30d');
   const [activeSiteId, setActiveSiteId] = useState<string | null>(null);
 
   // API Fetching using email
@@ -113,8 +113,16 @@ export default function DashboardPage() {
     }
   }, [status, sites, router]);
 
+  // Build API query string from dateRange
+  const dateQuery = useMemo(() => {
+    if (typeof dateRange === 'string') return `range=${dateRange}`;
+    const from = dateRange.from.toISOString().split('T')[0];
+    const to = dateRange.to.toISOString().split('T')[0];
+    return `range=custom&from=${from}&to=${to}`;
+  }, [dateRange]);
+
   const { data: dashboardData, isLoading: dashboardLoading } = useSWR(
-    activeSiteId ? `/sites/${activeSiteId}/dashboard?range=${dateRange}` : null, 
+    activeSiteId ? `/sites/${activeSiteId}/dashboard?${dateQuery}` : null, 
     fetcher
   );
 
@@ -184,25 +192,7 @@ export default function DashboardPage() {
           </div>
         </div>
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
-          <select
-            value={dateRange}
-            onChange={(e) => setDateRange(e.target.value)}
-            style={{
-              padding: '0.6rem 1rem',
-              borderRadius: '8px',
-              border: '1px solid #E2E8F0',
-              backgroundColor: '#FFFFFF',
-              color: '#0F172A',
-              fontSize: '0.9rem',
-              fontWeight: 500,
-              cursor: 'pointer',
-              outline: 'none'
-            }}
-          >
-            <option value="7d">Last 7 Days</option>
-            <option value="30d">Last 30 Days</option>
-            <option value="90d">Last 90 Days</option>
-          </select>
+          <DateRangePicker value={dateRange} onChange={setDateRange} />
           <button 
             onClick={handleGenerateAnalysis}
             disabled={alertStatus === 'loading' || !dashboardData}

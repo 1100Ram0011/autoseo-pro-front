@@ -1,6 +1,5 @@
 "use client";
 
-
 import { API_BASE } from '@/lib/apiConfig';
 import { useState, useEffect, useMemo } from 'react';
 import { Info, Smartphone, Monitor, Tablet, RefreshCw, AlertTriangle, CheckCircle, 
@@ -10,31 +9,14 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid
 } from 'recharts';
 import { toast } from 'react-hot-toast';
+import { useSite } from '@/lib/SiteContext';
 import styles from '../search-console/page.module.css';
 
 export default function MobileUsabilityDashboard() {
-  const [sites, setSites] = useState<any[]>([]);
-  const [selectedSiteId, setSelectedSiteId] = useState<string | null>(null);
+  const { selectedSiteId } = useSite();
   
   const [deviceData, setDeviceData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-
-  // Fetch sites
-  useEffect(() => {
-    const fetchSites = async () => {
-      try {
-        const res = await fetch(`${API_BASE}/sites`);
-        if (res.ok) {
-          const data = await res.json();
-          setSites(data);
-          if (data.length > 0) setSelectedSiteId(data[0].id);
-        }
-      } catch (error) {
-        console.error('Failed to fetch sites', error);
-      }
-    };
-    fetchSites();
-  }, []);
 
   // Fetch GSC Devices Data
   const fetchDeviceData = async () => {
@@ -107,11 +89,7 @@ export default function MobileUsabilityDashboard() {
             </p>
           </div>
           <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
-            {sites.length > 0 && (
-              <select className={styles.siteSelector} value={selectedSiteId || ''} onChange={(e) => setSelectedSiteId(e.target.value)}>
-                {sites.map(site => <option key={site.id} value={site.id}>{site.url}</option>)}
-              </select>
-            )}
+
             <button 
               onClick={fetchDeviceData}
               disabled={loading}

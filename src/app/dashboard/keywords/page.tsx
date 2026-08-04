@@ -7,6 +7,8 @@ import { toast } from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { SkeletonCard } from '@/components/ui/SkeletonCard';
 import { Skeleton } from '@/components/ui/Skeleton';
+import ExportReportButton from '@/components/ExportReportButton';
+import { exportKeywordsCSV, exportKeywordsPDF } from '@/lib/reportExporter';
 
 const ic = { Commercial: 'var(--primary)', Transactional: '#10B981', Informational: '#A855F7' };
 
@@ -59,6 +61,11 @@ export default function KeywordsPage() {
             <button onClick={handleAdd} disabled={isAdding} style={{ background: 'var(--primary)', border: 'none', color: '#FFFFFF', padding: '0.55rem 1rem', borderRadius: 8, cursor: 'pointer', fontSize: '0.82rem', fontWeight: 600, whiteSpace: 'nowrap' }}>
               {isAdding ? 'Adding...' : '+ Add Keyword'}
             </button>
+            <ExportReportButton
+              csvExport={() => exportKeywordsCSV(displayKeywords, site?.url || 'website')}
+              pdfExport={async () => exportKeywordsPDF(displayKeywords, site?.url || 'website')}
+              disabled={displayKeywords.length === 0}
+            />
           </div>
         </div>
         

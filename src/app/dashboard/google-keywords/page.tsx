@@ -1,21 +1,26 @@
 "use client";
 
-
 import { API_BASE } from '@/lib/apiConfig';
 import { useState, useEffect, useMemo } from 'react';
-import { Info, Key, Plus, Search, Trash2, TrendingUp, BarChart2, Activity, Sparkles, Download, ArrowUpRight} from 'lucide-react';
+import { Info, Key, Plus, Search, Trash2, TrendingUp, BarChart2, Activity, Sparkles, Download, ArrowUpRight, Loader2 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { LineChart, Line, ResponsiveContainer, YAxis } from 'recharts';
-import KeywordDiscoveryModal from '../../../components/KeywordDiscoveryModal';
+import { useSite } from '@/lib/SiteContext';
+import DateRangePicker, { DateRangeValue } from '@/components/DateRangePicker';
 import styles from '../search-console/page.module.css';
 
 export default function GoogleKeywordsPage() {
-  const [sites, setSites] = useState<any[]>([]);
-  const [selectedSiteId, setSelectedSiteId] = useState<string | null>(null);
+  const { selectedSiteId } = useSite();
+  const [dateRange, setDateRange] = useState<DateRangeValue>('30d');
   const [keywords, setKeywords] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [importing, setImporting] = useState<boolean>(false);
-  const [discoveryOpen, setDiscoveryOpen] = useState(false);
+  
+  // Keyword Discovery state
+  const [seed, setSeed] = useState("");
+  const [ideas, setIdeas] = useState<any[]>([]);
+  const [discoveryLoading, setDiscoveryLoading] = useState(false);
+  const [savingKw, setSavingKw] = useState<string | null>(null);
   
   // Form state
   const [newKw, setNewKw] = useState('');
@@ -25,29 +30,20 @@ export default function GoogleKeywordsPage() {
   // Search filter
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Fetch sites
-  useEffect(() => {
-    const fetchSites = async () => {
-      try {
-        const res = await fetch(`${API_BASE}/sites`);
-        if (res.ok) {
-          const data = await res.json();
-          setSites(data);
-          if (data.length > 0) setSelectedSiteId(data[0].id);
-        }
-      } catch (error) {
-        console.error('Failed to fetch sites', error);
-      }
-    };
-    fetchSites();
-  }, []);
+  // Build date query string
+  const dateQuery = useMemo(() => {
+    if (typeof dateRange === 'string') return `range=${dateRange}`;
+    const from = dateRange.from.toISOString().split('T')[0];
+    const to = dateRange.to.toISOString().split('T')[0];
+    return `range=custom&from=${from}&to=${to}`;
+  }, [dateRange]);
 
   // Fetch tracked keywords
   const fetchKeywords = async () => {
     if (!selectedSiteId) return;
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE}/sites/${selectedSiteId}/keywords`);
+      const res = await fetch(`${API_BASE}/sites/${selectedSiteId}/keywords?${dateQuery}`);
       if (res.ok) {
         const data = await res.json();
         const withHistory = data.map((kw: any) => {
@@ -55,7 +51,6 @@ export default function GoogleKeywordsPage() {
           if (kw.history && kw.history.length > 0) {
             sparkline = kw.history.map((h: any) => ({ val: h.position || 100 }));
           } else {
-            // Fallback flatline if no history exists yet
             sparkline = [{ val: kw.position || 100 }, { val: kw.position || 100 }];
           }
           return { ...kw, sparkline };
@@ -71,7 +66,7 @@ export default function GoogleKeywordsPage() {
 
   useEffect(() => {
     fetchKeywords();
-  }, [selectedSiteId]);
+  }, [selectedSiteId, dateQuery]);
 
   // Derived metrics
   const filteredKeywords = useMemo(() => {
@@ -119,6 +114,54 @@ export default function GoogleKeywordsPage() {
       }
     } catch (error) {
       toast.error('An error occurred');
+    }
+  };
+
+  // Keyword Discovery Handlers
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!seed.trim() || !selectedSiteId) return;
+
+    setDiscoveryLoading(true);
+    setIdeas([]);
+    
+    try {
+      const res = await fetch(`${API_BASE}/sites/${selectedSiteId}/keyword-ideas?seed=${encodeURIComponent(seed)}`);
+      if (!res.ok) throw new Error("Search failed");
+      const data = await res.json();
+      setIdeas(data.ideas || []);
+      if (data.ideas?.length === 0) {
+        toast.error("No ideas found for this keyword.");
+      }
+    } catch (err) {
+      toast.error("Failed to fetch keyword ideas");
+    } finally {
+      setDiscoveryLoading(false);
+    }
+  };
+
+  const handleSaveIdea = async (idea: any) => {
+    if (!selectedSiteId) return;
+    setSavingKw(idea.keyword);
+    try {
+      const res = await fetch(`${API_BASE}/sites/${selectedSiteId}/keywords`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          keyword: idea.keyword,
+          volume: idea.searchVolume,
+          position: null
+        }),
+      });
+      
+      if (!res.ok) throw new Error("Save failed");
+      
+      toast.success(`Tracked: ${idea.keyword}`);
+      fetchKeywords(); // Refresh table
+    } catch (err) {
+      toast.error("Failed to save keyword");
+    } finally {
+      setSavingKw(null);
     }
   };
 
@@ -196,17 +239,7 @@ export default function GoogleKeywordsPage() {
             <p style={{ color: '#64748B', fontSize: '0.9rem', marginTop: '0.25rem' }}>Track rankings, volume, and discover new keyword opportunities</p>
           </div>
           <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
-            {sites.length > 0 && (
-              <select className={styles.siteSelector} value={selectedSiteId || ''} onChange={(e) => setSelectedSiteId(e.target.value)}>
-                {sites.map(site => <option key={site.id} value={site.id}>{site.url}</option>)}
-              </select>
-            )}
-            <button 
-              onClick={() => setDiscoveryOpen(true)}
-              style={{ padding: '0.5rem 1rem', background: '#8b5cf6', color: '#0F172A', border: 'none', borderRadius: '8px', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 0 15px rgba(139, 92, 246, 0.3)', whiteSpace: 'nowrap' }}
-            >
-              <Sparkles size={16} /> Discover Ideas
-            </button>
+            <DateRangePicker value={dateRange} onChange={setDateRange} />
           </div>
         </div>
 
@@ -354,15 +387,110 @@ export default function GoogleKeywordsPage() {
         </div>
       </div>
 
-      {/* Keyword Discovery Modal powered by Google Ads mock */}
-      {selectedSiteId && (
-        <KeywordDiscoveryModal
-          siteId={selectedSiteId}
-          isOpen={discoveryOpen}
-          onClose={() => setDiscoveryOpen(false)}
-          onKeywordSaved={fetchKeywords}
-        />
-      )}
+      {/* Embedded Keyword Discovery Section */}
+      <div className={styles.panel} style={{ marginTop: '1.5rem', width: '100%', overflow: 'hidden', padding: 0 }}>
+        {/* Header */}
+        <div style={{ padding: '20px 24px', borderBottom: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', gap: '12px', background: '#F8FAFC' }}>
+          <div style={{ background: 'rgba(59, 130, 246, 0.1)', padding: '8px', borderRadius: '8px', color: '#3b82f6' }}>
+            <Sparkles size={20} />
+          </div>
+          <div>
+            <h2 style={{ margin: 0, fontSize: '1.25rem', color: '#0F172A' }}>Discover New Keywords</h2>
+            <p style={{ margin: '4px 0 0 0', fontSize: '0.85rem', color: '#64748B' }}>Powered by Google Ads Keyword Planner</p>
+          </div>
+        </div>
+
+        {/* Search Bar */}
+        <div style={{ padding: '24px', borderBottom: '1px solid #E2E8F0', background: '#FFFFFF' }}>
+          <form onSubmit={handleSearch} style={{ display: 'flex', gap: '12px' }}>
+            <div style={{ flex: 1, position: 'relative' }}>
+              <Search size={18} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#64748b' }} />
+              <input
+                type="text"
+                placeholder="Enter a seed keyword (e.g. 'seo agency')"
+                value={seed}
+                onChange={(e) => setSeed(e.target.value)}
+                style={{ width: '100%', padding: '12px 16px 12px 40px', borderRadius: '8px', border: '1px solid #E2E8F0', background: '#F8FAFC', color: '#0F172A', fontSize: '1rem' }}
+              />
+            </div>
+            <button 
+              type="submit" 
+              disabled={discoveryLoading || !seed.trim()}
+              style={{ padding: '0 24px', borderRadius: '8px', background: '#3b82f6', color: 'white', border: 'none', fontWeight: 600, cursor: discoveryLoading || !seed.trim() ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: '8px', opacity: discoveryLoading || !seed.trim() ? 0.7 : 1 }}
+            >
+              {discoveryLoading ? <Loader2 size={18} className="spinner" /> : <Search size={18} />}
+              Generate Ideas
+            </button>
+          </form>
+        </div>
+
+        {/* Results */}
+        <div style={{ padding: '0', background: '#FFFFFF' }}>
+          {discoveryLoading && ideas.length === 0 ? (
+            <div style={{ padding: '40px', textAlign: 'center', color: '#64748b' }}>
+               <Loader2 size={32} className="spinner" style={{ margin: '0 auto 16px auto', color: '#3b82f6' }} />
+               <p>Mining Google Ads database for opportunities...</p>
+            </div>
+          ) : ideas.length > 0 ? (
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                <thead style={{ background: '#F8FAFC' }}>
+                  <tr>
+                    <th style={{ padding: '12px 24px', fontSize: '0.75rem', textTransform: 'uppercase', color: '#64748b', borderBottom: '1px solid #E2E8F0' }}>Keyword Idea</th>
+                    <th style={{ padding: '12px 24px', fontSize: '0.75rem', textTransform: 'uppercase', color: '#64748b', borderBottom: '1px solid #E2E8F0' }}>Volume</th>
+                    <th style={{ padding: '12px 24px', fontSize: '0.75rem', textTransform: 'uppercase', color: '#64748b', borderBottom: '1px solid #E2E8F0' }}>Competition</th>
+                    <th style={{ padding: '12px 24px', fontSize: '0.75rem', textTransform: 'uppercase', color: '#64748b', borderBottom: '1px solid #E2E8F0' }}>CPC (Low - High)</th>
+                    <th style={{ padding: '12px 24px', fontSize: '0.75rem', textTransform: 'uppercase', color: '#64748b', borderBottom: '1px solid #E2E8F0', textAlign: 'right' }}>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {ideas.map((idea, i) => (
+                    <tr key={i} style={{ borderBottom: '1px solid #F1F5F9' }}>
+                      <td style={{ padding: '16px 24px', color: '#0F172A', fontWeight: 500 }}>{idea.keyword}</td>
+                      <td style={{ padding: '16px 24px', color: '#64748B' }}>{idea.searchVolume.toLocaleString()}</td>
+                      <td style={{ padding: '16px 24px' }}>
+                        <span style={{ 
+                          padding: '4px 8px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 700,
+                          backgroundColor: idea.competition === 'LOW' ? 'rgba(16, 185, 129, 0.1)' : idea.competition === 'MEDIUM' ? 'rgba(245, 158, 11, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+                          color: idea.competition === 'LOW' ? '#10b981' : idea.competition === 'MEDIUM' ? '#f59e0b' : '#ef4444'
+                        }}>
+                          {idea.competition}
+                        </span>
+                      </td>
+                      <td style={{ padding: '16px 24px', color: '#64748b', fontSize: '0.9rem' }}>
+                        ${idea.cpcLow} - ${idea.cpcHigh}
+                      </td>
+                      <td style={{ padding: '16px 24px', textAlign: 'right' }}>
+                        <button 
+                          onClick={() => handleSaveIdea(idea)}
+                          disabled={savingKw === idea.keyword}
+                          style={{ 
+                            background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', border: '1px solid rgba(59, 130, 246, 0.2)', 
+                            padding: '6px 12px', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer',
+                            display: 'inline-flex', alignItems: 'center', gap: '4px'
+                          }}
+                        >
+                          {savingKw === idea.keyword ? <Loader2 size={14} className="spinner" /> : <Plus size={14} />}
+                          Track
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div style={{ padding: '60px 20px', textAlign: 'center', color: '#64748b' }}>
+              <p>Type a seed keyword above to generate data-driven ideas.</p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <style dangerouslySetInnerHTML={{__html: `
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .spinner { animation: spin 1s linear infinite; }
+      `}} />
     </div>
   );
 }

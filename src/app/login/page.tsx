@@ -2,7 +2,7 @@
 
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { Activity, Sparkles, TrendingUp, Users, Target, Bot, CheckCircle2, Mail, Eye, Sun, Quote } from 'lucide-react';
+import { Activity, Sparkles, TrendingUp, Users, Target, Bot, CheckCircle2, Mail, Eye, Quote } from 'lucide-react';
 import styles from './page.module.css';
 
 export default function LoginPage() {
@@ -102,9 +102,7 @@ export default function LoginPage() {
 
       {/* Right Panel */}
       <div className={styles.rightPanel}>
-        <div className={styles.lightModeToggle}>
-          <Sun size={16} /> Light Mode
-        </div>
+
 
         <div className={styles.loginWrapper}>
           <h1 className={styles.title}>Welcome Back 👋</h1>

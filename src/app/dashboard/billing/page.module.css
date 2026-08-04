@@ -1,90 +1,178 @@
-.header {
-  margin-bottom: 3rem;
-  text-align: center;
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4rem 2rem;
+  background-color: #ffffff;
+  color: #0f172a;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.pricingBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #f1f5f9;
+  color: #0052ff;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
 }
 
 .title {
-  font-size: 2.2rem;
-  font-weight: 700;
-  color: var(--text-main);
-  margin-bottom: 0.5rem;
+  font-size: 2.75rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.02em;
+}
+
+.titleBlue {
+  color: #0052ff;
 }
 
 .subtitle {
-  color: var(--text-muted);
-  font-size: 1.1rem;
+  color: #64748b;
+  font-size: 1.15rem;
+  margin-bottom: 3rem;
+}
+
+.infoBox {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 1.25rem 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 3rem;
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  max-width: 900px;
+}
+
+.infoIcon {
+  color: #0052ff;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.infoContent h4 {
+  margin: 0 0 0.5rem 0;
+  color: #0052ff;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.infoContent p {
+  margin: 0;
+  color: #475569;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.infoExample {
+  color: #0052ff;
+  font-weight: 600;
 }
 
 .pricingGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 2rem;
+  width: 100%;
   max-width: 900px;
-  margin: 0 auto;
+  margin-bottom: 3rem;
 }
 
 .planCard {
-  background: rgba(30, 41, 59, 0.4);
-  border: 1px solid var(--border-color);
-  border-radius: 20px;
-  padding: 2.5rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 2.5rem 2rem;
   display: flex;
   flex-direction: column;
   position: relative;
-  overflow: hidden;
-  transition: transform 0.3s, border-color 0.3s;
+  box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05);
+  transition: transform 0.3s;
 }
 
 .planCard:hover {
   transform: translateY(-5px);
-  border-color: rgba(99, 102, 241, 0.5);
 }
 
 .planCardPro {
-  border-color: var(--primary);
-  background: linear-gradient(to bottom, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.9));
-  box-shadow: 0 0 40px rgba(99, 102, 241, 0.1);
+  border: 2px solid #0052ff;
+  box-shadow: 0 20px 40px -15px rgba(0, 82, 255, 0.15);
+}
+
+.iconWrapper {
+  width: 48px;
+  height: 48px;
+  background-color: #f1f5f9;
+  color: #0052ff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.planCardPro .iconWrapper {
+  background-color: #eff6ff;
 }
 
 .popularBadge {
   position: absolute;
-  top: 0;
-  right: 0;
-  background: var(--primary);
-  color: #0F172A;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: #0052ff;
+  color: #ffffff;
   font-size: 0.75rem;
   font-weight: 700;
-  padding: 0.4rem 1.5rem;
-  transform: rotate(45deg) translate(25%, -50%);
-  transform-origin: right top;
+  padding: 0.4rem 0.8rem;
+  border-radius: 9999px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .planName {
-  font-size: 1.4rem;
-  font-weight: 600;
-  color: var(--text-main);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0f172a;
   margin-bottom: 0.5rem;
 }
 
 .planPrice {
-  font-size: 3rem;
-  font-weight: 700;
-  color: #0F172A;
-  margin-bottom: 0.2rem;
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: #0052ff;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
 }
 
 .priceInterval {
   font-size: 1rem;
-  color: var(--text-muted);
-  font-weight: normal;
+  color: #64748b;
+  font-weight: 500;
 }
 
 .planDesc {
-  color: var(--text-muted);
-  margin-bottom: 2rem;
+  color: #64748b;
+  margin-bottom: 1.5rem;
   font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.divider {
+  height: 1px;
+  background-color: #e2e8f0;
+  margin-bottom: 1.5rem;
 }
 
 .featuresList {
@@ -97,75 +185,92 @@
 
 .feature {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 0.75rem;
-  color: var(--text-main);
+  color: #334155;
   font-size: 0.95rem;
+  font-weight: 500;
 }
 
 .check {
-  color: #22c55e;
-  font-weight: bold;
+  color: #0052ff;
+  flex-shrink: 0;
 }
 
 .cross {
-  color: #ef4444;
-  opacity: 0.5;
-  font-weight: bold;
+  color: #cbd5e1;
+  flex-shrink: 0;
+}
+
+.featureDisabled {
+  color: #94a3b8;
 }
 
 .btn {
   width: 100%;
   padding: 1rem;
-  border-radius: 12px;
+  border-radius: 8px;
   font-weight: 600;
   font-size: 1rem;
   transition: all 0.2s;
   text-align: center;
+  cursor: pointer;
 }
 
 .btnOutline {
   background: transparent;
-  border: 1px solid var(--border-color);
-  color: var(--text-main);
+  border: 1px solid #0052ff;
+  color: #0052ff;
 }
 
-.btnOutline:hover {
-  background: #FFFFFF;
+.btnOutline:hover:not(:disabled) {
+  background: #f8fafc;
 }
 
 .btnPrimary {
-  background: linear-gradient(135deg, var(--primary), var(--primary-hover));
-  color: #0F172A;
+  background: #0052ff;
+  color: #ffffff;
   border: none;
 }
 
-.btnPrimary:hover {
-  box-shadow: 0 10px 20px -10px var(--primary);
+.btnPrimary:hover:not(:disabled) {
+  background: #0043d6;
 }
 
 .btnDisabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+  opacity: 0.7;
+  cursor: default;
 }
 
 .successAlert {
-  background: rgba(34, 197, 94, 0.1);
+  background: #dcfce7;
   border: 1px solid #22c55e;
-  color: #22c55e;
+  color: #166534;
   padding: 1rem;
   border-radius: 12px;
   margin-bottom: 2rem;
   text-align: center;
   font-weight: 500;
+  width: 100%;
+  max-width: 900px;
 }
 
-/* Responsive */
+.guarantee {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #64748b;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.guaranteeIcon {
+  color: #0052ff;
+}
+
 @media (max-width: 768px) {
-  .header { margin-bottom: 2rem; }
-  .title { font-size: 1.75rem; }
+  .title { font-size: 2rem; }
   .pricingGrid { gap: 1.5rem; }
-  .planCard { padding: 1.5rem; }
-  .planPrice { font-size: 2rem; }
+  .planCard { padding: 2rem 1.5rem; }
+  .planPrice { font-size: 3rem; }
 }
-

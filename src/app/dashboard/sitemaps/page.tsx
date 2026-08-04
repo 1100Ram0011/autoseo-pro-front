@@ -1,12 +1,14 @@
 "use client";
 
-
 import { API_BASE } from '@/lib/apiConfig';
 import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Info, FileJson, UploadCloud, CheckCircle, AlertTriangle, Loader2, RefreshCw} from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { useSite } from '@/lib/SiteContext';
 import styles from '../search-console/page.module.css';
+import ExportReportButton from '@/components/ExportReportButton';
+import { exportSitemapsCSV, exportSitemapsPDF } from '@/lib/reportExporter';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -22,8 +24,7 @@ const itemVariants = {
 };
 
 export default function SitemapsManager() {
-  const [sites, setSites] = useState<any[]>([]);
-  const [selectedSiteId, setSelectedSiteId] = useState<string | null>(null);
+  const { selectedSiteId, sites } = useSite();
   
   const [sitemapUrl, setSitemapUrl] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -31,23 +32,6 @@ export default function SitemapsManager() {
   const [sitemaps, setSitemaps] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasAutoSubmitted, setHasAutoSubmitted] = useState(false);
-
-  // Fetch sites
-  useEffect(() => {
-    const fetchSites = async () => {
-      try {
-        const res = await fetch(`${API_BASE}/sites`);
-        if (res.ok) {
-          const data = await res.json();
-          setSites(data);
-          if (data.length > 0) setSelectedSiteId(data[0].id);
-        }
-      } catch (error) {
-        console.error('Failed to fetch sites', error);
-      }
-    };
-    fetchSites();
-  }, []);
 
   // Fetch sitemaps from GSC
   const fetchSitemaps = async () => {
@@ -150,15 +134,7 @@ export default function SitemapsManager() {
             </p>
           </div>
           <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
-            {sites.length > 0 && (
-              <select 
-                value={selectedSiteId || ''} 
-                onChange={(e) => setSelectedSiteId(e.target.value)}
-                style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', color: '#0F172A', padding: '0.75rem 1rem', borderRadius: '8px', outline: 'none', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)' }}
-              >
-                {sites.map(site => <option key={site.id} value={site.id}>{site.url}</option>)}
-              </select>
-            )}
+
             <button 
               onClick={fetchSitemaps}
               disabled={loading}
@@ -169,6 +145,17 @@ export default function SitemapsManager() {
               <RefreshCw size={16} className={loading ? 'spinner' : ''} /> Refresh Data
             </button>
           </div>
+          <ExportReportButton
+            csvExport={() => {
+              const url = sites?.find((s: any) => s.id === selectedSiteId)?.url || 'website';
+              exportSitemapsCSV(sitemaps, url);
+            }}
+            pdfExport={async () => {
+              const url = sites?.find((s: any) => s.id === selectedSiteId)?.url || 'website';
+              await exportSitemapsPDF(sitemaps, url);
+            }}
+            disabled={sitemaps.length === 0}
+          />
         </motion.div>
 
         {/* Auto-injected Info Block */}

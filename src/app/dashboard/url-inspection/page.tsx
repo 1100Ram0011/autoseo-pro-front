@@ -1,41 +1,20 @@
 "use client";
 
-
 import { API_BASE } from '@/lib/apiConfig';
 import { useState, useEffect } from 'react';
 import { Info, Search, Globe, Smartphone, CheckCircle, XCircle, FileSearch, 
   AlertTriangle, ShieldCheck, RefreshCw} from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { useSite } from '@/lib/SiteContext';
 import styles from '../search-console/page.module.css';
 
 export default function UrlInspectionDashboard() {
-  const [sites, setSites] = useState<any[]>([]);
-  const [selectedSiteId, setSelectedSiteId] = useState<string | null>(null);
+  const { selectedSiteId } = useSite();
 
   const [url, setUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
 
-  // Fetch sites
-  useEffect(() => {
-    const fetchSites = async () => {
-      try {
-        const res = await fetch(`${API_BASE}/sites`);
-        if (res.ok) {
-          const data = await res.json();
-          setSites(data);
-          if (data.length > 0) {
-            setSelectedSiteId(data[0].id);
-            setUrl(data[0].url);
-            runInspect(data[0].url, data[0].id);
-          }
-        }
-      } catch (error) {
-        console.error('Failed to fetch sites', error);
-      }
-    };
-    fetchSites();
-  }, []);
 
   const runInspect = async (inspectUrl: string, siteId: string) => {
     if (!inspectUrl.trim() || !siteId) return;
@@ -97,11 +76,7 @@ export default function UrlInspectionDashboard() {
             </p>
           </div>
           <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
-            {sites.length > 0 && (
-              <select className={styles.siteSelector} value={selectedSiteId || ''} onChange={(e) => setSelectedSiteId(e.target.value)}>
-                {sites.map(site => <option key={site.id} value={site.id}>{site.url}</option>)}
-              </select>
-            )}
+          
           </div>
         </div>
 

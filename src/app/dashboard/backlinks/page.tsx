@@ -2,12 +2,13 @@
 
 import { API_BASE } from '@/lib/apiConfig';
 import { Info } from "lucide-react";
-
 import { useState } from 'react';
 import useSWR from 'swr';
 import { fetcher, api } from '@/lib/api';
 import { toast } from 'react-hot-toast';
 import styles from './backlinks.module.css';
+import ExportReportButton from '@/components/ExportReportButton';
+import { exportBacklinksCSV, exportBacklinksPDF } from '@/lib/reportExporter';
 
 interface Backlink {
   id: string;
@@ -96,6 +97,11 @@ export default function BacklinksPage() {
             <button onClick={handleExportDisavow} className={styles.btnExport} disabled={disavowedCount === 0}>
               📄 Export Disavow File
             </button>
+            <ExportReportButton
+              csvExport={() => exportBacklinksCSV(links, site?.url || 'website')}
+              pdfExport={async () => exportBacklinksPDF(links, site?.url || 'website')}
+              disabled={links.length === 0}
+            />
           </div>
         </div>
 

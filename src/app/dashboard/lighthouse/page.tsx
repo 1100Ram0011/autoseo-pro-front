@@ -1,6 +1,5 @@
 "use client";
 
-
 import { API_BASE } from '@/lib/apiConfig';
 import { useState, useEffect } from 'react';
 import { 
@@ -9,12 +8,14 @@ import {
   Cpu, Server, LayoutDashboard, FileText
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { useSite } from '@/lib/SiteContext';
 import { StrategyPanel } from '../../../components/StrategyPanel';
 import styles from '../search-console/page.module.css';
+import ExportReportButton from '@/components/ExportReportButton';
+import { exportLighthouseCSV, exportLighthousePDF } from '@/lib/reportExporter';
 
 export default function Dashboard() {
-  const [sites, setSites] = useState<any[]>([]);
-  const [selectedSiteId, setSelectedSiteId] = useState<string | null>(null);
+  const { selectedSiteId } = useSite();
   
   const [pages, setPages] = useState<any[]>([]);
   const [siteUrl, setSiteUrl] = useState('');
@@ -23,23 +24,6 @@ export default function Dashboard() {
   const [isAuditing, setIsAuditing] = useState<string | null>(null);
   const [isAuditingAll, setIsAuditingAll] = useState<boolean>(false);
   const [isSyncing, setIsSyncing] = useState<boolean>(false);
-
-  useEffect(() => {
-    fetchSites();
-  }, []);
-
-  const fetchSites = async () => {
-    try {
-      const res = await fetch(`${API_BASE}/sites`);
-      if (res.ok) {
-        const data = await res.json();
-        setSites(data);
-        if (data.length > 0) setSelectedSiteId(data[0].id);
-      }
-    } catch (error) {
-      toast.error('Failed to fetch sites');
-    }
-  };
 
   useEffect(() => {
     const fetchSiteDetails = async () => {
@@ -194,11 +178,7 @@ export default function Dashboard() {
             <p style={{ color: '#64748B', fontSize: '0.9rem', marginTop: '0.25rem' }}>Lighthouse - Mobile + Desktop</p>
           </div>
           <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
-            {sites.length > 0 && (
-              <select className={styles.siteSelector} value={selectedSiteId || ''} onChange={(e) => setSelectedSiteId(e.target.value)}>
-                {sites.map(site => <option key={site.id} value={site.id}>{site.url}</option>)}
-              </select>
-            )}
+
             <button onClick={syncGA4} disabled={isSyncing} className={styles.btnSecondary} style={{ background: '#E2E8F0', color: '#0F172A', border: '1px solid rgba(255,255,255,0.2)', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', display: 'flex', gap: '8px', alignItems: 'center', whiteSpace: 'nowrap' }}>
               <RefreshCw size={14} className={isSyncing ? "spin" : ""} /> {isSyncing ? 'Syncing...' : 'Sync Analytics'}
             </button>
@@ -210,6 +190,11 @@ export default function Dashboard() {
               {isAuditingAll ? 'Auditing All...' : 'Run All Audits'}
             </button>
           </div>
+          <ExportReportButton
+            csvExport={() => exportLighthouseCSV(pages, siteUrl || 'website')}
+            pdfExport={async () => exportLighthousePDF(pages, siteUrl || 'website')}
+            disabled={pages.length === 0}
+          />
         </div>
 
         {/* Auto-injected Info Block */}

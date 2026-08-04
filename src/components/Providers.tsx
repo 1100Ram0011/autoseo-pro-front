@@ -1,6 +1,7 @@
 "use client";
 
 import { SessionProvider, useSession } from "next-auth/react";
+import { SiteProvider } from "@/lib/SiteContext";
 import { useEffect } from "react";
 import { API_BASE } from "@/lib/apiConfig";
 
@@ -57,9 +58,11 @@ function FetchInterceptor({ children }: { children: React.ReactNode }) {
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <SessionProvider>
-      <FetchInterceptor>
-        {children}
-      </FetchInterceptor>
+      <SiteProvider>
+        <FetchInterceptor>
+          {children}
+        </FetchInterceptor>
+      </SiteProvider>
     </SessionProvider>
   );
 }

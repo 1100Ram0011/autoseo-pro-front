@@ -1,35 +1,17 @@
 "use client";
 
-
 import { API_BASE } from '@/lib/apiConfig';
 import { useState, useEffect, useMemo } from 'react';
 import { Info, FileText, TrendingUp, MousePointerClick, Eye, BarChart2, Search, ExternalLink, RefreshCw, Loader2} from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { useSite } from '@/lib/SiteContext';
 import styles from '../search-console/page.module.css';
 
 export default function TopPagesDashboard() {
-  const [sites, setSites] = useState<any[]>([]);
-  const [selectedSiteId, setSelectedSiteId] = useState<string | null>(null);
+  const { selectedSiteId } = useSite();
   const [pagesData, setPagesData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [searchQuery, setSearchQuery] = useState('');
-
-  // Fetch sites on load
-  useEffect(() => {
-    const fetchSites = async () => {
-      try {
-        const res = await fetch(`${API_BASE}/sites`);
-        if (res.ok) {
-          const data = await res.json();
-          setSites(data);
-          if (data.length > 0) setSelectedSiteId(data[0].id);
-        }
-      } catch (error) {
-        console.error('Failed to fetch sites', error);
-      }
-    };
-    fetchSites();
-  }, []);
 
   // Fetch GSC Pages Data
   const fetchPages = async () => {
@@ -89,11 +71,7 @@ export default function TopPagesDashboard() {
             </p>
           </div>
           <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
-            {sites.length > 0 && (
-              <select className={styles.siteSelector} value={selectedSiteId || ''} onChange={(e) => setSelectedSiteId(e.target.value)}>
-                {sites.map(site => <option key={site.id} value={site.id}>{site.url}</option>)}
-              </select>
-            )}
+
             <button 
               onClick={fetchPages}
               disabled={loading}

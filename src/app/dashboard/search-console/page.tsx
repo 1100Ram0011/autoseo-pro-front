@@ -1,6 +1,5 @@
 "use client";
 
-
 import { API_BASE } from '@/lib/apiConfig';
 import { useState, useEffect, useMemo } from 'react';
 import {
@@ -14,9 +13,13 @@ import {
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { useSite } from '@/lib/SiteContext';
+import DateRangePicker, { DateRangeValue } from '@/components/DateRangePicker';
 import GSCSettingsModal from '@/components/GSCSettingsModal';
 import SetupGuide from '@/components/SetupGuide';
 import styles from './page.module.css';
+import ExportReportButton from '@/components/ExportReportButton';
+import { exportGSCCSV, exportGSCPDF } from '@/lib/reportExporter';
 
 const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#14b8a6'];
 const TABS = ['Overview', 'Keywords', 'Pages', 'Countries', 'Devices', 'Sitemaps', 'URL Inspect', 'Insights'] as const;
@@ -26,11 +29,11 @@ export default function SearchConsoleDashboard() {
   const router = useRouter();
   const { data: session } = useSession();
   const email = session?.user?.email;
-  const [sites, setSites] = useState<any[]>([]);
-  const [selectedSiteId, setSelectedSiteId] = useState<string | null>(null);
+  const { selectedSiteId, sites } = useSite();
   const [activeTab, setActiveTab] = useState<TabType>('Overview');
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [showSetupGuide, setShowSetupGuide] = useState(false);
+  const [dateRange, setDateRange] = useState<DateRangeValue>('30d');
 
   // All Data States
   const [gscOverview, setGscOverview] = useState<any>(null);
@@ -51,29 +54,14 @@ export default function SearchConsoleDashboard() {
   // Keyword tab filter
   const [kwFilter, setKwFilter] = useState<'all' | 'striking' | 'lowctr' | 'zeroctr'>('all');
 
-  useEffect(() => {
-    const fetchSites = async () => {
-      if (!email) return;
-      try {
-        const res = await fetch(`${API_BASE}/sites?email=${encodeURIComponent(email)}`);
-        if (res.ok) {
-          const data = await res.json();
-          setSites(data);
-          if (data.length > 0) {
-            setSelectedSiteId(data[0].id);
-          } else {
-            router.push('/dashboard/sites?add=true');
-          }
-        } else {
-          setLoading(false);
-        }
-      } catch (err) {
-        console.error('Failed to fetch sites', err);
-        setLoading(false);
-      }
-    };
-    fetchSites();
-  }, [email]);
+  // Build date query string
+  const dateQuery = useMemo(() => {
+    if (typeof dateRange === 'string') return `range=${dateRange}`;
+    const from = dateRange.from.toISOString().split('T')[0];
+    const to = dateRange.to.toISOString().split('T')[0];
+    return `range=custom&from=${from}&to=${to}`;
+  }, [dateRange]);
+
 
   useEffect(() => {
     if (!selectedSiteId) return;
@@ -82,13 +70,13 @@ export default function SearchConsoleDashboard() {
       setError(null);
       try {
         const [ovRes, kwRes, pgRes, ctRes, dvRes, smRes, insRes] = await Promise.all([
-          fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/overview?email=${encodeURIComponent(email || '')}`),
-          fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/keywords?email=${encodeURIComponent(email || '')}`),
-          fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/pages?email=${encodeURIComponent(email || '')}`),
-          fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/countries?email=${encodeURIComponent(email || '')}`),
-          fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/devices?email=${encodeURIComponent(email || '')}`),
+          fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/overview?${dateQuery}&email=${encodeURIComponent(email || '')}`),
+          fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/keywords?${dateQuery}&email=${encodeURIComponent(email || '')}`),
+          fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/pages?${dateQuery}&email=${encodeURIComponent(email || '')}`),
+          fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/countries?${dateQuery}&email=${encodeURIComponent(email || '')}`),
+          fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/devices?${dateQuery}&email=${encodeURIComponent(email || '')}`),
           fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/sitemaps?email=${encodeURIComponent(email || '')}`),
-          fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/insights?email=${encodeURIComponent(email || '')}`),
+          fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/insights?${dateQuery}&email=${encodeURIComponent(email || '')}`),
         ]);
 
         const ovData = await ovRes.json();
@@ -108,7 +96,7 @@ export default function SearchConsoleDashboard() {
       }
     };
     fetchAll();
-  }, [selectedSiteId]);
+  }, [selectedSiteId, dateQuery]);
 
   // URL Inspection Handler
   const handleInspect = async (e: React.FormEvent) => {
@@ -717,11 +705,7 @@ export default function SearchConsoleDashboard() {
       <div className={styles.header}>
         <h1 className={styles.title}>Search Console</h1>
         <div className={styles.headerControls}>
-          {sites.length > 0 && (
-            <select className={styles.siteSelector} value={selectedSiteId || ''} onChange={(e) => setSelectedSiteId(e.target.value)}>
-              {sites.map(site => (<option key={site.id} value={site.id}>{site.url}</option>))}
-            </select>
-          )}
+          <DateRangePicker value={dateRange} onChange={setDateRange} />
           {email ? (
             <div className={styles.actionGroup}>
               <button 
@@ -739,6 +723,19 @@ export default function SearchConsoleDashboard() {
             <button className={styles.connectBtn} disabled>Connect GSC (Login Required)</button>
           )}
         </div>
+        <ExportReportButton
+          csvExport={() => {
+            const dateLabel = typeof dateRange === 'string' ? dateRange : 'custom range';
+            const url = sites?.find((s: any) => s.id === selectedSiteId)?.url || 'website';
+            exportGSCCSV(gscOverview, gscKeywords, gscPages, gscCountries, url, dateLabel);
+          }}
+          pdfExport={async () => {
+            const dateLabel = typeof dateRange === 'string' ? dateRange : 'custom range';
+            const url = sites?.find((s: any) => s.id === selectedSiteId)?.url || 'website';
+            await exportGSCPDF(gscOverview, gscKeywords, gscPages, url, dateLabel);
+          }}
+          disabled={loading || !gscOverview}
+        />
       </div>
 
       {/* Auto-injected Info Block */}

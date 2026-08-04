@@ -42,6 +42,7 @@ export default function ReportsPage() {
   const [activeTab, setActiveTab] = useState('All Reports');
   const [showFeatureModal, setShowFeatureModal] = useState(false);
   const [showScheduleModal, setShowScheduleModal] = useState(false);
+  const [showGenerateModal, setShowGenerateModal] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [scheduleForm, setScheduleForm] = useState({ name: '', frequency: 'Monthly', emails: '' });
   const reportRef = useRef<HTMLDivElement>(null);
@@ -195,10 +196,7 @@ export default function ReportsPage() {
   
         </div>
         <button 
-          onClick={() => {
-            const dateStr = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-            generatePDF({ name: `Monthly SEO Report — ${dateStr}`, type: 'Monthly', scope: sites?.find((s:any) => s.id === activeSiteId)?.url || 'example.com' }, 'download');
-          }}
+          onClick={() => setShowGenerateModal(true)}
           disabled={isGenerating}
           style={{ background: '#3B82F6', border: 'none', color: '#FFFFFF', padding: '0.65rem 1.25rem', borderRadius: '8px', cursor: isGenerating ? 'not-allowed' : 'pointer', fontSize: '0.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem', boxShadow: '0 4px 14px 0 rgba(59,130,246,0.39)', opacity: isGenerating ? 0.7 : 1 }}>
           <Plus size={16} /> {isGenerating ? 'Generating...' : 'Generate Report'}
@@ -363,10 +361,7 @@ export default function ReportsPage() {
           </p>
           <div style={{ display: 'flex', gap: '1rem' }}>
             <button 
-              onClick={() => {
-                const dateStr = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-                generatePDF({ name: `Monthly SEO Report — ${dateStr}`, type: 'Monthly', scope: sites?.find((s:any) => s.id === activeSiteId)?.url || 'example.com' }, 'download');
-              }}
+              onClick={() => setShowGenerateModal(true)}
               style={{ background: '#3B82F6', border: 'none', color: '#FFFFFF', padding: '0.6rem 1.25rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <Plus size={16} /> Generate Now
             </button>
@@ -480,6 +475,56 @@ export default function ReportsPage() {
               <button onClick={handleScheduleReport} style={{ background: '#3B82F6', border: 'none', color: '#FFFFFF', padding: '0.6rem 1.25rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600, boxShadow: '0 4px 14px 0 rgba(59,130,246,0.39)' }}>
                 Save Schedule
               </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Generate Report Modal */}
+      {showGenerateModal && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(4px)' }}>
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9, y: 20 }} 
+            animate={{ opacity: 1, scale: 1, y: 0 }} 
+            style={{ background: '#FFFFFF', padding: '2rem', borderRadius: '16px', width: '500px', maxWidth: '90vw', boxShadow: '0 20px 40px -10px rgba(0,0,0,0.2)', border: '1px solid #E2E8F0', position: 'relative' }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 700, color: '#0F172A', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <FileText size={20} color="#3B82F6" /> Select Report Type
+              </h3>
+              <button onClick={() => setShowGenerateModal(false)} style={{ background: 'transparent', border: 'none', cursor: 'pointer' }}><X size={20} color="#64748B" /></button>
+            </div>
+            
+            <p style={{ margin: '0 0 1.5rem', fontSize: '0.85rem', color: '#64748B', lineHeight: 1.5 }}>
+              Choose a specific report to generate. Comprehensive reports include all sections, while specialized reports focus on specific areas.
+            </p>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '2rem' }}>
+              {[
+                { type: 'Comprehensive Report', icon: <FileStack size={18} />, color: '#8B5CF6', desc: 'All data combined' },
+                { type: 'GSC Report', icon: <Search size={18} />, color: '#3B82F6', desc: 'Search Console metrics' },
+                { type: 'Analytics Report', icon: <BarChart2 size={18} />, color: '#0EA5E9', desc: 'Google Analytics 4' },
+                { type: 'Lighthouse Report', icon: <Trophy size={18} />, color: '#10B981', desc: 'Technical SEO & Speed' },
+                { type: 'Sitemap Report', icon: <Layout size={18} />, color: '#F59E0B', desc: 'Indexing & Coverage' },
+                { type: 'Keyword Report', icon: <TrendingUp size={18} />, color: '#D97706', desc: 'Rankings & Intent' },
+              ].map((opt) => (
+                <button
+                  key={opt.type}
+                  onClick={() => {
+                    const dateStr = new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+                    generatePDF({ name: `${opt.type} — ${dateStr}`, type: opt.type, scope: sites?.find((s:any) => s.id === activeSiteId)?.url || 'example.com' }, 'download');
+                    setShowGenerateModal(false);
+                  }}
+                  style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '1rem', borderRadius: '12px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', cursor: 'pointer', textAlign: 'left', transition: 'all 0.2s' }}
+                  onMouseEnter={(e) => e.currentTarget.style.borderColor = opt.color}
+                  onMouseLeave={(e) => e.currentTarget.style.borderColor = '#E2E8F0'}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: opt.color, marginBottom: '4px', fontWeight: 600 }}>
+                    {opt.icon} {opt.type.replace(' Report', '')}
+                  </div>
+                  <div style={{ fontSize: '0.75rem', color: '#64748B' }}>{opt.desc}</div>
+                </button>
+              ))}
             </div>
           </motion.div>
         </div>

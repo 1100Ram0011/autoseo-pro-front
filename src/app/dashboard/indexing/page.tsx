@@ -1,6 +1,5 @@
 "use client";
 
-
 import { API_BASE } from '@/lib/apiConfig';
 import { useState, useEffect } from 'react';
 import { 
@@ -8,11 +7,11 @@ import {
   Globe, Info, Zap, Search, Activity, Clock
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import styles from '../search-console/page.module.css'; // Reusing dashboard styles
+import { useSite } from '@/lib/SiteContext';
+import styles from '../search-console/page.module.css';
 
 export default function IndexingDashboard() {
-  const [sites, setSites] = useState<any[]>([]);
-  const [selectedSiteId, setSelectedSiteId] = useState<string | null>(null);
+  const { selectedSiteId } = useSite();
   const [pages, setPages] = useState<any[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasAutoSubmitted, setHasAutoSubmitted] = useState(false);
@@ -22,22 +21,6 @@ export default function IndexingDashboard() {
   const [actionType, setActionType] = useState<'URL_UPDATED' | 'URL_DELETED'>('URL_UPDATED');
   const [isSingleLoading, setIsSingleLoading] = useState(false);
   const [metadataResult, setMetadataResult] = useState<any>(null);
-
-  useEffect(() => {
-    const fetchSites = async () => {
-      try {
-        const res = await fetch(`${API_BASE}/sites`);
-        if (res.ok) {
-          const data = await res.json();
-          setSites(data);
-          if (data.length > 0) setSelectedSiteId(data[0].id);
-        }
-      } catch (error) {
-        console.error('Failed to fetch sites', error);
-      }
-    };
-    fetchSites();
-  }, []);
 
   const fetchPages = async () => {
     if (!selectedSiteId) return;
@@ -176,11 +159,7 @@ export default function IndexingDashboard() {
             <h1 className={styles.title}>Google Indexing API</h1>
             <p style={{ color: '#64748B', fontSize: '0.9rem', marginTop: '0.25rem' }}>Push URLs to Google for fast discovery and get actual metadata.</p>
           </div>
-          {sites.length > 0 && (
-            <select className={styles.siteSelector} value={selectedSiteId || ''} onChange={(e) => setSelectedSiteId(e.target.value)}>
-              {sites.map(site => (<option key={site.id} value={site.id}>{site.url}</option>))}
-            </select>
-          )}
+
         </div>
 
         {/* Auto-injected Info Block */}
