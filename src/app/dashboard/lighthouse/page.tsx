@@ -10,9 +10,8 @@ import {
 import { toast } from 'react-hot-toast';
 import { useSite } from '@/lib/SiteContext';
 import { StrategyPanel } from '../../../components/StrategyPanel';
+import LighthouseExportButton from '@/components/LighthouseExportButton';
 import styles from '../search-console/page.module.css';
-import ExportReportButton from '@/components/ExportReportButton';
-import { exportLighthouseCSV, exportLighthousePDF } from '@/lib/reportExporter';
 
 export default function Dashboard() {
   const { selectedSiteId } = useSite();
@@ -190,10 +189,12 @@ export default function Dashboard() {
               {isAuditingAll ? 'Auditing All...' : 'Run All Audits'}
             </button>
           </div>
-          <ExportReportButton
-            csvExport={() => exportLighthouseCSV(pages, siteUrl || 'website')}
-            pdfExport={async () => exportLighthousePDF(pages, siteUrl || 'website')}
-            disabled={pages.length === 0}
+          <LighthouseExportButton
+            pageData={pages[0] || null}
+            auditedUrl={pages[0]?.url || siteUrl || 'website'}
+            websiteName={siteUrl || 'website'}
+            websiteUrl={siteUrl || 'website'}
+            isDark={false}
           />
         </div>
 

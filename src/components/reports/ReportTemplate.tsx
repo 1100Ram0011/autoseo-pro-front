@@ -32,19 +32,22 @@ const PageContainer = ({ children }: { children: React.ReactNode }) => (
 );
 
 const Header = ({ reportName, date }: { reportName: string, date: string }) => (
-  <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '2px solid #E2E8F0', paddingBottom: '20px', marginBottom: '30px' }}>
+  <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #E2E8F0', paddingBottom: '24px', marginBottom: '32px' }}>
     <div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-         <div style={{ width: 36, height: 36, borderRadius: '8px', background: 'linear-gradient(135deg, #3B82F6, #8B5CF6)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+         <div style={{ width: 40, height: 40, borderRadius: '10px', background: 'linear-gradient(135deg, #FF6A00 0%, #FF8C00 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(255, 106, 0, 0.3)' }}>
+           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
          </div>
-         <h1 style={{ margin: 0, fontSize: '1.8rem', fontWeight: 800, color: '#1E293B', letterSpacing: '-0.5px' }}>AutoSEO<span style={{ color: '#3B82F6' }}>.Pro</span></h1>
+         <h1 style={{ margin: 0, fontSize: '2rem', fontWeight: 800, color: '#0F172A', letterSpacing: '-0.5px' }}>AutoSEO<span style={{ color: '#FF6A00' }}>.Pro</span></h1>
       </div>
-      <p style={{ margin: '8px 0 0', fontSize: '0.9rem', color: '#64748B' }}>Automated Agentic SEO Platform</p>
+      <p style={{ margin: '6px 0 0', fontSize: '0.95rem', color: '#64748B', fontWeight: 500 }}>Automated Agentic SEO Platform</p>
     </div>
-    <div style={{ textAlign: 'right' }}>
-      <div style={{ fontSize: '1.2rem', fontWeight: 700, color: '#0F172A', marginBottom: '4px' }}>{reportName}</div>
-      <div style={{ fontSize: '0.85rem', color: '#64748B' }}>Generated: {date}</div>
+    <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+      <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#0F172A', marginBottom: '6px' }}>{reportName}</div>
+      <div style={{ fontSize: '0.85rem', color: '#64748B', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'flex-end' }}>
+        <span style={{ display: 'inline-block', width: 6, height: 6, borderRadius: '50%', background: '#10B981' }}></span>
+        Generated: {date}
+      </div>
     </div>
   </div>
 );
@@ -93,42 +96,42 @@ const ReportTemplate = forwardRef<HTMLDivElement, ReportTemplateProps>(({ report
         </p>
 
         {/* Health Score Main Graphic */}
-        <div style={{ background: 'linear-gradient(135deg, #F8FAFC, #EFF6FF)', border: '1px solid #E2E8F0', borderRadius: '16px', padding: '40px', display: 'flex', alignItems: 'center', gap: '40px', marginBottom: '40px' }}>
-          <div style={{ width: 140, height: 140, borderRadius: '50%', background: healthScore > 80 ? '#10B981' : healthScore > 50 ? '#F59E0B' : '#EF4444', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 10px 25px -5px rgba(16, 185, 129, 0.3)' }}>
-            <div style={{ width: 120, height: 120, borderRadius: '50%', background: '#FFFFFF', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-              <span style={{ fontSize: '2.5rem', fontWeight: 800, color: '#0F172A', lineHeight: 1 }}>{healthScore}</span>
-              <span style={{ fontSize: '0.7rem', color: '#64748B', fontWeight: 600, marginTop: '4px' }}>/ 100</span>
+        <div style={{ background: 'linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%)', border: '1px solid #E2E8F0', borderRadius: '20px', padding: '40px', display: 'flex', alignItems: 'center', gap: '40px', marginBottom: '40px', boxShadow: '0 4px 20px -5px rgba(0,0,0,0.05), 0 10px 15px -3px rgba(0,0,0,0.02)' }}>
+          <div style={{ width: 140, height: 140, borderRadius: '50%', background: healthScore > 80 ? 'linear-gradient(135deg, #10B981, #059669)' : healthScore > 50 ? 'linear-gradient(135deg, #F59E0B, #D97706)' : 'linear-gradient(135deg, #EF4444, #DC2626)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: healthScore > 80 ? '0 10px 25px -5px rgba(16, 185, 129, 0.4)' : healthScore > 50 ? '0 10px 25px -5px rgba(245, 158, 11, 0.4)' : '0 10px 25px -5px rgba(239, 68, 68, 0.4)' }}>
+            <div style={{ width: 124, height: 124, borderRadius: '50%', background: '#FFFFFF', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', boxShadow: 'inset 0 2px 10px rgba(0,0,0,0.05)' }}>
+              <span style={{ fontSize: '2.8rem', fontWeight: 800, color: '#0F172A', lineHeight: 1, letterSpacing: '-1px' }}>{healthScore}</span>
+              <span style={{ fontSize: '0.75rem', color: '#64748B', fontWeight: 700, marginTop: '4px' }}>/ 100</span>
             </div>
           </div>
           <div style={{ flex: 1 }}>
-            <h3 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#0F172A', marginBottom: '10px' }}>Overall SEO Health</h3>
-            <p style={{ fontSize: '0.9rem', color: '#475569', lineHeight: 1.5, marginBottom: '0' }}>
-              Your site's technical SEO structure is {healthScore > 80 ? 'in excellent condition' : healthScore > 50 ? 'in acceptable condition, but needs optimization' : 'poor and requires immediate attention'}. This score aggregates core web vitals, indexability, and content quality.
+            <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0F172A', marginBottom: '12px', letterSpacing: '-0.3px' }}>Overall SEO Health</h3>
+            <p style={{ fontSize: '0.95rem', color: '#475569', lineHeight: 1.6, marginBottom: '0' }}>
+              Your site's technical SEO structure is <strong style={{ color: healthScore > 80 ? '#059669' : healthScore > 50 ? '#D97706' : '#DC2626' }}>{healthScore > 80 ? 'in excellent condition' : healthScore > 50 ? 'in acceptable condition, but needs optimization' : 'poor and requires immediate attention'}</strong>. This score aggregates core web vitals, indexability, and content quality.
             </p>
           </div>
         </div>
 
         {/* High-Level KPIs */}
-        <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#1E293B', marginBottom: '20px' }}>Key Performance Indicators</h3>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-          <div style={{ padding: '24px', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '12px' }}>
-             <div style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 600, textTransform: 'uppercase', marginBottom: '8px' }}>Organic Traffic (Week)</div>
-             <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#0F172A' }}>{metrics.visitorsThisWeek || 0}</div>
-             <div style={{ fontSize: '0.85rem', color: metrics.visitorsChange >= 0 ? '#10B981' : '#EF4444', fontWeight: 600, marginTop: '8px' }}>
+        <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0F172A', marginBottom: '20px', letterSpacing: '-0.3px' }}>Key Performance Indicators</h3>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+          <div style={{ padding: '24px', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '16px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.02), 0 2px 4px -1px rgba(0,0,0,0.02)' }}>
+             <div style={{ fontSize: '0.75rem', color: '#64748B', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '10px' }}>Organic Traffic (Week)</div>
+             <div style={{ fontSize: '2rem', fontWeight: 800, color: '#0F172A', letterSpacing: '-0.5px' }}>{metrics.visitorsThisWeek || 0}</div>
+             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '0.85rem', color: metrics.visitorsChange >= 0 ? '#10B981' : '#EF4444', fontWeight: 600, marginTop: '12px', background: metrics.visitorsChange >= 0 ? '#ECFDF5' : '#FEF2F2', padding: '4px 8px', borderRadius: '999px' }}>
                {metrics.visitorsChange >= 0 ? '+' : ''}{metrics.visitorsChange || 0}% vs last period
              </div>
           </div>
-          <div style={{ padding: '24px', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '12px' }}>
-             <div style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 600, textTransform: 'uppercase', marginBottom: '8px' }}>Total Keywords Tracked</div>
-             <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#0F172A' }}>{metrics.keywordsTracked || 0}</div>
-             <div style={{ fontSize: '0.85rem', color: '#3B82F6', fontWeight: 600, marginTop: '8px' }}>
-               {metrics.keywordsTop10 || 0} in Top 10 Positions
+          <div style={{ padding: '24px', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '16px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.02), 0 2px 4px -1px rgba(0,0,0,0.02)' }}>
+             <div style={{ fontSize: '0.75rem', color: '#64748B', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '10px' }}>Total Keywords Tracked</div>
+             <div style={{ fontSize: '2rem', fontWeight: 800, color: '#0F172A', letterSpacing: '-0.5px' }}>{metrics.keywordsTracked || 0}</div>
+             <div style={{ fontSize: '0.9rem', color: '#FF6A00', fontWeight: 600, marginTop: '12px' }}>
+               <strong style={{ color: '#0F172A' }}>{metrics.keywordsTop10 || 0}</strong> in Top 10 Positions
              </div>
           </div>
-          <div style={{ padding: '24px', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '12px' }}>
-             <div style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 600, textTransform: 'uppercase', marginBottom: '8px' }}>Pages Indexed</div>
-             <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#0F172A' }}>{metrics.pagesIndexed || 0}</div>
-             <div style={{ fontSize: '0.85rem', color: '#F59E0B', fontWeight: 600, marginTop: '8px' }}>
+          <div style={{ padding: '24px', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '16px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.02), 0 2px 4px -1px rgba(0,0,0,0.02)' }}>
+             <div style={{ fontSize: '0.75rem', color: '#64748B', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '10px' }}>Pages Indexed</div>
+             <div style={{ fontSize: '2rem', fontWeight: 800, color: '#0F172A', letterSpacing: '-0.5px' }}>{metrics.pagesIndexed || 0}</div>
+             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '0.85rem', color: '#D97706', fontWeight: 600, marginTop: '12px', background: '#FFFBEB', padding: '4px 8px', borderRadius: '999px' }}>
                {metrics.pagesNotIndexed || 0} pages failed to index
              </div>
           </div>
@@ -239,20 +242,20 @@ const ReportTemplate = forwardRef<HTMLDivElement, ReportTemplateProps>(({ report
       {showLighthouse && (
       <PageContainer>
         <Header reportName={reportName} date={date} />
-        <h2 style={{ fontSize: '1.6rem', fontWeight: 700, color: '#1E293B', marginBottom: '20px' }}>Lighthouse Technical Audit</h2>
+        <h2 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#0F172A', marginBottom: '24px', letterSpacing: '-0.5px' }}>Lighthouse Technical Audit</h2>
         
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '15px', marginBottom: '40px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginBottom: '40px' }}>
            {[
-             { label: 'Performance', val: 78, color: '#F59E0B' },
-             { label: 'Accessibility', val: 92, color: '#10B981' },
-             { label: 'Best Practices', val: 100, color: '#10B981' },
-             { label: 'SEO', val: healthScore || 85, color: (healthScore||85) > 80 ? '#10B981' : '#F59E0B' },
+             { label: 'Performance', val: 78, color: '#F59E0B', bg: '#FFFBEB' },
+             { label: 'Accessibility', val: 92, color: '#10B981', bg: '#ECFDF5' },
+             { label: 'Best Practices', val: 100, color: '#10B981', bg: '#ECFDF5' },
+             { label: 'SEO', val: healthScore || 85, color: (healthScore||85) > 80 ? '#10B981' : '#F59E0B', bg: (healthScore||85) > 80 ? '#ECFDF5' : '#FFFBEB' },
            ].map((s, i) => (
-             <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', background: '#F8FAFC', padding: '20px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
-               <div style={{ width: 80, height: 80, borderRadius: '50%', background: '#FFFFFF', border: `4px solid ${s.color}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', fontWeight: 800, color: '#0F172A', marginBottom: '10px' }}>
+             <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', background: '#FFFFFF', padding: '24px', borderRadius: '16px', border: '1px solid #E2E8F0', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.02)' }}>
+               <div style={{ width: 84, height: 84, borderRadius: '50%', background: s.bg, border: `4px solid ${s.color}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.75rem', fontWeight: 800, color: '#0F172A', marginBottom: '12px' }}>
                  {s.val}
                </div>
-               <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#475569' }}>{s.label}</div>
+               <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{s.label}</div>
              </div>
            ))}
         </div>

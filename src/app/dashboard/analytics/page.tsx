@@ -14,8 +14,9 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useSite } from '@/lib/SiteContext';
 import DateRangePicker, { DateRangeValue } from '@/components/DateRangePicker';
+import AnalyticsExportButton from '@/components/AnalyticsExportButton';
 import styles from './analytics.module.css';
-import ExportReportButton from '@/components/ExportReportButton';
+import SmartExportButton from '@/components/SmartExportButton';
 import { exportAnalyticsCSV, exportAnalyticsPDF } from '@/lib/reportExporter';
 
 /* ════════════════════════════════════════
@@ -1117,16 +1118,12 @@ export default function AnalyticsPage() {
           >
             <Activity size={14} /> Connect GA4
           </button>
-          <ExportReportButton
-            csvExport={() => {
-              if (!ga4Overview) return;
-              exportAnalyticsCSV(ga4Overview, websiteUrl, dateLabel);
-            }}
-            pdfExport={async () => {
-              if (!ga4Overview) return;
-              await exportAnalyticsPDF(ga4Overview, websiteUrl, dateLabel);
-            }}
-            disabled={loading || !ga4Overview}
+          <AnalyticsExportButton
+            analytics={ga4Overview || {}}
+            pageSpeed={ga4Overview?.pageSpeed || null}
+            websiteName={websiteName || 'website'}
+            websiteUrl={websiteUrl || 'website'}
+            dateLabel={dateLabel}
           />
         </div>
       </div>
