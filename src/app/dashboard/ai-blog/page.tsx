@@ -2,24 +2,10 @@
 import { useState, useEffect } from "react";
 import useSWR from 'swr';
 import SmartBlogCreator from "./components/SmartBlogCreator";
+import { useSite } from '@/lib/SiteContext';
 
 export default function AIBlogPage() {
-  const [activeSiteId, setActiveSiteId] = useState<string | null>(null);
-
-  // Fetch sites to default to the first one if not set
-  const fetcher = (url: string) => fetch(`/api${url}`, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } }).then(res => res.json());
-  const { data: sites } = useSWR('/sites', fetcher);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('activeSiteId');
-      if (saved) {
-        setActiveSiteId(saved);
-      } else if (sites && sites.length > 0) {
-        setActiveSiteId(sites[0].id);
-      }
-    }
-  }, [sites]);
+  const { selectedSiteId: activeSiteId } = useSite();
 
   if (!activeSiteId) {
     return (

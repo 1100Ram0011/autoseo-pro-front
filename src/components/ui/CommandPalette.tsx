@@ -62,7 +62,7 @@ export function CommandPalette() {
                     <Compass size={16} />
                     <span>Agentic SEO Identity</span>
                   </Command.Item>
-                  <Command.Item onSelect={() => runCommand(() => router.push('/dashboard/blogs'))} className={styles.item}>
+                  <Command.Item onSelect={() => runCommand(() => router.push('/dashboard/ai-blog'))} className={styles.item}>
                     <FileText size={16} />
                     <span>AI Blog Writer</span>
                   </Command.Item>

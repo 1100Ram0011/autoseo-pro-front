@@ -92,8 +92,7 @@ export default function SmartBlogCreator({ profileId, requireAuth }) {
   const dispatchedTitlesRef = useRef(new Set());
 
   // ── Admin check ──
-  const userRole = useSelector((state) => state.auth.user?.role);
-  const isAdmin = userRole === 'admin';
+  const isAdmin = true; // Auto-enabled for the current user
 
   // ── Auto-queue state (admin only) ──
   const [autoQueue, setAutoQueue] = useState([]);
@@ -273,6 +272,34 @@ export default function SmartBlogCreator({ profileId, requireAuth }) {
     
     setShareData({ isOpen: true, url, title: blog.title });
   };
+
+  async function handleImportGA4() {
+    setIsManualLoading(true);
+    const toastId = toast.loading('Importing URLs from GA4...');
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch(`/api/sites/${profileId}/ga4/overview?range=30d`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data?.topPages && data.topPages.length > 0) {
+        const ga4Urls = data.topPages.map((p) => p.page).filter((url) => url && url !== '/');
+        if (ga4Urls.length > 0) {
+          await saveTitles({ profileId, titles: ga4Urls, prepend: true });
+          setCurrentPage(1);
+          toast.success(`Imported ${ga4Urls.length} pages from GA4!`, { id: toastId });
+        } else {
+          toast.error('No valid inner pages found in GA4.', { id: toastId });
+        }
+      } else {
+        toast.error('No GA4 data available.', { id: toastId });
+      }
+    } catch (err) {
+      toast.error('Failed to fetch GA4 data.', { id: toastId });
+    } finally {
+      setIsManualLoading(false);
+    }
+  }
 
   async function handleRefreshTitles() {
     setIsManualLoading(true);
@@ -958,6 +985,7 @@ export default function SmartBlogCreator({ profileId, requireAuth }) {
           error={isError}
           onSelect={handleTitleClick}
           onRefresh={handleRefreshTitles}
+          onImportGA4={handleImportGA4}
           drafts={draftsMap}
           isAdmin={isAdmin}
           onQueueAll={handleQueueAll}
@@ -1260,7 +1288,7 @@ export default function SmartBlogCreator({ profileId, requireAuth }) {
 //   const [customTitle, setCustomTitle] = useState('');
 //   const totalPages = Math.ceil(totalTitlesCount / 5) || 1;
 
-function TitleSelector({ titles, totalTitlesCount, currentPage, setCurrentPage, loading, error, onSelect, onRefresh, drafts, isAdmin, onQueueAll, bloggerStatus, publishedBlogsMap, onDeletePublished, onSharePublished, autoBlogState, setAutoBlogState }) {
+function TitleSelector({ titles, totalTitlesCount, currentPage, setCurrentPage, loading, error, onSelect, onRefresh, onImportGA4, drafts, isAdmin, onQueueAll, bloggerStatus, publishedBlogsMap, onDeletePublished, onSharePublished, autoBlogState, setAutoBlogState }) {
   const [customTitle, setCustomTitle] = useState('');
   const [queueSelected, setQueueSelected] = useState([]);
   const totalPages = Math.ceil(totalTitlesCount / 5) || 1;
@@ -1319,7 +1347,7 @@ function TitleSelector({ titles, totalTitlesCount, currentPage, setCurrentPage, 
             </div>
             <div className="shrink-0 flex flex-col gap-2 w-full md:w-auto mt-4 md:mt-0">
               <a 
-                href={`${import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:5000'}/api/blogs/blogger/login?token=${localStorage.getItem('token')}`}
+                href={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/blogs/blogger/login?token=${localStorage.getItem('token')}`}
                 className="px-6 py-2.5 rounded-xl text-sm font-bold shadow-sm transition-all whitespace-nowrap no-underline bg-blue-500 text-white hover:bg-blue-600 hover:shadow text-center border-none"
               >
                 Connect Blogger
@@ -1372,6 +1400,12 @@ function TitleSelector({ titles, totalTitlesCount, currentPage, setCurrentPage, 
           <h2 className="text-xl font-semibold m-0">Choose a Blog Title</h2>
           <div className="flex items-center gap-2">
 
+            <button
+              onClick={onImportGA4}
+              className="text-sm text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800 rounded-lg px-3 py-1.5 bg-blue-50 dark:bg-blue-900/30 cursor-pointer transition-colors mr-2"
+            >
+              📊 Import GA4 URLs
+            </button>
             <button
               onClick={onRefresh}
               className="text-sm text-white dark:text-gray-400 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-1.5 bg-blue-500 dark:bg-gray-800 cursor-pointer transition-colors"

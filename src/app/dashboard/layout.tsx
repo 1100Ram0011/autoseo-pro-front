@@ -96,7 +96,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <Link href="/dashboard/google-keywords" className={`${styles.navItem} ${isRouteActive('/dashboard/google-keywords') ? styles.active : ''}`}>
             <Target size={18} /> Google Keywords
           </Link>
-          <Link href="/dashboard/blog" className={`${styles.navItem} ${isRouteActive('/dashboard/blog') ? styles.active : ''}`}>
+          <Link href="/dashboard/ai-blog" className={`${styles.navItem} ${isRouteActive('/dashboard/ai-blog') ? styles.active : ''}`}>
             <PenTool size={18} /> AI Blog Writer
           </Link>
           <Link href="/dashboard/meta" className={`${styles.navItem} ${isRouteActive('/dashboard/meta') ? styles.active : ''}`}>
@@ -161,7 +161,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <Link href="/dashboard/reviews" className={`${styles.navItem} ${isRouteActive('/dashboard/reviews') ? styles.active : ''}`}>
             <MessageSquare size={18} /> Review Management
           </Link>
-          <Link href="/dashboard/leads/map" className={`${styles.navItem} ${isRouteActive('/dashboard/leads/map') ? styles.active : ''}`}>
+          <Link href="/dashboard/leads" className={`${styles.navItem} ${isRouteActive('/dashboard/leads') ? styles.active : ''}`}>
             <MapPin size={18} /> Map & LinkedIn Leads
             <span className={styles.navBadge}>New</span>
           </Link>
