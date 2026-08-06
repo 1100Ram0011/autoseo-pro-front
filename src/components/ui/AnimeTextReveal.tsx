@@ -1,8 +1,6 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
-import anime from "animejs";
-
 interface AnimeTextRevealProps {
   text: string;
   className?: string;
@@ -14,19 +12,26 @@ export function AnimeTextReveal({ text, className = "", delay = 0 }: AnimeTextRe
 
   useEffect(() => {
     if (!containerRef.current) return;
-
-    const elements = containerRef.current.querySelectorAll('.char');
     
-    anime.timeline({ loop: false })
-      .add({
-        targets: elements,
-        translateY: [20, 0],
-        translateZ: 0,
-        opacity: [0, 1],
-        easing: "easeOutExpo",
-        duration: 1200,
-        delay: (el, i) => delay + 30 * i
-      });
+    // Use dynamic import to safely load animejs in Next.js Turbopack
+    import("animejs").then((animeModule) => {
+      const anime = animeModule.default || animeModule;
+      if (!anime || typeof anime.timeline !== 'function') return;
+
+      if (!containerRef.current) return;
+      const elements = containerRef.current.querySelectorAll('.char');
+      
+      anime.timeline({ loop: false })
+        .add({
+          targets: elements,
+          translateY: [20, 0],
+          translateZ: 0,
+          opacity: [0, 1],
+          easing: "easeOutExpo",
+          duration: 1200,
+          delay: (el: any, i: number) => delay + 30 * i
+        });
+    });
   }, [delay, text]);
 
   const words = text.split(" ");

@@ -355,6 +355,10 @@ export default function AnalyticsPage() {
   const websiteUrl = websiteName;
   const dateLabel = typeof dateRange === 'string' ? dateRange : `${dateRange.from.toLocaleDateString()} — ${dateRange.to.toLocaleDateString()}`;
 
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
+  const userName = session?.user?.name?.split(' ')[0] || 'there';
+
   const handleExportCSV = () => {
     if (!ga4Overview) return;
     exportAnalyticsCSV(ga4Overview, websiteUrl, dateLabel);
@@ -531,7 +535,32 @@ export default function AnalyticsPage() {
         <div className={styles.panel} style={{ gridColumn: '1 / -1' }}>
           <div className={styles.panelHeader}>
             Users &amp; Sessions Trend
-            <span className={styles.panelHeaderTag}>DAILY · LAST 30 DAYS</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span className={styles.panelHeaderTag}>
+                {typeof dateRange === 'string' ? dateRange.toUpperCase() : 'CUSTOM'}
+              </span>
+              <input 
+                type="month" 
+                onChange={(e) => {
+                  const [year, month] = e.target.value.split('-');
+                  if(year && month) {
+                    const from = new Date(parseInt(year), parseInt(month)-1, 1);
+                    const to = new Date(parseInt(year), parseInt(month), 0);
+                    setDateRange({ from, to });
+                  }
+                }}
+                style={{
+                  border: '1px solid #E2E8F0',
+                  borderRadius: '6px',
+                  padding: '4px 8px',
+                  fontSize: '0.75rem',
+                  color: '#475569',
+                  outline: 'none',
+                  cursor: 'pointer',
+                  background: '#FFFFFF'
+                }}
+              />
+            </div>
           </div>
           <div style={{ height: '300px', marginTop: '1rem' }}>
             <ResponsiveContainer width="100%" height="100%">
@@ -1084,8 +1113,8 @@ export default function AnalyticsPage() {
       <div className={styles.topHeader}>
         <div>
           <div className={styles.eyebrow}>Analytics · Live GA4 Data</div>
-          <h1 className={styles.pageTitle}>Good afternoon, Rajesh</h1>
-          <p className={styles.pageSubtitle}>Here's how your website is performing today.</p>
+          <h1 className={styles.pageTitle}>{greeting}, {userName}</h1>
+          <p className={styles.pageSubtitle}>Here's how {websiteName === 'my-site' ? 'your website' : websiteName} is performing today.</p>
 
   
         </div>
