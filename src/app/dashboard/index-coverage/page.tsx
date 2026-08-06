@@ -6,6 +6,8 @@ import {
   PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend 
 } from 'recharts';
 import { AlertTriangle, CheckCircle, Info, XCircle, Search, RefreshCw, Layers } from 'lucide-react';
+import ExportReportButton from '@/components/ExportReportButton';
+import Skeleton from '@/components/ui/Skeleton';
 import { toast } from 'react-hot-toast';
 import { useSite } from '@/lib/SiteContext';
 import styles from '../search-console/page.module.css';
@@ -111,7 +113,7 @@ export default function IndexCoverageDashboard() {
           </div>
           <div style={{ height: '300px', marginTop: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             {loading ? (
-               <div style={{ color: '#64748b' }}>Loading chart...</div>
+               <Skeleton variant="circular" width="200px" height="200px" />
             ) : coverageData ? (
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
@@ -137,7 +139,7 @@ export default function IndexCoverageDashboard() {
                 <CheckCircle size={18} />
                 <span style={{ fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase' }}>Valid & Indexed</span>
               </div>
-              <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#0F172A' }}>{loading ? '-' : formatNumber(coverageData?.indexed)}</div>
+              <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#0F172A' }}>{loading ? <Skeleton width="80px" height="42px" /> : formatNumber(coverageData?.indexed)}</div>
            </div>
            
            <div className={styles.panel} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '1.5rem', background: 'rgba(239, 68, 68, 0.05)', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
@@ -145,7 +147,7 @@ export default function IndexCoverageDashboard() {
                 <XCircle size={18} />
                 <span style={{ fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase' }}>Errors / Excluded</span>
               </div>
-              <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#0F172A' }}>{loading ? '-' : formatNumber(coverageData?.excluded)}</div>
+              <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#0F172A' }}>{loading ? <Skeleton width="80px" height="42px" /> : formatNumber(coverageData?.excluded)}</div>
            </div>
 
            <div className={styles.panel} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '1.5rem', background: 'rgba(245, 158, 11, 0.05)', border: '1px solid rgba(245, 158, 11, 0.2)' }}>
@@ -153,7 +155,7 @@ export default function IndexCoverageDashboard() {
                 <AlertTriangle size={18} />
                 <span style={{ fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase' }}>Crawled, Not Indexed</span>
               </div>
-              <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#0F172A' }}>{loading ? '-' : formatNumber(coverageData?.crawledNotIndexed)}</div>
+              <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#0F172A' }}>{loading ? <Skeleton width="80px" height="42px" /> : formatNumber(coverageData?.crawledNotIndexed)}</div>
            </div>
 
            <div className={styles.panel} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '1.5rem', background: 'rgba(100, 116, 139, 0.1)', border: '1px solid rgba(100, 116, 139, 0.2)' }}>
@@ -161,7 +163,7 @@ export default function IndexCoverageDashboard() {
                 <Info size={18} />
                 <span style={{ fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase' }}>Discovered, Not Indexed</span>
               </div>
-              <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#0F172A' }}>{loading ? '-' : formatNumber(coverageData?.discoveredNotIndexed)}</div>
+              <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#0F172A' }}>{loading ? <Skeleton width="80px" height="42px" /> : formatNumber(coverageData?.discoveredNotIndexed)}</div>
            </div>
         </div>
       </div>
@@ -180,21 +182,31 @@ export default function IndexCoverageDashboard() {
             </tr>
           </thead>
           <tbody>
-            {errorPages.map((page, i) => (
-              <tr key={i}>
-                <td style={{ color: '#0F172A', fontWeight: 500 }}>{page.url}</td>
-                <td>
-                  <span style={{ 
-                    padding: '4px 8px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600,
-                    background: page.status.includes('Not found') ? 'rgba(239, 68, 68, 0.1)' : 'rgba(245, 158, 11, 0.1)',
-                    color: page.status.includes('Not found') ? '#ef4444' : '#f59e0b'
-                  }}>
-                    {page.status}
-                  </span>
-                </td>
-                <td style={{ textAlign: 'right', color: '#64748B' }}>{page.lastCrawled}</td>
-              </tr>
-            ))}
+            {loading ? (
+              Array.from({ length: 4 }).map((_, idx) => (
+                <tr key={`skel-${idx}`}>
+                  <td><Skeleton width="100%" height="20px" /></td>
+                  <td><Skeleton width="100px" height="24px" borderRadius="4px" /></td>
+                  <td style={{ textAlign: 'right' }}><Skeleton width="80px" height="20px" /></td>
+                </tr>
+              ))
+            ) : (
+              errorPages.map((page, i) => (
+                <tr key={i}>
+                  <td style={{ color: '#0F172A', fontWeight: 500 }}>{page.url}</td>
+                  <td>
+                    <span style={{ 
+                      padding: '4px 8px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600,
+                      background: page.status.includes('Not found') ? 'rgba(239, 68, 68, 0.1)' : 'rgba(245, 158, 11, 0.1)',
+                      color: page.status.includes('Not found') ? '#ef4444' : '#f59e0b'
+                    }}>
+                      {page.status}
+                    </span>
+                  </td>
+                  <td style={{ textAlign: 'right', color: '#64748B' }}>{page.lastCrawled}</td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

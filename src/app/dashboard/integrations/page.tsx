@@ -114,8 +114,8 @@ export default function IntegrationsDashboard() {
 
       <div className="grid-responsive grid-cols-2" style={{ marginBottom: '2rem' }}>
         
-        {/* GOOGLE SEARCH CONSOLE */}
-        <div className={styles.panel} style={{ position: 'relative', overflow: 'hidden' }}>
+        {/* GOOGLE INTEGRATION */}
+        <div className={styles.panel} style={{ position: 'relative', overflow: 'hidden', gridColumn: '1 / -1' }}>
           {isGoogleConnected && (
             <div style={{ position: 'absolute', top: 0, right: 0, background: '#10b981', color: '#0F172A', fontSize: '0.75rem', fontWeight: 700, padding: '4px 12px', borderBottomLeftRadius: '8px' }}>
               AUTHORIZED
@@ -131,9 +131,9 @@ export default function IntegrationsDashboard() {
               </svg>
             </div>
             <div style={{ flex: 1 }}>
-              <h3 style={{ margin: '0 0 0.5rem 0', color: '#0F172A', fontSize: '1.1rem' }}>Google Search Console</h3>
+              <h3 style={{ margin: '0 0 0.5rem 0', color: '#0F172A', fontSize: '1.1rem' }}>Google (Analytics 4 & Search Console)</h3>
               <p style={{ margin: '0 0 1rem 0', color: '#64748B', fontSize: '0.85rem', lineHeight: 1.5 }}>
-                Sync your keyword rankings, index coverage, and click data directly from Google. Required for most SEO features.
+                Sync your keyword rankings, index coverage, real-time traffic, and user behavior directly from Google. Required for most SEO features. One click connects both services securely.
               </p>
               <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                 <button 
@@ -152,47 +152,7 @@ export default function IntegrationsDashboard() {
                     gap: '8px'
                   }}
                 >
-                  {loadingGoogle ? 'Connecting...' : isGoogleConnected ? <><CheckCircle size={16}/> Authorized</> : 'Connect Account'}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* GOOGLE ANALYTICS 4 */}
-        <div className={styles.panel} style={{ position: 'relative', overflow: 'hidden' }}>
-          {isGoogleConnected && (
-            <div style={{ position: 'absolute', top: 0, right: 0, background: '#10b981', color: '#0F172A', fontSize: '0.75rem', fontWeight: 700, padding: '4px 12px', borderBottomLeftRadius: '8px' }}>
-              AUTHORIZED
-            </div>
-          )}
-          <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-            <div style={{ width: '48px', height: '48px', background: '#F8D12F', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <BarChart2 size={28} color="#D95029" />
-            </div>
-            <div style={{ flex: 1 }}>
-              <h3 style={{ margin: '0 0 0.5rem 0', color: '#0F172A', fontSize: '1.1rem' }}>Google Analytics 4</h3>
-              <p style={{ margin: '0 0 1rem 0', color: '#64748B', fontSize: '0.85rem', lineHeight: 1.5 }}>
-                Track real-time traffic, user behavior, and conversion funnels. Connects automatically when you authorize Google.
-              </p>
-              <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                <button 
-                  onClick={handleConnectGa4}
-                  disabled={loadingGoogle}
-                  style={{ 
-                    padding: '0.6rem 1.25rem', 
-                    background: isGoogleConnected ? 'rgba(16, 185, 129, 0.1)' : '#FFFFFF', 
-                    color: isGoogleConnected ? '#10b981' : '#0F172A', 
-                    border: isGoogleConnected ? '1px solid rgba(16, 185, 129, 0.2)' : '1px solid #E2E8F0', 
-                    borderRadius: '6px', 
-                    cursor: isGoogleConnected ? 'default' : 'pointer',
-                    fontWeight: 600,
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px'
-                  }}
-                >
-                  {loadingGoogle ? 'Connecting...' : isGoogleConnected ? <><CheckCircle size={16}/> Authorized</> : 'Authorize via Google'}
+                  {loadingGoogle ? 'Connecting...' : isGoogleConnected ? <><CheckCircle size={16}/> Authorized</> : 'Connect Google Account'}
                 </button>
               </div>
             </div>

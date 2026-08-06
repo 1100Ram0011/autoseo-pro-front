@@ -8,6 +8,8 @@ import {
   PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip, Legend,
   BarChart, Bar, XAxis, YAxis, CartesianGrid
 } from 'recharts';
+import ExportReportButton from '@/components/ExportReportButton';
+import Skeleton from '@/components/ui/Skeleton';
 import { toast } from 'react-hot-toast';
 import { useSite } from '@/lib/SiteContext';
 import styles from '../search-console/page.module.css';
@@ -121,7 +123,9 @@ export default function MobileUsabilityDashboard() {
           </div>
           <div style={{ height: '250px', marginTop: '1rem' }}>
             {loading ? (
-              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', color: '#64748b' }}>Loading...</div>
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+                <Skeleton variant="circular" width="200px" height="200px" />
+              </div>
             ) : pieDataClicks.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
@@ -156,9 +160,14 @@ export default function MobileUsabilityDashboard() {
             </thead>
             <tbody>
               {loading ? (
-                <tr>
-                  <td colSpan={4} style={{ textAlign: 'center', padding: '3rem', color: '#64748b' }}>Loading device data...</td>
-                </tr>
+                Array.from({ length: 3 }).map((_, idx) => (
+                  <tr key={`skel-${idx}`}>
+                    <td><Skeleton width="120px" height="20px" /></td>
+                    <td style={{ textAlign: 'right' }}><Skeleton width="60px" height="20px" /></td>
+                    <td style={{ textAlign: 'right' }}><Skeleton width="60px" height="20px" /></td>
+                    <td style={{ textAlign: 'right' }}><Skeleton width="40px" height="20px" /></td>
+                  </tr>
+                ))
               ) : deviceData.length > 0 ? (
                 deviceData.map((d, i) => {
                   const share = totals.clicks > 0 ? ((d.clicks / totals.clicks) * 100).toFixed(1) : 0;

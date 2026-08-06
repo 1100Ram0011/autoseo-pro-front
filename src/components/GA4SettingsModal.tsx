@@ -61,10 +61,25 @@ export default function GA4SettingsModal({
     setError(null);
 
     try {
+      const selectedProp = properties.find(p => p.id.replace("properties/", "") === propertyId.trim());
+      let siteUrlToUpdate = selectedProp?.name?.trim();
+      
+      // Only update URL if the property name looks like a domain (contains a dot and no spaces)
+      if (siteUrlToUpdate && siteUrlToUpdate.includes('.') && !siteUrlToUpdate.includes(' ')) {
+        if (!/^https?:\/\//i.test(siteUrlToUpdate)) {
+          siteUrlToUpdate = 'https://' + siteUrlToUpdate;
+        }
+      } else {
+        siteUrlToUpdate = undefined;
+      }
+
       const res = await fetch(`${API_BASE}/sites/${siteId}/settings?email=${encodeURIComponent(email || '')}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ga4PropertyId: propertyId.trim() }),
+        body: JSON.stringify({ 
+          ga4PropertyId: propertyId.trim(),
+          ...(siteUrlToUpdate ? { url: siteUrlToUpdate } : {})
+        }),
       });
 
       if (!res.ok) throw new Error("Save failed");

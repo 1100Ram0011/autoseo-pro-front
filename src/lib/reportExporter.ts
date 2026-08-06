@@ -65,7 +65,7 @@ interface PDFContext {
   Gap: (h?: number) => void;
   KpiCard: (label: string, value: string, sub: string, color: number[], x: number, w: number) => void;
   Table: (headers: string[], rows: any[][], widths: number[], opts?: any) => void;
-  save: (filename: string) => void;
+  save: (filename: string, action?: 'download' | 'preview') => void;
 }
 
 async function createPDFDoc(websiteName: string, websiteUrl: string, reportTitle: string): Promise<PDFContext> {
@@ -186,7 +186,10 @@ async function createPDFDoc(websiteName: string, websiteUrl: string, reportTitle
     doc, PW, PH, M, COL, y, pg, P,
     F, D, C, LW, setupPage, newPage, need,
     H2, H3, Body, Gap, KpiCard, Table,
-    save: (filename: string) => doc.save(filename),
+    save: (filename: string, action: 'download' | 'preview' = 'download') => {
+      if (action === 'preview') window.open(doc.output('bloburl'), '_blank');
+      else doc.save(filename);
+    },
   };
 
   // Use a proxy so inner functions keep accessing the shared y via ctx
@@ -265,7 +268,7 @@ export function exportAnalyticsCSV(data: any, websiteUrl: string, dateLabel: str
   downloadCSV(buildCSV(rows), `analytics-${Date.now()}.csv`);
 }
 
-export async function exportAnalyticsPDF(data: any, websiteUrl: string, dateLabel: string) {
+export async function exportAnalyticsPDF(data: any, websiteUrl: string, dateLabel: string, action: 'download' | 'preview' = 'download') {
   const ctx = await createPDFDoc(websiteUrl, websiteUrl, 'Google Analytics Report');
 
   ctx.H2('Key Metrics');
@@ -307,13 +310,13 @@ export async function exportAnalyticsPDF(data: any, websiteUrl: string, dateLabe
     ctx.Table(['Date', 'Users', 'Sessions'], data.trend.map((t: any) => [t.date, fmtN(t.users), fmtN(t.sessions)]), [50, 40, ctx.COL - 90], { rightAlign: [1, 2] });
   }
 
-  ctx.save(`analytics-${Date.now()}.pdf`);
+  ctx.save(`analytics-${Date.now()}.pdf`, action);
 }
 
 /* ═══════════════════════════════════════════
    2. GOOGLE SEARCH CONSOLE REPORT
 ═══════════════════════════════════════════ */
-export function exportGSCCSV(overview: any, keywords: any[], pages: any[], countries: any[], websiteUrl: string, dateLabel: string) {
+export function exportGSCCSV(overview: any, keywords: any[], pages: any[], countries: any[], devices: any[], sitemaps: any[], insights: string[], websiteUrl: string, dateLabel: string) {
   const rows: any[][] = [];
   const add = (...c: any[]) => rows.push(c);
   const gap = () => rows.push([]);
@@ -369,10 +372,38 @@ export function exportGSCCSV(overview: any, keywords: any[], pages: any[], count
     gap();
   }
 
+  if (devices?.length) {
+    add('DEVICES (GSC)');
+    add('Rank', 'Device', 'Clicks', 'Impressions');
+    devices.slice(0, 10).forEach((d: any, i: number) => add(
+      i + 1, d.device || d.keys?.[0],
+      fmtN(d.clicks), fmtN(d.impressions)
+    ));
+    gap();
+  }
+
+  if (sitemaps?.length) {
+    add('SITEMAPS (GSC)');
+    add('Sitemap URL', 'Last Submitted', 'Status', 'Discovered Pages');
+    sitemaps.forEach((sm: any) => add(
+      sm.path,
+      sm.lastSubmitted ? new Date(sm.lastSubmitted).toLocaleDateString() : 'N/A',
+      sm.warnings > 0 ? 'Has warnings' : sm.errors > 0 ? 'Has errors' : 'Success',
+      fmtN(sm.contents?.[0]?.submitted || 0)
+    ));
+    gap();
+  }
+
+  if (insights?.length) {
+    add('AI-POWERED SEO INSIGHTS');
+    insights.forEach((ins: string) => add(ins));
+    gap();
+  }
+
   downloadCSV(buildCSV(rows), `gsc-report-${Date.now()}.csv`);
 }
 
-export async function exportGSCPDF(overview: any, keywords: any[], pages: any[], websiteUrl: string, dateLabel: string) {
+export async function exportGSCPDF(overview: any, keywords: any[], pages: any[], countries: any[], devices: any[], sitemaps: any[], insights: string[], websiteUrl: string, dateLabel: string, action: 'download' | 'preview' = 'download') {
   const ctx = await createPDFDoc(websiteUrl, websiteUrl, 'Search Console Report');
   const m = overview?.metrics || {};
 
@@ -417,7 +448,62 @@ export async function exportGSCPDF(overview: any, keywords: any[], pages: any[],
     );
   }
 
-  ctx.save(`gsc-report-${Date.now()}.pdf`);
+  if (countries?.length) {
+    ctx.newPage();
+    ctx.H2('Top Countries');
+    ctx.Table(
+      ['#', 'Country', 'Clicks', 'Impressions', 'CTR'],
+      countries.slice(0, 40).map((c: any, i: number) => [
+        i + 1, c.country || c.keys?.[0],
+        fmtN(c.clicks), fmtN(c.impressions),
+        `${((c.ctr || 0) * 100).toFixed(1)}%`
+      ]),
+      [10, ctx.COL - 90, 30, 30, 20],
+      { rightAlign: [2, 3, 4] }
+    );
+  }
+
+  if (devices?.length) {
+    ctx.newPage();
+    ctx.H2('Top Devices');
+    ctx.Table(
+      ['#', 'Device', 'Clicks', 'Impressions'],
+      devices.slice(0, 10).map((d: any, i: number) => [
+        i + 1, d.device || d.keys?.[0],
+        fmtN(d.clicks), fmtN(d.impressions)
+      ]),
+      [10, ctx.COL - 70, 30, 30],
+      { rightAlign: [2, 3] }
+    );
+  }
+
+  if (sitemaps?.length) {
+    ctx.newPage();
+    ctx.H2('Submitted Sitemaps');
+    ctx.Table(
+      ['Sitemap URL', 'Last Submitted', 'Status', 'Discovered Pages'],
+      sitemaps.map((sm: any) => [
+        sm.path.length > 40 ? sm.path.slice(0, 38) + '…' : sm.path,
+        sm.lastSubmitted ? new Date(sm.lastSubmitted).toLocaleDateString() : 'N/A',
+        sm.warnings > 0 ? 'Has warnings' : sm.errors > 0 ? 'Has errors' : 'Success',
+        fmtN(sm.contents?.[0]?.submitted || 0)
+      ]),
+      [ctx.COL - 80, 30, 25, 25],
+      { rightAlign: [3] }
+    );
+  }
+
+  if (insights?.length) {
+    ctx.newPage();
+    ctx.H2('AI-Powered SEO Insights');
+    ctx.Gap();
+    insights.forEach(ins => {
+      ctx.Body('• ' + ins);
+      ctx.Gap(2);
+    });
+  }
+
+  ctx.save(`gsc-report-${Date.now()}.pdf`, action);
 }
 
 /* ═══════════════════════════════════════════
@@ -443,10 +529,10 @@ export function exportKeywordsCSV(keywords: any[], websiteUrl: string) {
   add('KEYWORDS');
   add('Rank', 'Keyword', 'Position', 'Volume', 'Difficulty', 'Intent', 'URL');
   keywords.forEach((k: any, i: number) => add(
-    i + 1, k.keyword,
+    i + 1, k.keyword || k.kw || 'N/A',
     k.position || k.rank || 'N/A',
-    k.volume || 0,
-    k.difficulty || 0,
+    k.volume || k.vol || 0,
+    k.difficulty || k.diff || 0,
     k.intent || 'Unknown',
     k.url || ''
   ));
@@ -454,7 +540,7 @@ export function exportKeywordsCSV(keywords: any[], websiteUrl: string) {
   downloadCSV(buildCSV(rows), `keywords-${Date.now()}.csv`);
 }
 
-export async function exportKeywordsPDF(keywords: any[], websiteUrl: string) {
+export async function exportKeywordsPDF(keywords: any[], websiteUrl: string, action: 'download' | 'preview' = 'download') {
   const ctx = await createPDFDoc(websiteUrl, websiteUrl, 'Keyword Tracker Report');
 
   const inTop3 = keywords.filter(k => (k.position || k.rank) <= 3).length;
@@ -475,10 +561,10 @@ export async function exportKeywordsPDF(keywords: any[], websiteUrl: string) {
   ctx.Table(
     ['#', 'Keyword', 'Position', 'Volume', 'Difficulty', 'Intent'],
     keywords.map((k: any, i: number) => [
-      i + 1, k.keyword,
+      i + 1, k.keyword || k.kw || 'N/A',
       k.position || k.rank || 'N/A',
-      fmtN(k.volume || 0),
-      k.difficulty || 0,
+      fmtN(k.volume || k.vol || 0),
+      k.difficulty || k.diff || 0,
       k.intent || '—'
     ]),
     [10, ctx.COL - 110, 22, 28, 24, 26],
@@ -493,7 +579,7 @@ export async function exportKeywordsPDF(keywords: any[], websiteUrl: string) {
     }
   );
 
-  ctx.save(`keywords-${Date.now()}.pdf`);
+  ctx.save(`keywords-${Date.now()}.pdf`, action);
 }
 
 /* ═══════════════════════════════════════════
@@ -509,7 +595,7 @@ export function exportLighthouseCSV(pages: any[], websiteUrl: string) {
   add('Generated', new Date().toLocaleString('en-IN'));
   gap();
 
-  const audited = pages.filter(p => p.lighthouse_data);
+  const audited = pages.filter(p => p.psi_data);
   add('SUMMARY');
   add('Total Pages', pages.length);
   add('Audited Pages', audited.length);
@@ -519,34 +605,37 @@ export function exportLighthouseCSV(pages: any[], websiteUrl: string) {
   add('Page URL', 'Performance', 'SEO', 'Accessibility', 'Best Practices', 'LCP', 'CLS', 'Status');
   pages.forEach((page: any) => {
     let perf = 'Not audited', seo = '—', acc = '—', bp = '—', lcp = '—', cls = '—';
-    if (page.lighthouse_data) {
+    if (page.psi_data) {
       try {
-        const lh = JSON.parse(page.lighthouse_data);
-        perf = Math.round((lh.categories?.performance?.score || 0) * 100).toString();
-        seo = Math.round((lh.categories?.seo?.score || 0) * 100).toString();
-        acc = Math.round((lh.categories?.accessibility?.score || 0) * 100).toString();
-        bp = Math.round((lh.categories?.['best-practices']?.score || 0) * 100).toString();
-        lcp = lh.audits?.['largest-contentful-paint']?.displayValue || '—';
-        cls = lh.audits?.['cumulative-layout-shift']?.displayValue || '—';
+        const lh = JSON.parse(page.psi_data);
+        const mobile = lh.mobile || {};
+        perf = (mobile.performance || 0).toString();
+        seo = (mobile.seo || 0).toString();
+        acc = (mobile.accessibility || 0).toString();
+        bp = (mobile.bestPractices || 0).toString();
+        const cwv = mobile.coreWebVitals || mobile.cwv || {};
+        lcp = cwv.LCP || cwv.lcp || '—';
+        cls = cwv.CLS || cwv.cls || '—';
       } catch (e) {}
     }
-    add(page.url, perf, seo, acc, bp, lcp, cls, page.lighthouse_data ? 'Audited' : 'Pending');
+    add(page.url, perf, seo, acc, bp, lcp, cls, page.psi_data ? 'Audited' : 'Pending');
   });
 
   downloadCSV(buildCSV(rows), `lighthouse-${Date.now()}.csv`);
 }
 
-export async function exportLighthousePDF(pages: any[], websiteUrl: string) {
+export async function exportLighthousePDF(pages: any[], websiteUrl: string, action: 'download' | 'preview' = 'download') {
   const ctx = await createPDFDoc(websiteUrl, websiteUrl, 'Lighthouse Audit Report');
 
-  const audited = pages.filter(p => p.lighthouse_data);
+  const audited = pages.filter(p => p.psi_data);
   let avgPerf = 0, avgSeo = 0, avgAcc = 0;
   audited.forEach((p: any) => {
     try {
-      const lh = JSON.parse(p.lighthouse_data);
-      avgPerf += (lh.categories?.performance?.score || 0) * 100;
-      avgSeo += (lh.categories?.seo?.score || 0) * 100;
-      avgAcc += (lh.categories?.accessibility?.score || 0) * 100;
+      const lh = JSON.parse(p.psi_data);
+      const mobile = lh.mobile || {};
+      avgPerf += mobile.performance || 0;
+      avgSeo += mobile.seo || 0;
+      avgAcc += mobile.accessibility || 0;
     } catch (e) {}
   });
   if (audited.length > 0) { avgPerf /= audited.length; avgSeo /= audited.length; avgAcc /= audited.length; }
@@ -566,13 +655,14 @@ export async function exportLighthousePDF(pages: any[], websiteUrl: string) {
     ['Page URL', 'Perf', 'SEO', 'Access.', 'Best P.'],
     pages.map((p: any) => {
       let perf = 'N/A', seo = '—', acc = '—', bp = '—';
-      if (p.lighthouse_data) {
+      if (p.psi_data) {
         try {
-          const lh = JSON.parse(p.lighthouse_data);
-          perf = Math.round((lh.categories?.performance?.score || 0) * 100).toString();
-          seo = Math.round((lh.categories?.seo?.score || 0) * 100).toString();
-          acc = Math.round((lh.categories?.accessibility?.score || 0) * 100).toString();
-          bp = Math.round((lh.categories?.['best-practices']?.score || 0) * 100).toString();
+          const lh = JSON.parse(p.psi_data);
+          const mobile = lh.mobile || {};
+          perf = (mobile.performance || 0).toString();
+          seo = (mobile.seo || 0).toString();
+          acc = (mobile.accessibility || 0).toString();
+          bp = (mobile.bestPractices || 0).toString();
         } catch (e) {}
       }
       return [p.url, perf, seo, acc, bp];
@@ -587,7 +677,7 @@ export async function exportLighthousePDF(pages: any[], websiteUrl: string) {
     }
   );
 
-  ctx.save(`lighthouse-${Date.now()}.pdf`);
+  ctx.save(`lighthouse-${Date.now()}.pdf`, action);
 }
 
 /* ═══════════════════════════════════════════
@@ -637,7 +727,7 @@ export function exportSitemapsCSV(sitemaps: any[], websiteUrl: string) {
   downloadCSV(buildCSV(rows), `sitemaps-${Date.now()}.csv`);
 }
 
-export async function exportSitemapsPDF(sitemaps: any[], websiteUrl: string) {
+export async function exportSitemapsPDF(sitemaps: any[], websiteUrl: string, action: 'download' | 'preview' = 'download') {
   const ctx = await createPDFDoc(websiteUrl, websiteUrl, 'Sitemaps Report');
 
   const totalUrls = sitemaps.reduce((s: number, sm: any) => s + (sm.contents?.[0]?.submitted || 0), 0);
@@ -671,7 +761,7 @@ export async function exportSitemapsPDF(sitemaps: any[], websiteUrl: string) {
     }
   );
 
-  ctx.save(`sitemaps-${Date.now()}.pdf`);
+  ctx.save(`sitemaps-${Date.now()}.pdf`, action);
 }
 
 /* ═══════════════════════════════════════════

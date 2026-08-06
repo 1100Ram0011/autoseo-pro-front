@@ -13,6 +13,9 @@ import styles from './page.module.css';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 import ReportTemplate from '@/components/reports/ReportTemplate';
+import { useSession } from 'next-auth/react';
+import { API_BASE } from '@/lib/apiConfig';
+import { exportAnalyticsPDF, exportGSCPDF, exportLighthousePDF, exportSitemapsPDF, exportKeywordsPDF } from '@/lib/reportExporter';
 
 
 const getReportConfig = (type: string) => {
@@ -39,10 +42,12 @@ const itemVariants: Variants = {
 };
 
 export default function ReportsPage() {
+  const { data: session } = useSession();
+  const email = session?.user?.email;
+
   const [activeTab, setActiveTab] = useState('All Reports');
   const [showFeatureModal, setShowFeatureModal] = useState(false);
   const [showScheduleModal, setShowScheduleModal] = useState(false);
-  const [showGenerateModal, setShowGenerateModal] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [scheduleForm, setScheduleForm] = useState({ name: '', frequency: 'Monthly', emails: '' });
   const reportRef = useRef<HTMLDivElement>(null);
@@ -83,6 +88,41 @@ export default function ReportsPage() {
     const loadingToast = toast.loading(`${action === 'preview' ? 'Preparing Preview' : 'Generating'} ${report.name}...`);
     
     try {
+      if (['Analytics Report', 'GSC Report', 'Lighthouse Report', 'Sitemap Report', 'Keyword Report'].includes(report.type)) {
+        const dateStr = new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+        const dateQuery = 'range=30d';
+        
+        if (report.type === 'Analytics Report') {
+          const res = await fetch(`${API_BASE}/sites/${activeSiteId}/ga4/overview?${dateQuery}&email=${encodeURIComponent(email || '')}`);
+          if (res.ok) await exportAnalyticsPDF(await res.json(), report.scope, dateStr, action);
+        } else if (report.type === 'GSC Report') {
+          const [overview, keywords, pages, countries, devices, sitemaps, insights] = await Promise.all([
+            fetch(`${API_BASE}/sites/${activeSiteId}/gsc/overview?${dateQuery}&email=${encodeURIComponent(email || '')}`).then(res => res.json()),
+            fetch(`${API_BASE}/sites/${activeSiteId}/gsc/keywords?${dateQuery}&email=${encodeURIComponent(email || '')}`).then(res => res.json()),
+            fetch(`${API_BASE}/sites/${activeSiteId}/gsc/pages?${dateQuery}&email=${encodeURIComponent(email || '')}`).then(res => res.json()),
+            fetch(`${API_BASE}/sites/${activeSiteId}/gsc/countries?${dateQuery}&email=${encodeURIComponent(email || '')}`).then(res => res.json()),
+            fetch(`${API_BASE}/sites/${activeSiteId}/gsc/devices?${dateQuery}&email=${encodeURIComponent(email || '')}`).then(res => res.json()),
+            fetch(`${API_BASE}/sites/${activeSiteId}/gsc/sitemaps?email=${encodeURIComponent(email || '')}`).then(res => res.json()),
+            fetch(`${API_BASE}/sites/${activeSiteId}/gsc/insights?${dateQuery}&email=${encodeURIComponent(email || '')}`).then(res => res.json())
+          ]);
+          await exportGSCPDF(overview, keywords, pages, countries, devices, sitemaps, insights, report.scope, dateStr, action);
+        } else if (report.type === 'Lighthouse Report') {
+          const res = await fetch(`${API_BASE}/sites/${activeSiteId}/pages`);
+          if (res.ok) await exportLighthousePDF(await res.json(), report.scope, action);
+        } else if (report.type === 'Sitemap Report') {
+          const res = await fetch(`${API_BASE}/sites/${activeSiteId}/gsc/sitemaps?email=${encodeURIComponent(email || '')}`);
+          if (res.ok) await exportSitemapsPDF(await res.json(), report.scope, action);
+        } else if (report.type === 'Keyword Report') {
+          const res = await fetch(`${API_BASE}/sites/${activeSiteId}/gsc/keywords?${dateQuery}&email=${encodeURIComponent(email || '')}`);
+          if (res.ok) await exportKeywordsPDF(await res.json(), report.scope, action);
+        }
+
+        toast.success(action === 'preview' ? 'Preview opened!' : 'Downloaded successfully!', { id: loadingToast });
+        setIsGenerating(false);
+        setCurrentReport(null);
+        return;
+      }
+
       // Small delay to ensure React has rendered the ReportTemplate with the new currentReport state
       await new Promise(resolve => setTimeout(resolve, 300));
       
@@ -195,12 +235,6 @@ export default function ReportsPage() {
       </div>
   
         </div>
-        <button 
-          onClick={() => setShowGenerateModal(true)}
-          disabled={isGenerating}
-          style={{ background: '#3B82F6', border: 'none', color: '#FFFFFF', padding: '0.65rem 1.25rem', borderRadius: '8px', cursor: isGenerating ? 'not-allowed' : 'pointer', fontSize: '0.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem', boxShadow: '0 4px 14px 0 rgba(59,130,246,0.39)', opacity: isGenerating ? 0.7 : 1 }}>
-          <Plus size={16} /> {isGenerating ? 'Generating...' : 'Generate Report'}
-        </button>
       </motion.div>
 
       {/* Top Metrics Row */}
@@ -247,6 +281,43 @@ export default function ReportsPage() {
             <div style={{ fontSize: '0.75rem', color: '#64748B', fontWeight: 600 }}>Total Downloads</div>
             <div style={{ fontSize: '0.7rem', color: '#64748B' }}>All Time</div>
           </div>
+        </div>
+      </motion.div>
+
+      {/* Quick Generate Reports */}
+      <motion.div variants={itemVariants} style={{ background: '#FFFFFF', padding: '1.5rem', borderRadius: '16px', border: '1px solid #E2E8F0', marginBottom: '2rem' }}>
+        <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.1rem', fontWeight: 700, color: '#0F172A', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <FileText size={18} color="#3B82F6" /> Quick Generate Reports
+        </h3>
+        <p style={{ margin: '0 0 1.5rem', fontSize: '0.85rem', color: '#64748B', lineHeight: 1.5 }}>
+          Choose a specific report to generate. Comprehensive reports include all sections, while specialized reports focus on specific areas.
+        </p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+          {[
+            { type: 'Comprehensive Report', icon: <FileStack size={18} />, color: '#8B5CF6', desc: 'All data combined' },
+            { type: 'GSC Report', icon: <Search size={18} />, color: '#3B82F6', desc: 'Search Console metrics' },
+            { type: 'Analytics Report', icon: <BarChart2 size={18} />, color: '#0EA5E9', desc: 'Google Analytics 4' },
+            { type: 'Lighthouse Report', icon: <Trophy size={18} />, color: '#10B981', desc: 'Technical SEO & Speed' },
+            { type: 'Sitemap Report', icon: <Layout size={18} />, color: '#F59E0B', desc: 'Indexing & Coverage' },
+            { type: 'Keyword Report', icon: <TrendingUp size={18} />, color: '#D97706', desc: 'Rankings & Intent' },
+          ].map((opt) => (
+            <button
+              key={opt.type}
+              disabled={isGenerating}
+              onClick={() => {
+                const dateStr = new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+                generatePDF({ name: `${opt.type} — ${dateStr}`, type: opt.type, scope: sites?.find((s:any) => s.id === activeSiteId)?.url || 'example.com' }, 'download');
+              }}
+              style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '1rem', borderRadius: '12px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', cursor: isGenerating ? 'not-allowed' : 'pointer', textAlign: 'left', transition: 'all 0.2s', opacity: isGenerating ? 0.6 : 1 }}
+              onMouseEnter={(e) => !isGenerating && (e.currentTarget.style.borderColor = opt.color)}
+              onMouseLeave={(e) => !isGenerating && (e.currentTarget.style.borderColor = '#E2E8F0')}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: opt.color, marginBottom: '4px', fontWeight: 600 }}>
+                {opt.icon} {opt.type.replace(' Report', '')}
+              </div>
+              <div style={{ fontSize: '0.75rem', color: '#64748B' }}>{opt.desc}</div>
+            </button>
+          ))}
         </div>
       </motion.div>
 
@@ -361,7 +432,7 @@ export default function ReportsPage() {
           </p>
           <div style={{ display: 'flex', gap: '1rem' }}>
             <button 
-              onClick={() => setShowGenerateModal(true)}
+              onClick={() => setShowFeatureModal(true)}
               style={{ background: '#3B82F6', border: 'none', color: '#FFFFFF', padding: '0.6rem 1.25rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <Plus size={16} /> Generate Now
             </button>
@@ -475,56 +546,6 @@ export default function ReportsPage() {
               <button onClick={handleScheduleReport} style={{ background: '#3B82F6', border: 'none', color: '#FFFFFF', padding: '0.6rem 1.25rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600, boxShadow: '0 4px 14px 0 rgba(59,130,246,0.39)' }}>
                 Save Schedule
               </button>
-            </div>
-          </motion.div>
-        </div>
-      )}
-
-      {/* Generate Report Modal */}
-      {showGenerateModal && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(4px)' }}>
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9, y: 20 }} 
-            animate={{ opacity: 1, scale: 1, y: 0 }} 
-            style={{ background: '#FFFFFF', padding: '2rem', borderRadius: '16px', width: '500px', maxWidth: '90vw', boxShadow: '0 20px 40px -10px rgba(0,0,0,0.2)', border: '1px solid #E2E8F0', position: 'relative' }}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-              <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 700, color: '#0F172A', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <FileText size={20} color="#3B82F6" /> Select Report Type
-              </h3>
-              <button onClick={() => setShowGenerateModal(false)} style={{ background: 'transparent', border: 'none', cursor: 'pointer' }}><X size={20} color="#64748B" /></button>
-            </div>
-            
-            <p style={{ margin: '0 0 1.5rem', fontSize: '0.85rem', color: '#64748B', lineHeight: 1.5 }}>
-              Choose a specific report to generate. Comprehensive reports include all sections, while specialized reports focus on specific areas.
-            </p>
-            
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '2rem' }}>
-              {[
-                { type: 'Comprehensive Report', icon: <FileStack size={18} />, color: '#8B5CF6', desc: 'All data combined' },
-                { type: 'GSC Report', icon: <Search size={18} />, color: '#3B82F6', desc: 'Search Console metrics' },
-                { type: 'Analytics Report', icon: <BarChart2 size={18} />, color: '#0EA5E9', desc: 'Google Analytics 4' },
-                { type: 'Lighthouse Report', icon: <Trophy size={18} />, color: '#10B981', desc: 'Technical SEO & Speed' },
-                { type: 'Sitemap Report', icon: <Layout size={18} />, color: '#F59E0B', desc: 'Indexing & Coverage' },
-                { type: 'Keyword Report', icon: <TrendingUp size={18} />, color: '#D97706', desc: 'Rankings & Intent' },
-              ].map((opt) => (
-                <button
-                  key={opt.type}
-                  onClick={() => {
-                    const dateStr = new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-                    generatePDF({ name: `${opt.type} — ${dateStr}`, type: opt.type, scope: sites?.find((s:any) => s.id === activeSiteId)?.url || 'example.com' }, 'download');
-                    setShowGenerateModal(false);
-                  }}
-                  style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '1rem', borderRadius: '12px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', cursor: 'pointer', textAlign: 'left', transition: 'all 0.2s' }}
-                  onMouseEnter={(e) => e.currentTarget.style.borderColor = opt.color}
-                  onMouseLeave={(e) => e.currentTarget.style.borderColor = '#E2E8F0'}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: opt.color, marginBottom: '4px', fontWeight: 600 }}>
-                    {opt.icon} {opt.type.replace(' Report', '')}
-                  </div>
-                  <div style={{ fontSize: '0.75rem', color: '#64748B' }}>{opt.desc}</div>
-                </button>
-              ))}
             </div>
           </motion.div>
         </div>

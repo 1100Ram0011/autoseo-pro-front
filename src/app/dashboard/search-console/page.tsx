@@ -14,12 +14,17 @@ import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useSite } from '@/lib/SiteContext';
+import useSWR from 'swr';
+import { fetcher } from '@/lib/api';
 import DateRangePicker, { DateRangeValue } from '@/components/DateRangePicker';
 import GSCSettingsModal from '@/components/GSCSettingsModal';
 import SetupGuide from '@/components/SetupGuide';
+import DashboardSkeleton from '@/components/ui/DashboardSkeleton';
 import styles from './page.module.css';
 import ExportReportButton from '@/components/ExportReportButton';
 import { exportGSCCSV, exportGSCPDF } from '@/lib/reportExporter';
+import { AnimeStaggerGrid } from '@/components/ui/AnimeStaggerGrid';
+import { AnimeTextReveal } from '@/components/ui/AnimeTextReveal';
 
 const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#14b8a6'];
 const TABS = ['Overview', 'Keywords', 'Pages', 'Countries', 'Devices', 'Sitemaps', 'URL Inspect', 'Insights'] as const;
@@ -35,25 +40,6 @@ export default function SearchConsoleDashboard() {
   const [showSetupGuide, setShowSetupGuide] = useState(false);
   const [dateRange, setDateRange] = useState<DateRangeValue>('30d');
 
-  // All Data States
-  const [gscOverview, setGscOverview] = useState<any>(null);
-  const [gscKeywords, setGscKeywords] = useState<any[]>([]);
-  const [gscPages, setGscPages] = useState<any[]>([]);
-  const [gscCountries, setGscCountries] = useState<any[]>([]);
-  const [gscDevices, setGscDevices] = useState<any[]>([]);
-  const [gscSitemaps, setGscSitemaps] = useState<any[]>([]);
-  const [gscInsights, setGscInsights] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  // URL Inspection
-  const [inspectUrl, setInspectUrl] = useState('');
-  const [inspectLoading, setInspectLoading] = useState(false);
-  const [inspectResult, setInspectResult] = useState<any>(null);
-
-  // Keyword tab filter
-  const [kwFilter, setKwFilter] = useState<'all' | 'striking' | 'lowctr' | 'zeroctr'>('all');
-
   // Build date query string
   const dateQuery = useMemo(() => {
     if (typeof dateRange === 'string') return `range=${dateRange}`;
@@ -62,41 +48,32 @@ export default function SearchConsoleDashboard() {
     return `range=custom&from=${from}&to=${to}`;
   }, [dateRange]);
 
+  // Data States
+  const { data: gscOverview, error: errOv, isLoading: ldOv } = useSWR(selectedSiteId ? `${API_BASE}/sites/${selectedSiteId}/gsc/overview?${dateQuery}&email=${encodeURIComponent(email || '')}` : null, fetcher, { keepPreviousData: true });
+  const { data: kwData } = useSWR(selectedSiteId ? `${API_BASE}/sites/${selectedSiteId}/gsc/keywords?${dateQuery}&email=${encodeURIComponent(email || '')}` : null, fetcher, { keepPreviousData: true });
+  const { data: pgData } = useSWR(selectedSiteId ? `${API_BASE}/sites/${selectedSiteId}/gsc/pages?${dateQuery}&email=${encodeURIComponent(email || '')}` : null, fetcher, { keepPreviousData: true });
+  const { data: ctData } = useSWR(selectedSiteId ? `${API_BASE}/sites/${selectedSiteId}/gsc/countries?${dateQuery}&email=${encodeURIComponent(email || '')}` : null, fetcher, { keepPreviousData: true });
+  const { data: dvData } = useSWR(selectedSiteId ? `${API_BASE}/sites/${selectedSiteId}/gsc/devices?${dateQuery}&email=${encodeURIComponent(email || '')}` : null, fetcher, { keepPreviousData: true });
+  const { data: smData } = useSWR(selectedSiteId ? `${API_BASE}/sites/${selectedSiteId}/gsc/sitemaps?email=${encodeURIComponent(email || '')}` : null, fetcher, { keepPreviousData: true });
+  const { data: insData } = useSWR(selectedSiteId ? `${API_BASE}/sites/${selectedSiteId}/gsc/insights?${dateQuery}&email=${encodeURIComponent(email || '')}` : null, fetcher, { keepPreviousData: true });
 
-  useEffect(() => {
-    if (!selectedSiteId) return;
-    const fetchAll = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const [ovRes, kwRes, pgRes, ctRes, dvRes, smRes, insRes] = await Promise.all([
-          fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/overview?${dateQuery}&email=${encodeURIComponent(email || '')}`),
-          fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/keywords?${dateQuery}&email=${encodeURIComponent(email || '')}`),
-          fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/pages?${dateQuery}&email=${encodeURIComponent(email || '')}`),
-          fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/countries?${dateQuery}&email=${encodeURIComponent(email || '')}`),
-          fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/devices?${dateQuery}&email=${encodeURIComponent(email || '')}`),
-          fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/sitemaps?email=${encodeURIComponent(email || '')}`),
-          fetch(`${API_BASE}/sites/${selectedSiteId}/gsc/insights?${dateQuery}&email=${encodeURIComponent(email || '')}`),
-        ]);
+  const gscKeywords = kwData?.keywords || [];
+  const gscPages = pgData?.pages || [];
+  const gscCountries = ctData?.countries || [];
+  const gscDevices = dvData?.devices || [];
+  const gscSitemaps = smData?.sitemaps || [];
+  const gscInsights = insData?.insights || [];
+  
+  const loading = ldOv;
+  const error = errOv?.message || gscOverview?.error;
 
-        const ovData = await ovRes.json();
-        if (ovData.error) throw new Error(ovData.error);
-        setGscOverview(ovData);
+  // URL Inspection
+  const [inspectUrl, setInspectUrl] = useState('');
+  const [inspectLoading, setInspectLoading] = useState(false);
+  const [inspectResult, setInspectResult] = useState<any>(null);
 
-        if (kwRes.ok) { const d = await kwRes.json(); setGscKeywords(d.keywords || []); }
-        if (pgRes.ok) { const d = await pgRes.json(); setGscPages(d.pages || []); }
-        if (ctRes.ok) { const d = await ctRes.json(); setGscCountries(d.countries || []); }
-        if (dvRes.ok) { const d = await dvRes.json(); setGscDevices(d.devices || []); }
-        if (smRes.ok) { const d = await smRes.json(); setGscSitemaps(d.sitemaps || []); }
-        if (insRes.ok) { const d = await insRes.json(); setGscInsights(d.insights || []); }
-      } catch (err: any) {
-        setError(err.message || 'Failed to fetch GSC data');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchAll();
-  }, [selectedSiteId, dateQuery]);
+  // Keyword tab filter
+  const [kwFilter, setKwFilter] = useState<'all' | 'striking' | 'lowctr' | 'zeroctr'>('all');
 
   // URL Inspection Handler
   const handleInspect = async (e: React.FormEvent) => {
@@ -161,21 +138,21 @@ export default function SearchConsoleDashboard() {
 
   // Filtered keywords
   const filteredKeywords = useMemo(() => {
-    if (kwFilter === 'striking') return gscKeywords.filter(k => k.position > 3 && k.position <= 10).sort((a, b) => b.impressions - a.impressions);
-    if (kwFilter === 'lowctr') return gscKeywords.filter(k => k.impressions > 500 && k.ctr < 2).sort((a, b) => b.impressions - a.impressions);
-    if (kwFilter === 'zeroctr') return gscKeywords.filter(k => k.clicks === 0 && k.impressions > 100).sort((a, b) => b.impressions - a.impressions);
-    return gscKeywords.sort((a, b) => b.clicks - a.clicks);
+    if (kwFilter === 'striking') return gscKeywords.filter((k: any) => k.position > 3 && k.position <= 10).sort((a: any, b: any) => b.impressions - a.impressions);
+    if (kwFilter === 'lowctr') return gscKeywords.filter((k: any) => k.impressions > 500 && k.ctr < 2).sort((a: any, b: any) => b.impressions - a.impressions);
+    if (kwFilter === 'zeroctr') return gscKeywords.filter((k: any) => k.clicks === 0 && k.impressions > 100).sort((a: any, b: any) => b.impressions - a.impressions);
+    return gscKeywords.sort((a: any, b: any) => b.clicks - a.clicks);
   }, [gscKeywords, kwFilter]);
 
   // Device totals
-  const totalDeviceClicks = gscDevices.reduce((s, d) => s + (d.clicks || 0), 0);
+  const totalDeviceClicks = gscDevices.reduce((s: any, d: any) => s + (d.clicks || 0), 0);
 
   // ==================== RENDER TABS ====================
 
   const renderOverview = () => (
     <>
       {/* 6 Metric Cards */}
-      <div className={styles.metricsGrid}>
+      <AnimeStaggerGrid className={styles.metricsGrid}>
         {[
           { title: 'Total Clicks', value: gscOverview.metrics.clicks.toLocaleString(), change: gscOverview.metrics.clicksChange, icon: <Eye size={18} color="#3b82f6" /> },
           { title: 'Total Impressions', value: gscOverview.metrics.impressions >= 1e6 ? `${(gscOverview.metrics.impressions/1e6).toFixed(2)}M` : gscOverview.metrics.impressions.toLocaleString(), change: gscOverview.metrics.impressionsChange, icon: <Activity size={18} color="#10b981" /> },
@@ -183,7 +160,7 @@ export default function SearchConsoleDashboard() {
           { title: 'Avg Position', value: gscOverview.metrics.position.toFixed(1), change: gscOverview.metrics.positionChange, icon: <ArrowUpRight size={18} color="#8b5cf6" />, invertColor: true },
           { title: 'Indexed Pages', value: (gscOverview.metrics.indexed || 1324).toLocaleString(), change: 12, icon: <CheckCircle size={18} color="#06b6d4" /> },
           { title: 'Not Indexed', value: (gscOverview.metrics.notIndexed || 154).toLocaleString(), change: -3, icon: <XCircle size={18} color="#ef4444" /> },
-        ].map((m, i) => (
+        ].map((m: any, i: number) => (
           <div className={styles.metricCard} key={i}>
             <div style={{ marginBottom: '0.5rem' }}>{m.icon}</div>
             <div className={styles.metricTitle}>{m.title}</div>
@@ -193,7 +170,7 @@ export default function SearchConsoleDashboard() {
             </div>
           </div>
         ))}
-      </div>
+      </AnimeStaggerGrid>
 
       {/* AI Insights */}
       {gscInsights.length > 0 && (
@@ -202,7 +179,7 @@ export default function SearchConsoleDashboard() {
           <div style={{ fontSize: '0.85rem', color: '#0F172A' }}>
             <strong style={{color: '#a855f7'}}>AI SEO Insights:</strong>
             <ul style={{ margin: '0.5rem 0 0 1rem', padding: 0 }}>
-              {gscInsights.map((ins, i) => <li key={i} style={{ marginBottom: '0.25rem' }}>{ins}</li>)}
+              {gscInsights.map((ins: any, i: number) => <li key={i} style={{ marginBottom: '0.25rem' }}>{ins}</li>)}
             </ul>
           </div>
         </div>
@@ -244,7 +221,7 @@ export default function SearchConsoleDashboard() {
             <table className={styles.dataTable}>
               <thead><tr><th>Page</th><th className={styles.alignRight}>Clicks</th><th className={styles.alignRight}>Impressions</th><th className={styles.alignRight}>CTR</th><th className={styles.alignRight}>Position</th></tr></thead>
               <tbody>
-                {gscPages.slice(0, 5).map((p, i) => (
+                {gscPages.slice(0, 5).map((p: any, i: number) => (
                   <tr key={i}>
                     <td className={styles.truncateUrl} title={p.page}>{p.page}</td>
                     <td className={styles.alignRight}>{p.clicks?.toLocaleString()}</td>
@@ -280,7 +257,7 @@ export default function SearchConsoleDashboard() {
             <table className={styles.dataTable}>
               <thead><tr><th>Query</th><th className={styles.alignRight}>Pos</th><th className={styles.alignRight}>Clicks</th></tr></thead>
               <tbody>
-                {gscKeywords.slice(0, 5).map((k, i) => (
+                {gscKeywords.slice(0, 5).map((k: any, i: number) => (
                   <tr key={i}>
                     <td style={{ maxWidth: '140px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={k.keyword}>{k.keyword}</td>
                     <td className={styles.alignRight} style={{ color: k.position > 10 ? '#f59e0b' : '#10b981' }}>{k.position?.toFixed(1)}</td>
@@ -334,7 +311,7 @@ export default function SearchConsoleDashboard() {
             <tr><th>#</th><th>Query</th><th className={styles.alignRight}>Clicks</th><th className={styles.alignRight}>Impressions</th><th className={styles.alignRight}>CTR</th><th className={styles.alignRight}>Position</th><th style={{textAlign:'center'}}>Action</th></tr>
           </thead>
           <tbody>
-            {filteredKeywords.map((k, i) => (
+            {filteredKeywords.map((k: any, i: number) => (
               <tr key={i}>
                 <td style={{ color: '#64748b', width: '30px' }}>{i + 1}</td>
                 <td style={{ color: '#0F172A', maxWidth: '300px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={k.keyword}>{k.keyword}</td>
@@ -363,7 +340,7 @@ export default function SearchConsoleDashboard() {
           <tr><th>#</th><th>Page URL</th><th className={styles.alignRight}>Clicks</th><th className={styles.alignRight}>Impressions</th><th className={styles.alignRight}>CTR</th><th className={styles.alignRight}>Position</th><th style={{textAlign:'center'}}>Inspect</th></tr>
         </thead>
         <tbody>
-          {gscPages.map((p, i) => (
+          {gscPages.map((p: any, i: number) => (
             <tr key={i}>
               <td style={{ color: '#64748b', width: '30px' }}>{i + 1}</td>
               <td className={styles.truncateUrl} title={p.page}>{p.page}</td>
@@ -383,9 +360,9 @@ export default function SearchConsoleDashboard() {
   );
 
   const renderCountries = () => {
-    const totalClicks = gscCountries.reduce((s, c) => s + (c.clicks || 0), 0);
+    const totalClicks = gscCountries.reduce((s: any, c: any) => s + (c.clicks || 0), 0);
     const safeGscCountries = Array.isArray(gscCountries) ? gscCountries : [];
-    const chartData = safeGscCountries.slice(0, 10).map((c, i) => ({ ...c, color: COLORS[i % COLORS.length] }));
+    const chartData = safeGscCountries.slice(0, 10).map((c: any, i: number) => ({ ...c, color: COLORS[i % COLORS.length] }));
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
@@ -419,7 +396,7 @@ export default function SearchConsoleDashboard() {
                   </PieChart>
                 </ResponsiveContainer>
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                  {chartData.map((c, i) => (
+                  {chartData.map((c: any, i: number) => (
                     <div key={i} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem' }}>
                       <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#0F172A' }}>
                         <div style={{ width: 8, height: 8, borderRadius: '50%', background: c.color }}></div>
@@ -441,7 +418,7 @@ export default function SearchConsoleDashboard() {
           <table className={styles.dataTable}>
             <thead><tr><th>#</th><th>Country</th><th className={styles.alignRight}>Clicks</th><th className={styles.alignRight}>Impressions</th><th className={styles.alignRight}>CTR</th></tr></thead>
             <tbody>
-              {gscCountries.map((c, i) => (
+              {gscCountries.map((c: any, i: number) => (
                 <tr key={i}>
                   <td style={{ color: '#64748b', width: '30px' }}>{i + 1}</td>
                   <td style={{ color: '#0F172A' }}>{c.country}</td>
@@ -466,7 +443,7 @@ export default function SearchConsoleDashboard() {
           <div className={styles.panelHeader}>Device Split by Clicks</div>
           {gscDevices.length > 0 ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '1rem 0' }}>
-              {gscDevices.map((d, i) => (
+              {gscDevices.map((d: any, i: number) => (
                 <div key={i}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', marginBottom: '0.3rem' }}>
                     <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#0F172A' }}>
@@ -489,7 +466,7 @@ export default function SearchConsoleDashboard() {
           <table className={styles.dataTable}>
             <thead><tr><th>Device</th><th className={styles.alignRight}>Clicks</th><th className={styles.alignRight}>Impressions</th></tr></thead>
             <tbody>
-              {gscDevices.map((d, i) => (
+              {gscDevices.map((d: any, i: number) => (
                 <tr key={i}>
                   <td style={{ color: '#0F172A', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>{deviceIcons[d.device] || <Monitor size={14} />} {d.device}</td>
                   <td className={styles.alignRight} style={{ fontWeight: 600, color: '#3b82f6' }}>{d.clicks?.toLocaleString()}</td>
@@ -627,7 +604,7 @@ export default function SearchConsoleDashboard() {
         <div className={styles.panelHeader}><Lightbulb size={16} color="#f59e0b" /> AI-Powered SEO Insights</div>
         {gscInsights.length > 0 ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            {gscInsights.map((ins, i) => (
+            {gscInsights.map((ins: any, i: number) => (
               <div key={i} style={{ background: 'rgba(245,158,11,0.05)', border: '1px solid rgba(245,158,11,0.15)', borderRadius: '8px', padding: '1rem', display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
                 <Zap size={18} color="#f59e0b" style={{ flexShrink: 0, marginTop: '2px' }} />
                 <span style={{ fontSize: '0.9rem', color: '#0F172A' }}>{ins}</span>
@@ -650,7 +627,7 @@ export default function SearchConsoleDashboard() {
         <table className={styles.dataTable}>
           <thead><tr><th>Keyword</th><th className={styles.alignRight}>Clicks</th><th className={styles.alignRight}>Impressions</th><th className={styles.alignRight}>Position</th><th className={styles.alignRight}>Potential</th></tr></thead>
           <tbody>
-            {(Array.isArray(gscKeywords) ? gscKeywords : []).filter(k => k.position > 3 && k.position <= 10).sort((a, b) => b.impressions - a.impressions).slice(0, 10).map((k, i) => (
+            {(Array.isArray(gscKeywords) ? gscKeywords : []).filter(k => k.position > 3 && k.position <= 10).sort((a, b) => b.impressions - a.impressions).slice(0, 10).map((k: any, i: number) => (
               <tr key={i}>
                 <td style={{ color: '#0F172A' }}>{k.keyword}</td>
                 <td className={styles.alignRight}>{k.clicks?.toLocaleString()}</td>
@@ -671,7 +648,7 @@ export default function SearchConsoleDashboard() {
         <table className={styles.dataTable}>
           <thead><tr><th>Keyword</th><th className={styles.alignRight}>Impressions</th><th className={styles.alignRight}>CTR</th><th className={styles.alignRight}>Clicks</th></tr></thead>
           <tbody>
-            {(Array.isArray(gscKeywords) ? gscKeywords : []).filter(k => k.impressions > 500 && k.ctr < 2).sort((a, b) => b.impressions - a.impressions).slice(0, 10).map((k, i) => (
+            {(Array.isArray(gscKeywords) ? gscKeywords : []).filter(k => k.impressions > 500 && k.ctr < 2).sort((a, b) => b.impressions - a.impressions).slice(0, 10).map((k: any, i: number) => (
               <tr key={i}>
                 <td style={{ color: '#0F172A' }}>{k.keyword}</td>
                 <td className={styles.alignRight}>{k.impressions?.toLocaleString()}</td>
@@ -703,7 +680,10 @@ export default function SearchConsoleDashboard() {
   return (
     <div className={styles.dashboardWrapper}>
       <div className={styles.header}>
-        <h1 className={styles.title}>Search Console</h1>
+        <div>
+          <AnimeTextReveal text="Search Console" className={styles.title} />
+          <p style={{ color: '#64748B', marginTop: '0.25rem', fontSize: '0.9rem' }}>Real-time search performance and indexing status</p>
+        </div>
         <div className={styles.headerControls}>
           <DateRangePicker value={dateRange} onChange={setDateRange} />
           {email ? (
@@ -727,12 +707,12 @@ export default function SearchConsoleDashboard() {
           csvExport={() => {
             const dateLabel = typeof dateRange === 'string' ? dateRange : 'custom range';
             const url = sites?.find((s: any) => s.id === selectedSiteId)?.url || 'website';
-            exportGSCCSV(gscOverview, gscKeywords, gscPages, gscCountries, url, dateLabel);
+            exportGSCCSV(gscOverview, gscKeywords, gscPages, gscCountries, gscDevices, gscSitemaps, gscInsights, url, dateLabel);
           }}
           pdfExport={async () => {
             const dateLabel = typeof dateRange === 'string' ? dateRange : 'custom range';
             const url = sites?.find((s: any) => s.id === selectedSiteId)?.url || 'website';
-            await exportGSCPDF(gscOverview, gscKeywords, gscPages, url, dateLabel);
+            await exportGSCPDF(gscOverview, gscKeywords, gscPages, gscCountries, gscDevices, gscSitemaps, gscInsights, url, dateLabel);
           }}
           disabled={loading || !gscOverview}
         />
@@ -848,7 +828,7 @@ export default function SearchConsoleDashboard() {
           </div>
         )
       ) : loading ? (
-        <div style={{ padding: '4rem', textAlign: 'center', color: '#64748b' }}>Loading Live Google Search Console Data...</div>
+        <DashboardSkeleton />
       ) : sites.length === 0 ? (
         <div style={{ padding: '4rem', textAlign: 'center', color: '#64748b', background: '#F8FAFC', borderRadius: '8px', border: '1px dashed #CBD5E1' }}>
           <Globe size={40} color="#94A3B8" style={{ marginBottom: '1rem' }} />

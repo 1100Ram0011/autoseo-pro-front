@@ -1,6 +1,9 @@
 "use client";
 
 import { API_BASE } from '@/lib/apiConfig';
+import { toast } from 'react-hot-toast';
+import { useSite } from '@/lib/SiteContext';
+import Skeleton from '@/components/ui/Skeleton';
 import { Info } from "lucide-react";
 import { useState, useEffect } from 'react';
 import { fetcher } from '../../../lib/api';
@@ -82,7 +85,17 @@ export default function RecordingsPage() {
       </div>
 
       {loading ? (
-        <div style={{ color: '#64748B', fontSize: '0.9rem' }}>Loading UX issues...</div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+          {Array.from({ length: 3 }).map((_, idx) => (
+             <div key={`skel-${idx}`} style={{ background: '#FFFFFF', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 14, padding: '1.25rem 1.5rem', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+                <Skeleton variant="rectangular" width="48px" height="48px" borderRadius="12px" />
+                <div style={{ flex: 1 }}>
+                  <Skeleton width="40%" height="20px" style={{ marginBottom: '8px' }} />
+                  <Skeleton width="20%" height="16px" />
+                </div>
+             </div>
+          ))}
+        </div>
       ) : issues.length === 0 ? (
         <div style={{ background: '#FFFFFF', border: '1px dashed #E2E8F0', borderRadius: 14, padding: '3rem', textAlign: 'center' }}>
           <h3 style={{ margin: '0 0 0.5rem', color: '#0F172A', fontSize: '1.1rem' }}>No data found</h3>

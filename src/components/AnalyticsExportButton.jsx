@@ -74,8 +74,8 @@ function exportCSV(analytics, pageSpeed, websiteName, websiteUrl, dateLabel) {
     add("LANDING PAGES — Where Users Entered");
     add("Rank", "Page", "Sessions", "Bounce Rate", "Status");
     analytics.landingPages.forEach((p, i) =>
-      add(i + 1, p.page, p.sessions, `${p.bounceRate.toFixed(1)}%`,
-        p.bounceRate > 70 ? "Needs improvement" : p.bounceRate > 40 ? "Average" : "Good")
+      add(i + 1, p.page, p.sessions || 0, `${(p.bounceRate || 0).toFixed(1)}%`,
+          (p.bounceRate || 0) > 70 ? "High" : (p.bounceRate || 0) > 40 ? "Medium" : "Good")
     );
     gap();
   }
@@ -84,8 +84,8 @@ function exportCSV(analytics, pageSpeed, websiteName, websiteUrl, dateLabel) {
     add("EXIT PAGES — Where Users Left");
     add("Rank", "Page", "Views", "Exit Rate", "Priority");
     analytics.exitPages.forEach((p, i) =>
-      add(i + 1, p.page, p.exits, `${p.exitRate.toFixed(1)}%`,
-        p.exitRate > 60 ? "High" : "Normal")
+      add(i + 1, p.page, p.exits || 0, `${(p.exitRate || 0).toFixed(1)}%`,
+          (p.exitRate || 0) > 60 ? "High" : (p.exitRate || 0) > 30 ? "Medium" : "Low")
     );
     gap();
   }
@@ -115,6 +115,54 @@ function exportCSV(analytics, pageSpeed, websiteName, websiteUrl, dateLabel) {
     Object.entries(analytics.regions).sort((a, b) => b[1] - a[1])
       .forEach(([c, v], i) => add(i + 1, c, v, `${pct(v, tot)}%`));
     gap();
+  }
+
+  if (analytics.devices && Object.keys(analytics.devices).length) {
+    add("DEVICES");
+    add("Device", "Users", "Share");
+    const tot = Object.values(analytics.devices).reduce((s, v) => s + v, 0);
+    Object.entries(analytics.devices).sort((a, b) => b[1] - a[1])
+      .forEach(([c, v]) => add(c, v, `${pct(v, tot)}%`));
+    gap();
+  }
+
+  if (analytics.browsers && Object.keys(analytics.browsers).length) {
+    add("BROWSERS");
+    add("Browser", "Users", "Share");
+    const tot = Object.values(analytics.browsers).reduce((s, v) => s + v, 0);
+    Object.entries(analytics.browsers).sort((a, b) => b[1] - a[1])
+      .forEach(([c, v]) => add(c, v, `${pct(v, tot)}%`));
+    gap();
+  }
+
+  if (analytics.operatingSystems && Object.keys(analytics.operatingSystems).length) {
+    add("OPERATING SYSTEMS");
+    add("OS", "Users", "Share");
+    const tot = Object.values(analytics.operatingSystems).reduce((s, v) => s + v, 0);
+    Object.entries(analytics.operatingSystems).sort((a, b) => b[1] - a[1])
+      .forEach(([c, v]) => add(c, v, `${pct(v, tot)}%`));
+    gap();
+  }
+
+  if (analytics.realtimeDetail) {
+    if (analytics.realtimeDetail.byPage?.length) {
+      add("REALTIME - ACTIVE BY PAGE");
+      add("Page", "Active Users");
+      analytics.realtimeDetail.byPage.forEach(r => add(r.name || "Unknown", r.users));
+      gap();
+    }
+    if (analytics.realtimeDetail.byCountry?.length) {
+      add("REALTIME - ACTIVE BY COUNTRY");
+      add("Country", "Active Users");
+      analytics.realtimeDetail.byCountry.forEach(r => add(r.name || "Unknown", r.users));
+      gap();
+    }
+    if (analytics.realtimeDetail.byDevice?.length) {
+      add("REALTIME - ACTIVE BY DEVICE");
+      add("Device", "Active Users");
+      analytics.realtimeDetail.byDevice.forEach(r => add(r.name || "Unknown", r.users));
+      gap();
+    }
   }
 
   if (analytics.trend?.length) {
@@ -498,6 +546,35 @@ async function exportPDF(analytics, pageSpeed, websiteName, websiteUrl, dateLabe
     );
   }
 
+  if (analytics.realtimeDetail && analytics.realtimeUsers > 0) {
+    Gap(4);
+    H3("REAL-TIME ACTIVITY");
+    Body("Users currently active on your site.", 0);
+    
+    if (analytics.realtimeDetail.byPage?.length) {
+      Gap(2);
+      Table(
+        ["Active Page", "Users"],
+        analytics.realtimeDetail.byPage.map(r => {
+          const nm = String(r.name || "Unknown");
+          return [nm.length > 50 ? nm.slice(0, 48) + "…" : nm, r.users];
+        }),
+        [COL - 30, 30],
+        { rightAlign: [1] }
+      );
+    }
+    
+    if (analytics.realtimeDetail.byCountry?.length) {
+      Gap(2);
+      Table(
+        ["Country / City", "Users"],
+        analytics.realtimeDetail.byCountry.map(r => [r.name || "Unknown", r.users]),
+        [COL - 30, 30],
+        { rightAlign: [1] }
+      );
+    }
+  }
+
   /* ══════════════════════
      PAGE 3 — TRAFFIC
   ══════════════════════ */
@@ -589,7 +666,7 @@ async function exportPDF(analytics, pageSpeed, websiteName, websiteUrl, dateLabe
 
       // views + share
       C(P.orange); doc.setFontSize(8); doc.setFont("helvetica", "bold");
-      doc.text(p.views.toLocaleString(), M + COL - 22, y + 6, { align: "right" });
+      doc.text((p.views || 0).toLocaleString(), M + COL - 22, y + 6, { align: "right" });
       C(P.hint); doc.setFontSize(6.5); doc.setFont("helvetica", "normal");
       doc.text(`${pct(p.views, tvTot)}%`, M + COL - 1, y + 6, { align: "right" });
       y += 9;
@@ -608,9 +685,9 @@ async function exportPDF(analytics, pageSpeed, websiteName, websiteUrl, dateLabe
       analytics.landingPages.map((p, i) => [
         i + 1,
         p.page.length > 36 ? p.page.slice(0, 34) + "…" : p.page,
-        p.sessions.toLocaleString(),
-        `${p.bounceRate.toFixed(1)}%`,
-        p.bounceRate > 70 ? "Needs work" : p.bounceRate > 40 ? "Average" : "Good",
+        (p.sessions || 0).toLocaleString(),
+        `${(p.bounceRate || 0).toFixed(1)}%`,
+        (p.bounceRate || 0) > 70 ? "Needs work" : (p.bounceRate || 0) > 40 ? "Average" : "Good",
       ]),
       [9, COL - 88, 26, 26, 27],
       {
@@ -634,9 +711,9 @@ async function exportPDF(analytics, pageSpeed, websiteName, websiteUrl, dateLabe
       analytics.exitPages.map((p, i) => [
         i + 1,
         p.page.length > 36 ? p.page.slice(0, 34) + "…" : p.page,
-        p.exits.toLocaleString(),
-        `${p.exitRate.toFixed(1)}%`,
-        p.exitRate > 60 ? " High" : p.exitRate > 30 ? " Medium" : " Low",
+        (p.exits || 0).toLocaleString(),
+        `${(p.exitRate || 0).toFixed(1)}%`,
+        (p.exitRate || 0) > 60 ? " High" : (p.exitRate || 0) > 30 ? " Medium" : " Low",
       ]),
       [9, COL - 86, 26, 26, 25],
       { rightAlign: [2, 3] }
@@ -762,11 +839,52 @@ async function exportPDF(analytics, pageSpeed, websiteName, websiteUrl, dateLabe
 
       y += 7.5;
     });
-
     Gap(5);
   }
 
-  // // Countries
+  const osE = Object.entries(analytics.operatingSystems || {})
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 20);
+
+  const osT = osE.reduce((s, [, v]) => s + v, 0);
+  const osMax = osE[0]?.[1] || 1;
+
+  if (osE.length) {
+    H3("OPERATING SYSTEMS");
+    const osColors = [P.purple, P.orange, P.green, P.amber, P.red];
+
+    const labelX = M + 2;
+    const barX = M + 90;
+    const barW = 35;
+    const valueX = M + COL - 25;
+    const pctX = M + COL;
+
+    osE.forEach(([b, val], i) => {
+      need(8);
+      F(i % 2 === 0 ? P.white : P.card);
+      doc.rect(M, y, COL, 7.5, "F");
+      D(P.border); LW(0.1); doc.rect(M, y, COL, 7.5, "S");
+
+      const nm = String(b || "Unknown");
+      const name = nm.length > 18 ? nm.slice(0, 16) + "…" : nm;
+
+      C(P.text); doc.setFontSize(7.5); doc.setFont("helvetica", "normal");
+      doc.text(name, labelX, y + 5.2);
+
+      MiniBar(val, osMax, barX, y + 2.5, barW, 4, osColors[i % 5]);
+
+      C(P.text); doc.setFont("helvetica", "bold");
+      doc.text(val.toLocaleString(), valueX, y + 5.2, { align: "right" });
+
+      C(P.hint); doc.setFont("helvetica", "normal");
+      doc.text(`${pct(val, osT)}%`, pctX, y + 5.2, { align: "right" });
+
+      y += 7.5;
+    });
+    Gap(5);
+  }
+
+  // Countries
   // H3("TOP COUNTRIES");
   // const geoE  = Object.entries(analytics.countries||{}).sort((a,b)=>b[1]-a[1]).slice(0,50);
   // const geoT  = geoE.reduce((s,[,v])=>s+v,0);

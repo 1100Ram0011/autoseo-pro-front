@@ -9,6 +9,7 @@ import { useSite } from '@/lib/SiteContext';
 import styles from '../search-console/page.module.css';
 import ExportReportButton from '@/components/ExportReportButton';
 import { exportSitemapsCSV, exportSitemapsPDF } from '@/lib/reportExporter';
+import Skeleton from '@/components/ui/Skeleton';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -210,15 +211,15 @@ export default function SitemapsManager() {
         <motion.div variants={itemVariants} style={{ flex: '2 1 400px', minWidth: '280px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1.5rem' }}>
           <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '1.5rem', background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05))', border: '1px solid rgba(16, 185, 129, 0.2)', borderRadius: '16px' }}>
             <div style={{ fontSize: '0.8rem', color: '#10b981', fontWeight: 700, textTransform: 'uppercase', marginBottom: '8px', letterSpacing: '0.05em' }}>Discovered URLs</div>
-            <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#0F172A' }}>{loading ? '-' : discoveredUrls.toLocaleString()}</div>
+            <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#0F172A' }}>{loading ? <Skeleton width="100px" height="42px" /> : discoveredUrls.toLocaleString()}</div>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '1.5rem', background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05))', border: '1px solid rgba(59, 130, 246, 0.2)', borderRadius: '16px' }}>
             <div style={{ fontSize: '0.8rem', color: '#3b82f6', fontWeight: 700, textTransform: 'uppercase', marginBottom: '8px', letterSpacing: '0.05em' }}>Total Sitemaps</div>
-            <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#0F172A' }}>{loading ? '-' : totalSitemaps}</div>
+            <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#0F172A' }}>{loading ? <Skeleton width="100px" height="42px" /> : totalSitemaps}</div>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '1.5rem', background: totalErrors > 0 ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05))' : '#FFFFFF', border: totalErrors > 0 ? '1px solid rgba(239, 68, 68, 0.3)' : '1px solid #FFFFFF', borderRadius: '16px' }}>
             <div style={{ fontSize: '0.8rem', color: totalErrors > 0 ? '#ef4444' : '#64748B', fontWeight: 700, textTransform: 'uppercase', marginBottom: '8px', letterSpacing: '0.05em' }}>Sitemap Errors</div>
-            <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#0F172A' }}>{loading ? '-' : totalErrors}</div>
+            <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#0F172A' }}>{loading ? <Skeleton width="100px" height="42px" /> : totalErrors}</div>
           </div>
         </motion.div>
       </div>
@@ -241,12 +242,15 @@ export default function SitemapsManager() {
           </thead>
           <tbody>
             {loading ? (
-              <tr>
-                <td colSpan={5} style={{ textAlign: 'center', padding: '4rem', color: '#64748b' }}>
-                  <Loader2 size={28} className="spinner" style={{ margin: '0 auto 12px auto', color: '#3b82f6' }} />
-                  Loading sitemaps from Search Console...
-                </td>
-              </tr>
+              Array.from({ length: 4 }).map((_, idx) => (
+                <tr key={`skel-${idx}`} style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
+                  <td style={{ padding: '1.25rem 1.5rem' }}><Skeleton width="60%" height="20px" /></td>
+                  <td style={{ padding: '1.25rem 1.5rem' }}><Skeleton width="80px" height="20px" /></td>
+                  <td style={{ padding: '1.25rem 1.5rem' }}><Skeleton width="80px" height="20px" /></td>
+                  <td style={{ padding: '1.25rem 1.5rem' }}><Skeleton width="100px" height="24px" borderRadius="16px" /></td>
+                  <td style={{ padding: '1.25rem 1.5rem', textAlign: 'right' }}><Skeleton width="40px" height="20px" /></td>
+                </tr>
+              ))
             ) : sitemaps.length > 0 ? (
               sitemaps.map((sm, i) => {
                 const errors = parseInt(sm.errors || '0');

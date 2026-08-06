@@ -61,10 +61,18 @@ export default function GSCSettingsModal({
     setError(null);
 
     try {
+      let siteUrlToUpdate = propertyId.trim();
+      if (siteUrlToUpdate.startsWith('sc-domain:')) {
+        siteUrlToUpdate = 'https://' + siteUrlToUpdate.replace('sc-domain:', '');
+      }
+
       const res = await fetch(`${API_BASE}/sites/${siteId}/settings?email=${encodeURIComponent(email || '')}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ gscPropertyId: propertyId.trim() }),
+        body: JSON.stringify({ 
+          gscPropertyId: propertyId.trim(),
+          url: siteUrlToUpdate
+        }),
       });
 
       if (!res.ok) throw new Error("Save failed");

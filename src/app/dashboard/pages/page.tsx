@@ -5,6 +5,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { Info, FileText, TrendingUp, MousePointerClick, Eye, BarChart2, Search, ExternalLink, RefreshCw, Loader2} from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { useSite } from '@/lib/SiteContext';
+import Skeleton from '@/components/ui/Skeleton';
 import styles from '../search-console/page.module.css';
 
 export default function TopPagesDashboard() {
@@ -98,19 +99,19 @@ export default function TopPagesDashboard() {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', marginBottom: '1.5rem' }}>
         <div className={styles.panel} style={{ padding: '1.5rem', borderTop: '4px solid #3b82f6', transition: 'all 0.3s ease', cursor: 'default', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)' }} onMouseOver={e => e.currentTarget.style.transform = 'translateY(-4px)'} onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}>
           <div style={{ color: '#64748B', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '0.5rem', textTransform: 'uppercase', fontWeight: 600 }}><MousePointerClick size={14} color="#3b82f6"/> Total Clicks</div>
-          <div style={{ fontSize: '2.2rem', fontWeight: 800, color: '#0F172A' }}>{loading ? '-' : formatNumber(totals.totalClicks)}</div>
+          <div style={{ fontSize: '2.2rem', fontWeight: 800, color: '#0F172A' }}>{loading ? <Skeleton width="100px" height="42px" /> : formatNumber(totals.totalClicks)}</div>
         </div>
         <div className={styles.panel} style={{ padding: '1.5rem', borderTop: '4px solid #8b5cf6', transition: 'all 0.3s ease', cursor: 'default', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)' }} onMouseOver={e => e.currentTarget.style.transform = 'translateY(-4px)'} onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}>
           <div style={{ color: '#64748B', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '0.5rem', textTransform: 'uppercase', fontWeight: 600 }}><Eye size={14} color="#8b5cf6"/> Total Impressions</div>
-          <div style={{ fontSize: '2.2rem', fontWeight: 800, color: '#0F172A' }}>{loading ? '-' : formatNumber(totals.totalImpressions)}</div>
+          <div style={{ fontSize: '2.2rem', fontWeight: 800, color: '#0F172A' }}>{loading ? <Skeleton width="100px" height="42px" /> : formatNumber(totals.totalImpressions)}</div>
         </div>
         <div className={styles.panel} style={{ padding: '1.5rem', borderTop: '4px solid #10b981', transition: 'all 0.3s ease', cursor: 'default', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)' }} onMouseOver={e => e.currentTarget.style.transform = 'translateY(-4px)'} onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}>
           <div style={{ color: '#64748B', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '0.5rem', textTransform: 'uppercase', fontWeight: 600 }}><TrendingUp size={14} color="#10b981"/> Avg CTR</div>
-          <div style={{ fontSize: '2.2rem', fontWeight: 800, color: '#0F172A' }}>{loading ? '-' : `${totals.avgCtr.toFixed(2)}%`}</div>
+          <div style={{ fontSize: '2.2rem', fontWeight: 800, color: '#0F172A' }}>{loading ? <Skeleton width="100px" height="42px" /> : `${totals.avgCtr.toFixed(2)}%`}</div>
         </div>
         <div className={styles.panel} style={{ padding: '1.5rem', borderTop: '4px solid #f59e0b', transition: 'all 0.3s ease', cursor: 'default', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)' }} onMouseOver={e => e.currentTarget.style.transform = 'translateY(-4px)'} onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}>
           <div style={{ color: '#64748B', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '0.5rem', textTransform: 'uppercase', fontWeight: 600 }}><BarChart2 size={14} color="#f59e0b"/> Avg Position</div>
-          <div style={{ fontSize: '2.2rem', fontWeight: 800, color: '#0F172A' }}>{loading ? '-' : totals.avgPosition.toFixed(1)}</div>
+          <div style={{ fontSize: '2.2rem', fontWeight: 800, color: '#0F172A' }}>{loading ? <Skeleton width="100px" height="42px" /> : totals.avgPosition.toFixed(1)}</div>
         </div>
       </div>
 
@@ -145,12 +146,15 @@ export default function TopPagesDashboard() {
             </thead>
             <tbody>
               {loading ? (
-                <tr>
-                  <td colSpan={5} style={{ textAlign: 'center', padding: '4rem', color: '#64748b' }}>
-                    <Loader2 size={32} className="spinner" style={{ margin: '0 auto 16px auto', color: '#3b82f6' }} />
-                    Crunching page data from Google Search Console...
-                  </td>
-                </tr>
+                Array.from({ length: 5 }).map((_, idx) => (
+                  <tr key={`skel-${idx}`} className="pro-table-row">
+                    <td><Skeleton width="100%" height="24px" /></td>
+                    <td><Skeleton width="60px" height="24px" /></td>
+                    <td><Skeleton width="80px" height="24px" /></td>
+                    <td><Skeleton width="50px" height="24px" /></td>
+                    <td style={{ textAlign: 'right' }}><Skeleton width="40px" height="24px" /></td>
+                  </tr>
+                ))
               ) : filteredPages.length > 0 ? (
                 filteredPages.map((page, i) => {
                   // Calculate width for impression bar

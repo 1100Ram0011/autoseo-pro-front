@@ -1,7 +1,8 @@
 "use client";
 
 import { API_BASE } from '@/lib/apiConfig';
-import { useState, useEffect, useMemo, useRef } from 'react';
+import useSWR from 'swr';
+import { useMemo, useRef, useState, useEffect } from 'react';
 import {
   BarChart, Bar, AreaChart, Area, PieChart, Pie, Cell, LineChart, Line, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, CartesianGrid, Legend
 } from 'recharts';
@@ -15,6 +16,7 @@ import { useRouter } from 'next/navigation';
 import { useSite } from '@/lib/SiteContext';
 import DateRangePicker, { DateRangeValue } from '@/components/DateRangePicker';
 import AnalyticsExportButton from '@/components/AnalyticsExportButton';
+import DashboardSkeleton from '@/components/ui/DashboardSkeleton';
 import styles from './analytics.module.css';
 import SmartExportButton from '@/components/SmartExportButton';
 import { exportAnalyticsCSV, exportAnalyticsPDF } from '@/lib/reportExporter';
@@ -22,6 +24,7 @@ import { exportAnalyticsCSV, exportAnalyticsPDF } from '@/lib/reportExporter';
 /* ════════════════════════════════════════
    EXPORT HELPERS
 ════════════════════════════════════════ */
+const fetcher = (url: string) => fetch(url).then(r => r.json());
 const fmtDuration = (s: number) => {
   if (!s) return '0m 0s';
   return `${Math.floor(s / 60)}m ${Math.round(s % 60)}s`;
@@ -314,11 +317,24 @@ export default function AnalyticsPage() {
   const { selectedSiteId, sites } = useSite();
   const [activeTab, setActiveTab] = useState<TabType>('Overview');
   const [dateRange, setDateRange] = useState<DateRangeValue>('30d');
+  const { data: session } = useSession();
+  const email = session?.user?.email;
+
+  // Build date query string
+  const dateQuery = useMemo(() => {
+    if (typeof dateRange === 'string') return `range=${dateRange}`;
+    const from = dateRange.from.toISOString().split('T')[0];
+    const to = dateRange.to.toISOString().split('T')[0];
+    return `range=custom&from=${from}&to=${to}`;
+  }, [dateRange]);
 
   // Data States
-  const [ga4Overview, setGa4Overview] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data: ga4Overview, error: swrError, isLoading: loading } = useSWR(
+    selectedSiteId ? `${API_BASE}/sites/${selectedSiteId}/ga4/overview?${dateQuery}&email=${encodeURIComponent(email || '')}` : null,
+    fetcher,
+    { keepPreviousData: true }
+  );
+  const error = swrError?.message || ga4Overview?.error;
 
   // Modals
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -341,7 +357,7 @@ export default function AnalyticsPage() {
 
   const handleExportCSV = () => {
     if (!ga4Overview) return;
-    exportCSV(ga4Overview, null, websiteName, websiteUrl, dateLabel);
+    exportAnalyticsCSV(ga4Overview, websiteUrl, dateLabel);
     setExportOpen(false);
   };
 
@@ -350,48 +366,12 @@ export default function AnalyticsPage() {
     setIsExporting(true);
     setExportOpen(false);
     try {
-      await exportPDF(ga4Overview, null, websiteName, websiteUrl, dateLabel);
+      await exportAnalyticsPDF(ga4Overview, websiteUrl, dateLabel);
     } finally {
       setIsExporting(false);
     }
   };
 
-  const { data: session } = useSession();
-  const email = session?.user?.email;
-
-  // Build date query string
-  const dateQuery = useMemo(() => {
-    if (typeof dateRange === 'string') return `range=${dateRange}`;
-    const from = dateRange.from.toISOString().split('T')[0];
-    const to = dateRange.to.toISOString().split('T')[0];
-    return `range=custom&from=${from}&to=${to}`;
-  }, [dateRange]);
-
-  useEffect(() => {
-    if (!selectedSiteId) return;
-
-    const fetchGa4Data = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const res = await fetch(`${API_BASE}/sites/${selectedSiteId}/ga4/overview?${dateQuery}&email=${encodeURIComponent(email || '')}`);
-        const data = await res.json();
-
-        if (!res.ok) {
-          setError(data.error || 'Failed to fetch GA4 data');
-          return;
-        }
-
-        setGa4Overview(data);
-      } catch (error) {
-        console.error('Failed to fetch GA4 data', error);
-        setError('Network Error');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchGa4Data();
-  }, [selectedSiteId, dateQuery]);
 
   // ============= Derived Data =============
   const trendData = ga4Overview?.trend || [];
@@ -1244,7 +1224,7 @@ export default function AnalyticsPage() {
           </div>
         )
       ) : loading ? (
-        <div className={styles.loadingState}>Loading Live Google Analytics Data…</div>
+        <DashboardSkeleton />
       ) : (
         <div className={styles.contentArea}>
           {renderTabContent()}

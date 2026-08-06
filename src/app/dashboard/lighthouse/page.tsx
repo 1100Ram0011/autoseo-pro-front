@@ -11,6 +11,8 @@ import { toast } from 'react-hot-toast';
 import { useSite } from '@/lib/SiteContext';
 import { StrategyPanel } from '../../../components/StrategyPanel';
 import LighthouseExportButton from '@/components/LighthouseExportButton';
+import ExportReportButton from '@/components/ExportReportButton';
+import { exportLighthouseCSV, exportLighthousePDF } from '@/lib/reportExporter';
 import styles from '../search-console/page.module.css';
 
 export default function Dashboard() {
@@ -189,12 +191,10 @@ export default function Dashboard() {
               {isAuditingAll ? 'Auditing All...' : 'Run All Audits'}
             </button>
           </div>
-          <LighthouseExportButton
-            pageData={pages[0] || null}
-            auditedUrl={pages[0]?.url || siteUrl || 'website'}
-            websiteName={siteUrl || 'website'}
-            websiteUrl={siteUrl || 'website'}
-            isDark={false}
+          <ExportReportButton
+            csvExport={() => exportLighthouseCSV(pages, siteUrl || 'website')}
+            pdfExport={async () => await exportLighthousePDF(pages, siteUrl || 'website')}
+            disabled={pages.length === 0}
           />
         </div>
 
@@ -290,9 +290,13 @@ export default function Dashboard() {
             </div>
             
             <div style={{ display: 'flex', gap: '1rem' }}>
-              <button onClick={() => toast.success('Exporting PDF...')} style={{ padding: '8px 16px', background: '#0F172A', color: '#FFFFFF', border: 'none', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer', display: 'flex', gap: '8px', alignItems: 'center' }}>
-                <FileText size={14}/> Export PDF
-              </button>
+              <LighthouseExportButton
+                pageData={selectedData}
+                auditedUrl={selectedPageUrl || siteUrl || 'website'}
+                websiteName={siteUrl || 'website'}
+                websiteUrl={siteUrl || 'website'}
+                isDark={false}
+              />
               <button onClick={() => setSelectedData(null)} style={{ padding: '8px 16px', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer', display: 'flex', gap: '8px', alignItems: 'center' }}>
                 <X size={14}/> Clear
               </button>
