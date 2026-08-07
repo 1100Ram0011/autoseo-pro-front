@@ -315,19 +315,11 @@ input, textarea, select {
 }
 
 .glass-card {
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--card-shadow);
-  transition: var(--transition);
+  @apply bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-xl shadow-slate-200/50 dark:shadow-none transition-transform;
 }
 
 .glass-card:hover {
-  box-shadow: var(--card-shadow-hover);
-  transform: translateY(-3px);
-  background: rgba(255, 255, 255, 0.95);
+  @apply -translate-y-1;
 }
 
 /* ==========================================

@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Activity, Sparkles, Check, ChevronDown, ArrowRight, Menu, X, Target } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
+import Navbar from '@/components/Navbar';
 import styles from './page.module.css';
 
 const fadeIn = {
@@ -22,8 +22,6 @@ const staggerContainer = {
 };
 
 export default function LandingPage() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
   return (
     <div className={styles.container}>
       {/* Abstract Backgrounds */}
@@ -31,58 +29,7 @@ export default function LandingPage() {
       <div className={styles.gridOverlay}></div>
 
       {/* Navigation */}
-      <nav className={styles.navbar}>
-        <div className={styles.logo}>
-          <div style={{ background: 'linear-gradient(135deg, #A78BFA 0%, #5A4AF4 100%)', padding: '6px', borderRadius: '8px' }}>
-            <Activity size={22} color="#FFF" />
-          </div>
-          AutoSEO Pro
-        </div>
-        
-        {/* Desktop Links */}
-        <div className={styles.navLinks}>
-          <Link href="#" className={styles.navLink}>Product <ChevronDown size={14} /></Link>
-          <Link href="#" className={styles.navLink}>Features <ChevronDown size={14} /></Link>
-          <Link href="#" className={styles.navLink}>Pricing</Link>
-          <Link href="#" className={styles.navLink}>Resources <ChevronDown size={14} /></Link>
-        </div>
-        
-        <div className={styles.rightNav}>
-          <div className={styles.navActions}>
-            <Link href="/login" className={styles.loginLink}>Login</Link>
-            <Link href="/login" className={styles.getStartedBtn}>Get Started</Link>
-          </div>
-
-          {/* Mobile Menu Button */}
-          <button 
-            className={styles.mobileMenuBtn} 
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            {isMobileMenuOpen ? <X size={24} color="#FFF" /> : <Menu size={24} color="#FFF" />}
-          </button>
-        </div>
-
-        {/* Mobile Menu Overlay */}
-        <AnimatePresence>
-          {isMobileMenuOpen && (
-            <motion.div 
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className={styles.mobileMenu}
-            >
-              <Link href="#" className={styles.mobileNavLink} onClick={() => setIsMobileMenuOpen(false)}>Product</Link>
-              <Link href="#" className={styles.mobileNavLink} onClick={() => setIsMobileMenuOpen(false)}>Features</Link>
-              <Link href="#" className={styles.mobileNavLink} onClick={() => setIsMobileMenuOpen(false)}>Pricing</Link>
-              <Link href="#" className={styles.mobileNavLink} onClick={() => setIsMobileMenuOpen(false)}>Resources</Link>
-              <div className={styles.mobileNavActions}>
-                <Link href="/login" className={styles.mobileLoginBtn} onClick={() => setIsMobileMenuOpen(false)}>Login</Link>
-                <Link href="/login" className={styles.getStartedBtn} onClick={() => setIsMobileMenuOpen(false)}>Get Started</Link>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </nav>
+      <Navbar />
 
       {/* Hero Section */}
       <section className={styles.hero}>

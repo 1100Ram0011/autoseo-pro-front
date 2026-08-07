@@ -16,6 +16,7 @@ import { useSession } from 'next-auth/react';
 import { useSite } from '@/lib/SiteContext';
 import useSWR from 'swr';
 import { fetcher } from '@/lib/api';
+import { Paper, Typography, Button } from '@mui/material';
 import DateRangePicker, { DateRangeValue } from '@/components/DateRangePicker';
 import GSCSettingsModal from '@/components/GSCSettingsModal';
 import SetupGuide from '@/components/SetupGuide';
@@ -678,44 +679,58 @@ export default function SearchConsoleDashboard() {
   };
 
   return (
-    <div className={styles.dashboardWrapper}>
-      <div className={styles.header}>
+    <div className="animate-dash min-h-screen bg-slate-50 dark:bg-slate-950 p-6 md:p-10 font-sans">
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-10">
         <div>
-          <AnimeTextReveal text="Search Console" className={styles.title} />
-          <p style={{ color: '#64748B', marginTop: '0.25rem', fontSize: '0.9rem' }}>Real-time search performance and indexing status</p>
+          <div className="flex items-center gap-2 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3">
+            <Search size={16} className="text-blue-500"/> Search Console
+          </div>
+          <Typography variant="h3" className="font-extrabold text-slate-900 dark:text-white mb-2 tracking-tight">
+            Search Console
+          </Typography>
+          <Typography variant="body1" className="text-slate-500 dark:text-slate-400 font-medium">
+            Real-time search performance and indexing status
+          </Typography>
         </div>
-        <div className={styles.headerControls}>
+        <div className="flex flex-wrap items-center gap-4">
           <DateRangePicker value={dateRange} onChange={setDateRange} />
           {email ? (
-            <div className={styles.actionGroup}>
-              <button 
+            <div className="flex items-center gap-2">
+              <Button 
                 onClick={() => setIsSettingsModalOpen(true)} 
-                className={styles.connectBtn} 
-                style={{ background: '#f8fafc', color: '#334155', border: '1px solid #cbd5e1' }}
+                variant="outlined"
+                sx={{ textTransform: 'none', fontWeight: 700, borderRadius: '10px' }}
               >
                 Configure Property
-              </button>
-              <a href={`${API_BASE}/auth/google?email=${encodeURIComponent(email)}&redirect=search-console&siteId=${selectedSiteId || ''}`} className={styles.connectBtn}>
+              </Button>
+              <Button 
+                href={`${API_BASE}/auth/google?email=${encodeURIComponent(email)}&redirect=search-console&siteId=${selectedSiteId || ''}`}
+                variant="contained"
+                sx={{
+                  background: 'linear-gradient(135deg, #3B82F6, #2563EB)', textTransform: 'none', fontWeight: 700, borderRadius: '10px', boxShadow: '0 4px 14px 0 rgba(59, 130, 246, 0.3)',
+                  '&:hover': { background: 'linear-gradient(135deg, #2563EB, #1D4ED8)' }
+                }}
+              >
                 Connect GSC
-              </a>
+              </Button>
             </div>
           ) : (
-            <button className={styles.connectBtn} disabled>Connect GSC (Login Required)</button>
+            <Button variant="contained" disabled sx={{ textTransform: 'none', fontWeight: 700, borderRadius: '10px' }}>Connect GSC (Login Required)</Button>
           )}
+          <ExportReportButton
+            csvExport={() => {
+              const dateLabel = typeof dateRange === 'string' ? dateRange : 'custom range';
+              const url = sites?.find((s: any) => s.id === selectedSiteId)?.url || 'website';
+              exportGSCCSV(gscOverview, gscKeywords, gscPages, gscCountries, gscDevices, gscSitemaps, gscInsights, url, dateLabel);
+            }}
+            pdfExport={async () => {
+              const dateLabel = typeof dateRange === 'string' ? dateRange : 'custom range';
+              const url = sites?.find((s: any) => s.id === selectedSiteId)?.url || 'website';
+              await exportGSCPDF(gscOverview, gscKeywords, gscPages, gscCountries, gscDevices, gscSitemaps, gscInsights, url, dateLabel);
+            }}
+            disabled={loading || !gscOverview}
+          />
         </div>
-        <ExportReportButton
-          csvExport={() => {
-            const dateLabel = typeof dateRange === 'string' ? dateRange : 'custom range';
-            const url = sites?.find((s: any) => s.id === selectedSiteId)?.url || 'website';
-            exportGSCCSV(gscOverview, gscKeywords, gscPages, gscCountries, gscDevices, gscSitemaps, gscInsights, url, dateLabel);
-          }}
-          pdfExport={async () => {
-            const dateLabel = typeof dateRange === 'string' ? dateRange : 'custom range';
-            const url = sites?.find((s: any) => s.id === selectedSiteId)?.url || 'website';
-            await exportGSCPDF(gscOverview, gscKeywords, gscPages, gscCountries, gscDevices, gscSitemaps, gscInsights, url, dateLabel);
-          }}
-          disabled={loading || !gscOverview}
-        />
       </div>
 
       {/* Auto-injected Info Block */}

@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import anime from 'animejs';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Activity, Globe, ChevronDown, LayoutDashboard, Wrench, FileJson, 
@@ -21,6 +22,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   // Close mobile menu on route change
   useEffect(() => {
     setIsMobileMenuOpen(false);
+    // Global Anime.js trigger for all dashboard pages
+    anime({
+      targets: '.animate-in, .animate-dash, .glass-card',
+      translateY: [20, 0],
+      opacity: [0, 1],
+      duration: 800,
+      delay: anime.stagger(50, { start: 100 }),
+      easing: 'easeOutQuint'
+    });
   }, [pathname]);
 
   const isRouteActive = (route: string) => {

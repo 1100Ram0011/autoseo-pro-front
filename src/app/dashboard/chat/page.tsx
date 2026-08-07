@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, User, Sparkles, MessageSquarePlus } from 'lucide-react';
+import { Button } from '@mui/material';
 import styles from './page.module.css';
 
 interface Message {
@@ -71,12 +72,22 @@ export default function AiChatPage() {
   };
 
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} animate-dash bg-slate-50 dark:bg-slate-950`}>
       {/* Sidebar History */}
       <div className={styles.sidebar}>
-        <button className={styles.newChatBtn} onClick={() => setMessages([{ id: '1', role: 'assistant', content: 'Hello! I am your AI SEO Copilot.', timestamp: new Date() }])}>
-          <MessageSquarePlus size={18} /> New Chat
-        </button>
+        <Button 
+          fullWidth
+          variant="contained" 
+          onClick={() => setMessages([{ id: '1', role: 'assistant', content: 'Hello! I am your AI SEO Copilot.', timestamp: new Date() }])}
+          startIcon={<MessageSquarePlus size={18} />}
+          sx={{
+            background: 'linear-gradient(135deg, #3B82F6, #2563EB)', textTransform: 'none', fontWeight: 700, borderRadius: '10px', boxShadow: '0 4px 14px 0 rgba(59, 130, 246, 0.3)',
+            '&:hover': { background: 'linear-gradient(135deg, #2563EB, #1D4ED8)' },
+            marginBottom: '2rem'
+          }}
+        >
+          New Chat
+        </Button>
 
         <div className={styles.historySection}>
           <div className={styles.historyTitle}>Suggested Queries</div>

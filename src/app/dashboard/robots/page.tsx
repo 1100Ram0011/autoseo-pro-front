@@ -1,22 +1,10 @@
 "use client";
 
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Info, FileCode, ShieldAlert, CheckCircle, Download, AlertTriangle, Bot} from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import anime from 'animejs';
+import { Info, FileCode, ShieldAlert, CheckCircle, Download, AlertTriangle, Bot, Check } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1 }
-  }
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 15 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" as const } }
-};
+import { TextField, Button, MenuItem, Paper, Typography, Box } from '@mui/material';
 
 export default function RobotsTxtPage() {
   const [content, setContent] = useState<string>(
@@ -32,6 +20,19 @@ Sitemap: https://example.com/sitemap.xml`
   const [testUrl, setTestUrl] = useState('');
   const [testUserAgent, setTestUserAgent] = useState('*');
   const [testResult, setTestResult] = useState<'allowed' | 'blocked' | null>(null);
+  
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    anime({
+      targets: '.animate-in',
+      translateY: [20, 0],
+      opacity: [0, 1],
+      duration: 800,
+      delay: anime.stagger(100),
+      easing: 'easeOutQuint'
+    });
+  }, []);
 
   const handleGenerateBasic = () => {
     setContent(
@@ -68,7 +69,6 @@ Sitemap: https://yoursite.com/sitemap_index.xml`
     e.preventDefault();
     if (!testUrl) return;
 
-    // A very simple mock test engine for UI demonstration
     const lines = content.split('\n');
     let isBlocked = false;
     let inTargetUserAgent = false;
@@ -76,7 +76,6 @@ Sitemap: https://yoursite.com/sitemap_index.xml`
     for (const line of lines) {
       const trimmed = line.trim();
       if (!trimmed || trimmed.startsWith('#')) continue;
-
       const lower = trimmed.toLowerCase();
       
       if (lower.startsWith('user-agent:')) {
@@ -88,19 +87,14 @@ Sitemap: https://yoursite.com/sitemap_index.xml`
       if (inTargetUserAgent) {
         if (lower.startsWith('disallow:')) {
           const path = trimmed.substring(9).trim();
-          if (path && testUrl.includes(path.replace('*', ''))) {
-            isBlocked = true;
-          }
+          if (path && testUrl.includes(path.replace('*', ''))) isBlocked = true;
         }
         if (lower.startsWith('allow:')) {
           const path = trimmed.substring(6).trim();
-          if (path && testUrl.includes(path.replace('*', ''))) {
-            isBlocked = false; // Allow overrides previous Disallow in this simple logic
-          }
+          if (path && testUrl.includes(path.replace('*', ''))) isBlocked = false;
         }
       }
     }
-
     setTestResult(isBlocked ? 'blocked' : 'allowed');
   };
 
@@ -118,191 +112,165 @@ Sitemap: https://yoursite.com/sitemap_index.xml`
   };
 
   return (
-    <motion.div 
-      variants={containerVariants}
-      initial="hidden"
-      animate="show"
-      style={{ padding: '2rem', maxWidth: '1400px', margin: '0 auto', color: '#0F172A', fontFamily: "'Inter', sans-serif" }}
-    >
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '1.5rem' }}>
-        <motion.div variants={itemVariants} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-          <div>
-            <h1 style={{ margin: 0, fontSize: '1.75rem', fontWeight: 700, color: '#0F172A', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-              <FileCode size={28} color="#f59e0b" /> Robots.txt Editor
-            </h1>
-            <p style={{ margin: '0.5rem 0 0', fontSize: '0.9rem', color: '#64748B' }}>
-              Control how search engines crawl and index your site's content.
-            </p>
-          </div>
-          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-            <button 
-              onClick={handleDownload}
-              style={{ padding: '0.75rem 1.25rem', background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#0F172A', border: 'none', borderRadius: '8px', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 4px 14px 0 rgba(245,158,11,0.39)', whiteSpace: 'nowrap' }}
-            >
-              <Download size={16} /> Download
-            </button>
-          </div>
-        </motion.div>
+    <div ref={containerRef} className="p-4 md:p-8 max-w-7xl mx-auto text-slate-800 dark:text-slate-200">
+      
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 animate-in">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-extrabold flex items-center gap-3 text-slate-900 dark:text-white">
+            <div className="p-2 bg-amber-500/10 rounded-xl border border-amber-500/20">
+              <FileCode size={28} className="text-amber-500" />
+            </div>
+            Robots.txt Editor
+          </h1>
+          <p className="mt-2 text-sm text-slate-500 dark:text-slate-400 font-medium">
+            Control how search engines crawl and index your site's content.
+          </p>
+        </div>
+        <Button 
+          onClick={handleDownload} 
+          variant="contained" 
+          startIcon={<Download size={18} />}
+          sx={{ 
+            background: 'linear-gradient(135deg, #f59e0b, #d97706)',
+            textTransform: 'none',
+            fontWeight: 700,
+            borderRadius: '10px',
+            boxShadow: '0 4px 14px 0 rgba(245,158,11,0.3)',
+            '&:hover': { background: 'linear-gradient(135deg, #d97706, #b45309)' }
+          }}
+        >
+          Download
+        </Button>
+      </div>
 
-        {/* Auto-injected Info Block */}
-        <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '8px', display: 'flex', gap: '12px' }}>
-          <Info size={20} color="#0284C7" style={{ flexShrink: 0, marginTop: '2px' }} />
-          <div>
-            <h4 style={{ margin: '0 0 0.5rem 0', color: '#0369A1', fontSize: '0.95rem' }}>How does this work?</h4>
-            <p style={{ margin: 0, color: '#0C4A6E', fontSize: '0.85rem', lineHeight: '1.5' }}>
-               Manage your robots.txt file to control what Google can and cannot crawl. <strong>Example:</strong> Block Googlebot from crawling your private /admin pages or internal search result pages.
-            </p>
-          </div>
+      {/* Info Banner */}
+      <div className="mb-8 p-4 rounded-2xl bg-sky-50 border border-sky-100 dark:bg-sky-950/30 dark:border-sky-900 flex gap-4 items-start animate-in">
+        <Info size={24} className="text-sky-600 dark:text-sky-400 shrink-0 mt-0.5" />
+        <div>
+          <h4 className="font-bold text-sky-900 dark:text-sky-300 mb-1">How does this work?</h4>
+          <p className="text-sm text-sky-800 dark:text-sky-400/80 leading-relaxed">
+             Manage your robots.txt file to control what Google can and cannot crawl. 
+             <strong> Example:</strong> Block Googlebot from crawling your private <code className="bg-sky-200/50 dark:bg-sky-900/50 px-1 py-0.5 rounded">/admin</code> pages.
+          </p>
         </div>
       </div>
 
-
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem' }}>
+      <div className="flex flex-col lg:flex-row gap-8">
         
         {/* Editor Area */}
-        <motion.div variants={itemVariants} style={{ flex: '2 1 400px', minWidth: '280px', background: '#FFFFFF', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '16px', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-          <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid #FFFFFF', background: '#FFFFFF', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600, color: '#0F172A' }}>
-              <FileCode size={18} color="#f59e0b" /> Edit robots.txt
+        <Paper elevation={0} className="flex-1 min-w-[300px] flex flex-col bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl overflow-hidden shadow-xl shadow-slate-200/50 dark:shadow-none animate-in">
+          <div className="p-5 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 flex justify-between items-center flex-wrap gap-4">
+            <div className="font-bold text-slate-800 dark:text-white flex items-center gap-2">
+              <FileCode size={18} className="text-amber-500" /> Editor
             </div>
-            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-              <button 
-                onClick={handleGenerateBasic}
-                style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', color: '#0F172A', padding: '6px 12px', borderRadius: '8px', fontSize: '0.8rem', cursor: 'pointer', fontWeight: 600, transition: 'all 0.2s', whiteSpace: 'nowrap' }}
-                onMouseEnter={(e) => e.currentTarget.style.background = '#E2E8F0'}
-                onMouseLeave={(e) => e.currentTarget.style.background = '#FFFFFF'}
-              >
+            <div className="flex gap-2">
+              <Button size="small" variant="outlined" color="inherit" onClick={handleGenerateBasic} sx={{ borderRadius: '8px', textTransform: 'none', fontWeight: 600 }}>
                 Basic Setup
-              </button>
-              <button 
-                onClick={handleGenerateWordPress}
-                style={{ background: 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.3)', color: '#f59e0b', padding: '6px 12px', borderRadius: '8px', fontSize: '0.8rem', cursor: 'pointer', fontWeight: 600, transition: 'all 0.2s', whiteSpace: 'nowrap' }}
-                onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(245, 158, 11, 0.15)'}
-                onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(245, 158, 11, 0.1)'}
-              >
+              </Button>
+              <Button size="small" variant="outlined" color="warning" onClick={handleGenerateWordPress} sx={{ borderRadius: '8px', textTransform: 'none', fontWeight: 600 }}>
                 WordPress Setup
-              </button>
+              </Button>
             </div>
           </div>
           
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '1.5rem' }}>
+          <div className="p-6 flex-1 flex flex-col">
             <textarea 
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              style={{ 
-                width: '100%', 
-                minHeight: '400px', 
-                background: '#F8FAFC', 
-                border: '1px solid #E2E8F0', 
-                borderRadius: '12px', 
-                color: '#0F172A', 
-                padding: '1.5rem', 
-                fontFamily: "'Fira Code', monospace", 
-                fontSize: '0.95rem',
-                lineHeight: 1.6,
-                resize: 'vertical',
-                outline: 'none',
-                boxShadow: 'inset 0 2px 10px rgba(0,0,0,0.2)'
-              }}
+              className="w-full h-full min-h-[400px] bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 text-slate-800 dark:text-slate-300 font-mono text-sm leading-loose focus:outline-none focus:ring-2 focus:ring-amber-500/50 resize-y transition-shadow"
               spellCheck="false"
             />
           </div>
-        </motion.div>
+        </Paper>
 
         {/* Tester Area */}
-        <div style={{ flex: '1 1 300px', minWidth: '280px', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-          <motion.div variants={itemVariants} style={{ background: '#FFFFFF', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '16px', padding: '1.5rem' }}>
-            <div style={{ fontSize: '1.05rem', fontWeight: 600, color: '#0F172A', display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.5rem' }}>
-              <Bot size={20} color="#3b82f6" /> Test URL Blocking
+        <div className="w-full lg:w-[400px] flex flex-col gap-6">
+          
+          {/* Test URL Card */}
+          <Paper elevation={0} className="p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-none animate-in">
+            <div className="font-bold text-lg text-slate-800 dark:text-white flex items-center gap-2 mb-2">
+              <Bot size={22} className="text-blue-500" /> Test URL Blocking
             </div>
-            <p style={{ fontSize: '0.85rem', color: '#64748B', margin: '0 0 1.5rem 0', lineHeight: 1.5 }}>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
               Verify if a specific URL path is blocked by the rules written in the editor.
             </p>
             
-            <form onSubmit={handleTestUrl} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-              <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', color: '#64748B', fontWeight: 600, marginBottom: '8px' }}>Bot User-Agent</label>
-                <select 
-                  value={testUserAgent} 
-                  onChange={(e) => setTestUserAgent(e.target.value)}
-                  style={{ width: '100%', padding: '12px 14px', borderRadius: '8px', border: '1px solid #E2E8F0', background: 'rgba(0,0,0,0.2)', color: '#0F172A', fontSize: '0.9rem', outline: 'none' }}
-                >
-                  <option value="*">Any Bot (*)</option>
-                  <option value="Googlebot">Googlebot</option>
-                  <option value="Googlebot-Image">Googlebot-Image</option>
-                  <option value="Bingbot">Bingbot</option>
-                  <option value="Slurp">Yahoo Slurp</option>
-                  <option value="DuckDuckBot">DuckDuckBot</option>
-                </select>
-              </div>
+            <form onSubmit={handleTestUrl} className="flex flex-col gap-5">
+              <TextField
+                select
+                label="Bot User-Agent"
+                value={testUserAgent}
+                onChange={(e) => setTestUserAgent(e.target.value)}
+                variant="outlined"
+                fullWidth
+                size="small"
+                sx={{ '& .MuiOutlinedInput-root': { borderRadius: '12px' } }}
+              >
+                <MenuItem value="*">Any Bot (*)</MenuItem>
+                <MenuItem value="Googlebot">Googlebot</MenuItem>
+                <MenuItem value="Googlebot-Image">Googlebot-Image</MenuItem>
+                <MenuItem value="Bingbot">Bingbot</MenuItem>
+                <MenuItem value="Slurp">Yahoo Slurp</MenuItem>
+                <MenuItem value="DuckDuckBot">DuckDuckBot</MenuItem>
+              </TextField>
 
-              <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', color: '#64748B', fontWeight: 600, marginBottom: '8px' }}>Path to test</label>
-                <input 
-                  type="text" 
-                  placeholder="/admin/dashboard" 
-                  value={testUrl} 
-                  onChange={(e) => setTestUrl(e.target.value)}
-                  style={{ width: '100%', padding: '12px 14px', borderRadius: '8px', border: '1px solid #E2E8F0', background: 'rgba(0,0,0,0.2)', color: '#0F172A', fontSize: '0.9rem', outline: 'none' }}
-                  required
-                />
-              </div>
+              <TextField
+                label="Path to test"
+                placeholder="/admin/dashboard"
+                value={testUrl}
+                onChange={(e) => setTestUrl(e.target.value)}
+                variant="outlined"
+                fullWidth
+                size="small"
+                required
+                sx={{ '& .MuiOutlinedInput-root': { borderRadius: '12px' } }}
+              />
 
-              <button 
+              <Button 
                 type="submit" 
-                style={{ width: '100%', padding: '12px', background: 'transparent', border: '1px solid #3b82f6', color: '#3b82f6', borderRadius: '8px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s', marginTop: '0.5rem' }}
-                onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(59, 130, 246, 0.1)'}
-                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                variant="outlined" 
+                color="primary"
+                fullWidth
+                sx={{ borderRadius: '12px', padding: '10px', textTransform: 'none', fontWeight: 700, borderWidth: '2px', '&:hover': { borderWidth: '2px' } }}
               >
                 Test Path
-              </button>
+              </Button>
             </form>
 
             {testResult && (
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                style={{ 
-                  marginTop: '1.5rem', 
-                  padding: '1.25rem', 
-                  borderRadius: '12px', 
-                  display: 'flex', 
-                  alignItems: 'flex-start', 
-                  gap: '12px',
-                  background: testResult === 'allowed' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
-                  border: `1px solid ${testResult === 'allowed' ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)'}`
-                }}
-              >
-                <div style={{ marginTop: '2px' }}>
-                  {testResult === 'allowed' ? <CheckCircle size={20} color="#10b981" /> : <ShieldAlert size={20} color="#ef4444" />}
+              <div className={`mt-6 p-4 rounded-2xl flex items-start gap-3 border ${testResult === 'allowed' ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800/50' : 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800/50'} animate-in`}>
+                <div className="mt-0.5">
+                  {testResult === 'allowed' ? <CheckCircle size={20} className="text-emerald-500" /> : <ShieldAlert size={20} className="text-red-500" />}
                 </div>
                 <div>
-                  <h4 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 600, color: testResult === 'allowed' ? '#10b981' : '#ef4444' }}>
+                  <h4 className={`font-bold text-sm ${testResult === 'allowed' ? 'text-emerald-700 dark:text-emerald-400' : 'text-red-700 dark:text-red-400'}`}>
                     {testResult === 'allowed' ? 'Access Allowed' : 'Access Blocked'}
                   </h4>
-                  <p style={{ margin: '4px 0 0 0', fontSize: '0.85rem', color: '#0F172A', lineHeight: 1.5 }}>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">
                     {testResult === 'allowed' 
-                      ? 'Search engines can successfully crawl and index this path based on your rules.' 
+                      ? 'Search engines can successfully crawl and index this path.' 
                       : 'This path is blocked by a Disallow rule. Search engines will skip it.'}
                   </p>
                 </div>
-              </motion.div>
+              </div>
             )}
-          </motion.div>
+          </Paper>
 
-          <motion.div variants={itemVariants} style={{ background: '#FFFFFF', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '16px', padding: '1.5rem' }}>
-            <div style={{ fontSize: '1.05rem', fontWeight: 600, color: '#0F172A', display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1rem' }}>
-              <AlertTriangle size={20} color="#10b981" /> Quick Tips
+          {/* Quick Tips Card */}
+          <Paper elevation={0} className="p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-none animate-in">
+            <div className="font-bold text-lg text-slate-800 dark:text-white flex items-center gap-2 mb-4">
+              <AlertTriangle size={20} className="text-emerald-500" /> Quick Tips
             </div>
-            <ul style={{ margin: 0, padding: '0 0 0 1.2rem', color: '#64748B', fontSize: '0.85rem', display: 'flex', flexDirection: 'column', gap: '10px', lineHeight: 1.5 }}>
-              <li><strong style={{ color: '#0F172A' }}>User-agent: *</strong> applies rules to all web crawlers globally.</li>
-              <li><strong style={{ color: '#0F172A' }}>Disallow: /folder/</strong> blocks the entire directory and its contents.</li>
-              <li>Always include the absolute path to your <strong style={{ color: '#0F172A' }}>Sitemap.xml</strong> at the bottom.</li>
-              <li>Use <strong style={{ color: '#0F172A' }}>Allow:</strong> to whitelist specific files inside a disallowed folder.</li>
+            <ul className="space-y-3 text-sm text-slate-500 dark:text-slate-400">
+              <li className="flex gap-2 items-start"><Check size={16} className="text-emerald-500 shrink-0 mt-0.5" /> <span><strong className="text-slate-700 dark:text-slate-200">User-agent: *</strong> applies rules to all web crawlers globally.</span></li>
+              <li className="flex gap-2 items-start"><Check size={16} className="text-emerald-500 shrink-0 mt-0.5" /> <span><strong className="text-slate-700 dark:text-slate-200">Disallow: /folder/</strong> blocks the entire directory and its contents.</span></li>
+              <li className="flex gap-2 items-start"><Check size={16} className="text-emerald-500 shrink-0 mt-0.5" /> <span>Always include the absolute path to your <strong className="text-slate-700 dark:text-slate-200">Sitemap.xml</strong> at the bottom.</span></li>
+              <li className="flex gap-2 items-start"><Check size={16} className="text-emerald-500 shrink-0 mt-0.5" /> <span>Use <strong className="text-slate-700 dark:text-slate-200">Allow:</strong> to whitelist specific files inside a disallowed folder.</span></li>
             </ul>
-          </motion.div>
+          </Paper>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

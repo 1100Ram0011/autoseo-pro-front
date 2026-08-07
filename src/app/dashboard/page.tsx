@@ -14,13 +14,12 @@ import {
 import { toast } from 'react-hot-toast';
 import useSWR from 'swr';
 import { fetcher } from '@/lib/api';
-import { 
-  LineChart, Line, BarChart, Bar, AreaChart, Area, PieChart, Pie, Cell,
-  ResponsiveContainer, XAxis, Tooltip, YAxis
-} from 'recharts';
+import { LineChart, Line, BarChart, Bar, AreaChart, Area, PieChart, Pie, Cell, ResponsiveContainer, XAxis, Tooltip, YAxis } from 'recharts';
 import { SkeletonCard } from '@/components/ui/SkeletonCard';
 import SmartActionsFeed from './SmartActionsFeed';
 import DateRangePicker, { DateRangeValue } from '@/components/DateRangePicker';
+import { Paper, Button, Typography, Chip } from '@mui/material';
+import anime from 'animejs';
 
 // Fallback data removed completely to strictly use real backend API data
 
@@ -59,6 +58,14 @@ export default function DashboardPage() {
   const [greeting, setGreeting] = useState('');
   useEffect(() => {
     setGreeting(getGreeting());
+    anime({
+      targets: '.animate-dash',
+      translateY: [30, 0],
+      opacity: [0, 1],
+      duration: 1000,
+      delay: anime.stagger(100),
+      easing: 'easeOutQuint'
+    });
   }, []);
 
   const handleGenerateAnalysis = async () => {
@@ -153,124 +160,116 @@ export default function DashboardPage() {
   const sparklineData4 = Array.isArray(dashboardData?.keywordTrend) ? dashboardData.keywordTrend.map((t: any) => ({ v: t.clicks || 0 })) : [{v:0}];
 
   return (
-    <motion.div 
-      variants={containerVariants}
-      initial="hidden"
-      animate="show"
-      style={{ background: 'transparent', minHeight: '100vh', color: 'var(--foreground)', fontFamily: "'Inter', sans-serif", padding: '2rem' }}
-    >
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-6 md:p-8 font-sans">
       
       {/* Header */}
-      <motion.div variants={itemVariants} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+      <div className="mb-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 animate-dash">
         <div>
-          <h1 style={{ margin: 0, fontSize: '1.6rem', fontWeight: 700, color: 'var(--foreground)' }}>
+          <Typography variant="h4" className="font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
             {greeting || 'Good afternoon'} 👋
-          </h1>
-          <p style={{ margin: '0.25rem 0 0', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-            Here's how <span style={{ color: 'var(--primary)', fontWeight: 600 }}>{stats.site}</span> is performing today.
+          </Typography>
+          <p className="mt-2 text-slate-500 dark:text-slate-400">
+            Here's how <span className="text-violet-600 dark:text-violet-400 font-bold">{stats.site}</span> is performing today.
           </p>
           {/* Connection Status Badges */}
-          <div style={{ display: 'flex', gap: '8px', marginTop: '0.75rem', flexWrap: 'wrap' }}>
+          <div className="flex gap-2 mt-4 flex-wrap">
             {[
               { label: 'GA4', connected: !!dashboardData?.roadmap?.isGa4Connected },
               { label: 'Search Console', connected: !!dashboardData?.roadmap?.isGscConnected },
               { label: 'Lighthouse', connected: true },
               { label: 'Clarity', connected: !!dashboardData?.clarityConnected },
             ].map((s) => (
-              <span key={s.label} style={{
-                display: 'flex', alignItems: 'center', gap: '4px',
-                fontSize: '0.7rem', fontWeight: 600, padding: '3px 10px',
-                borderRadius: '100px',
-                background: s.connected ? '#ECFDF5' : '#FEF2F2',
-                color: s.connected ? '#059669' : '#DC2626',
-                border: `1px solid ${s.connected ? '#A7F3D0' : '#FECACA'}`
-              }}>
-                {s.connected ? <Wifi size={10} /> : <WifiOff size={10} />}
-                {s.label}
-              </span>
+              <Chip 
+                key={s.label}
+                icon={s.connected ? <Wifi size={12} /> : <WifiOff size={12} />}
+                label={s.label}
+                size="small"
+                sx={{ 
+                  fontWeight: 700, fontSize: '0.7rem', 
+                  backgroundColor: s.connected ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+                  color: s.connected ? '#10B981' : '#EF4444',
+                  border: `1px solid ${s.connected ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)'}`,
+                  '& .MuiChip-icon': { color: s.connected ? '#10B981' : '#EF4444' }
+                }}
+              />
             ))}
           </div>
         </div>
-        <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
+        <div className="flex gap-3 items-center flex-wrap">
           <DateRangePicker value={dateRange} onChange={setDateRange} />
-          <button 
+          <Button 
             onClick={handleGenerateAnalysis}
             disabled={alertStatus === 'loading' || !dashboardData}
-            style={{ 
-              background: '#0F172A', 
-              color: 'white', 
-              border: 'none', 
-              padding: '0.6rem 1.25rem', 
-              borderRadius: '8px', 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: '6px', 
-              fontWeight: 500, 
-              fontSize: '0.9rem',
-              cursor: (alertStatus === 'loading' || !dashboardData) ? 'not-allowed' : 'pointer',
-              opacity: (alertStatus === 'loading' || !dashboardData) ? 0.7 : 1,
-              transition: 'background 0.2s'
+            variant="contained"
+            sx={{
+              background: 'linear-gradient(135deg, #A78BFA, #5A4AF4)',
+              color: 'white',
+              textTransform: 'none',
+              fontWeight: 700,
+              borderRadius: '10px',
+              padding: '8px 20px',
+              boxShadow: '0 4px 14px 0 rgba(167, 139, 250, 0.4)',
+              '&:hover': { background: 'linear-gradient(135deg, #8B5CF6, #4C1D95)' }
             }}
+            startIcon={alertStatus === 'loading' ? <Activity size={16} className="animate-spin" /> : <Sparkles size={16} />}
           >
-            {alertStatus === 'loading' ? (
-              <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}>
-                <Activity size={16} />
-              </motion.div>
-            ) : (
-              <Sparkles size={16} />
-            )}
             {alertStatus === 'loading' ? 'Analyzing...' : 'AI Analyze'}
-          </button>
-          <button onClick={() => setIsAutoPilotOpen(true)} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#ECFDF5', border: '1px solid #A7F3D0', color: '#059669', padding: '0.5rem 1rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600 }}>
-            <Zap size={14} /> Run Auto-Pilot
-          </button>
-          <Link href="/dashboard/ai-blog" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#FAF5FF', border: '1px solid #E9D5FF', color: '#9333EA', padding: '0.5rem 1rem', borderRadius: '8px', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 600 }}>
-            <Sparkles size={14} /> Write AI Blog
-          </Link>
-          <Link href="/dashboard/issues" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#FEF2F2', border: '1px solid #FECACA', color: '#DC2626', padding: '0.5rem 1rem', borderRadius: '8px', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 600 }}>
-            <AlertCircle size={14} /> Fix {dashboardData?.healthReport?.issues?.length || 0} Issues
-          </Link>
+          </Button>
+          <Button 
+            onClick={() => setIsAutoPilotOpen(true)} 
+            variant="outlined"
+            sx={{
+              borderColor: 'rgba(16, 185, 129, 0.4)', color: '#10B981', textTransform: 'none', fontWeight: 700, borderRadius: '10px',
+              '&:hover': { borderColor: '#10B981', background: 'rgba(16, 185, 129, 0.05)' }
+            }}
+            startIcon={<Zap size={14} />}
+          >
+            Run Auto-Pilot
+          </Button>
+          <Button 
+            href="/dashboard/issues"
+            component={Link}
+            variant="outlined"
+            sx={{
+              borderColor: 'rgba(239, 68, 68, 0.4)', color: '#EF4444', textTransform: 'none', fontWeight: 700, borderRadius: '10px',
+              '&:hover': { borderColor: '#EF4444', background: 'rgba(239, 68, 68, 0.05)' }
+            }}
+            startIcon={<AlertCircle size={14} />}
+          >
+            Fix {dashboardData?.healthReport?.issues?.length || 0} Issues
+          </Button>
         </div>
-      </motion.div>
+      </div>
 
       {/* Phase 2: Premium Welcome Flow (How AutoSEO Works) */}
       {showWelcome && (
-        <motion.div variants={itemVariants} className="glass-card" style={{
-          padding: '1.5rem', marginBottom: '1.5rem', position: 'relative'
-        }}>
-          <button onClick={() => setShowWelcome(false)} style={{
-            position: 'absolute', top: '12px', right: '12px', background: '#FFFFFF',
-            border: '1px solid #E2E8F0', borderRadius: '50%', width: 28, height: 28,
-            cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center'
-          }}>
-            <X size={14} color="#64748B" />
+        <Paper elevation={0} className="animate-dash mb-10 relative overflow-hidden bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-xl shadow-slate-200/50 dark:shadow-none">
+          <div className="absolute -right-20 -top-20 w-64 h-64 bg-violet-500/10 blur-3xl rounded-full"></div>
+          <button onClick={() => setShowWelcome(false)} className="absolute top-4 right-4 p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 transition-colors">
+            <X size={16} />
           </button>
-          <h3 style={{ margin: '0 0 0.5rem', fontSize: '1rem', fontWeight: 700, color: '#0F172A', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Sparkles size={18} color="#4F46E5" /> How AutoSEO Pro Works
-          </h3>
-          <p style={{ margin: '0 0 1.25rem', fontSize: '0.8rem', color: '#64748B' }}>
+          <Typography variant="h6" className="font-extrabold text-slate-900 dark:text-white flex items-center gap-2 mb-2">
+            <Sparkles size={20} className="text-violet-500" /> How AutoSEO Pro Works
+          </Typography>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
             4 simple steps — we handle the hard part, you just click "Fix".
           </p>
-          <div className="grid-responsive grid-cols-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { step: '1', icon: '🔗', title: 'Connect', desc: 'Link your Google Analytics, Search Console & Clarity accounts.' },
-              { step: '2', icon: '🔍', title: 'Scan', desc: 'AI scans all platforms simultaneously for cross-platform issues.' },
-              { step: '3', icon: '🧠', title: 'AI Analyze', desc: 'Gemini AI finds correlations between traffic, speed & rankings.' },
-              { step: '4', icon: '⚡', title: 'One-Click Fix', desc: 'Apply AI-recommended fixes with a single button click.' },
+              { step: '1', icon: '🔗', title: 'Connect', desc: 'Link your Google Analytics & Search Console.' },
+              { step: '2', icon: '🔍', title: 'Scan', desc: 'AI scans all platforms simultaneously.' },
+              { step: '3', icon: '🧠', title: 'AI Analyze', desc: 'Gemini finds correlations in traffic.' },
+              { step: '4', icon: '⚡', title: 'One-Click Fix', desc: 'Apply AI fixes with a single button.' },
             ].map((s) => (
-              <div key={s.step} style={{
-                background: '#FFFFFF', borderRadius: '12px', padding: '1rem',
-                border: '1px solid #E2E8F0', textAlign: 'center',
-                boxShadow: '0 2px 4px -1px rgba(0,0,0,0.04)'
-              }}>
-                <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>{s.icon}</div>
-                <div style={{ fontSize: '0.6rem', fontWeight: 700, color: '#4F46E5', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '1px' }}>Step {s.step}</div>
-                <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#0F172A', marginBottom: '4px' }}>{s.title}</div>
-                <div style={{ fontSize: '0.7rem', color: '#64748B', lineHeight: 1.4 }}>{s.desc}</div>
+              <div key={s.step} className="bg-slate-50 dark:bg-slate-950/50 rounded-2xl p-5 border border-slate-100 dark:border-slate-800 flex flex-col items-center text-center">
+                <div className="text-3xl mb-2">{s.icon}</div>
+                <div className="text-[10px] font-bold text-violet-500 uppercase tracking-widest mb-1">Step {s.step}</div>
+                <div className="text-sm font-bold text-slate-900 dark:text-white mb-1">{s.title}</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">{s.desc}</div>
               </div>
             ))}
           </div>
-        </motion.div>
+        </Paper>
       )}
 
       {/* Full Screen Google Connect Requirement */}
@@ -395,7 +394,7 @@ export default function DashboardPage() {
       </AnimatePresence>
 
       {/* 4 Metric Cards */}
-      <motion.div variants={itemVariants} className="grid-responsive grid-cols-4" style={{ marginBottom: '1.5rem' }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10 animate-dash">
         {isLoading ? (
           <>
             <SkeletonCard />
@@ -406,67 +405,67 @@ export default function DashboardPage() {
         ) : (
           <>
         {/* Card 1 */}
-        <motion.div {...cardHoverProps} className="glass-card" style={{ borderRadius: '12px', padding: '1.25rem', display: 'flex', flexDirection: 'column' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 700, letterSpacing: '0.05em' }}>
-            <ShieldCheck size={14} color="#10B981"/> SEO HEALTH SCORE
+        <Paper elevation={0} className="relative overflow-hidden bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-xl shadow-slate-200/50 dark:shadow-none hover:-translate-y-1 transition-transform flex flex-col">
+          <div className="flex items-center gap-2 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
+            <ShieldCheck size={16} className="text-emerald-500"/> SEO HEALTH SCORE
           </div>
-          <div style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--foreground)', marginTop: '0.5rem' }}>{stats.score}<span style={{ fontSize:'1rem', color:'var(--text-muted)' }}>/100</span></div>
-          <div style={{ fontSize: '0.75rem', color: stats.score >= 90 ? '#10B981' : stats.score >= 50 ? '#F59E0B' : '#EF4444', fontWeight: 600, marginBottom: '1rem' }}>
+          <div className="text-4xl font-extrabold text-slate-900 dark:text-white mt-3 mb-1">{stats.score}<span className="text-xl text-slate-400">/100</span></div>
+          <div className={`text-xs font-bold mb-6 ${stats.score >= 90 ? 'text-emerald-500' : stats.score >= 50 ? 'text-amber-500' : 'text-red-500'}`}>
             {stats.score >= 90 ? 'Excellent' : stats.score >= 50 ? 'Needs Work' : 'Critical Issues'}
           </div>
-          <div style={{ height: 40, width: '100%' }}>
+          <div className="h-12 w-full mt-auto">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={sparklineData1}>
-                <Line type="monotone" dataKey="v" stroke="#10B981" strokeWidth={2} dot={false} />
+                <Line type="monotone" dataKey="v" stroke="#10B981" strokeWidth={3} dot={false} />
               </LineChart>
             </ResponsiveContainer>
           </div>
-        </motion.div>
+        </Paper>
 
         {/* Card 2 */}
-        <motion.div {...cardHoverProps} className="glass-card" style={{ borderRadius: '12px', padding: '1.25rem', display: 'flex', flexDirection: 'column' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 700, letterSpacing: '0.05em' }}>
-            <Users size={14} color="#3B82F6"/> VISITORS THIS WEEK
+        <Paper elevation={0} className="relative overflow-hidden bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-xl shadow-slate-200/50 dark:shadow-none hover:-translate-y-1 transition-transform flex flex-col">
+          <div className="flex items-center gap-2 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
+            <Users size={16} className="text-blue-500"/> VISITORS THIS WEEK
           </div>
-          <div style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--foreground)', marginTop: '0.5rem' }}>{stats.visitors.toLocaleString()}</div>
-          <div style={{ fontSize: '0.75rem', color: stats.visitorsChange >= 0 ? '#10B981' : '#EF4444', fontWeight: 600, marginBottom: '1rem' }}>
+          <div className="text-4xl font-extrabold text-slate-900 dark:text-white mt-3 mb-1">{stats.visitors.toLocaleString()}</div>
+          <div className={`text-xs font-bold mb-6 ${stats.visitorsChange >= 0 ? 'text-emerald-500' : 'text-red-500'}`}>
             {stats.visitorsChange >= 0 ? '↑' : '↓'} {Math.abs(stats.visitorsChange)}% vs last week
           </div>
-          <div style={{ height: 40, width: '100%' }}>
+          <div className="h-12 w-full mt-auto">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={sparklineData2}>
-                <Line type="monotone" dataKey="v" stroke="#3B82F6" strokeWidth={2} dot={false} />
+                <Line type="monotone" dataKey="v" stroke="#3B82F6" strokeWidth={3} dot={false} />
               </LineChart>
             </ResponsiveContainer>
           </div>
-        </motion.div>
+        </Paper>
 
         {/* Card 3 */}
-        <motion.div {...cardHoverProps} className="glass-card" style={{ borderRadius: '12px', padding: '1.25rem', display: 'flex', flexDirection: 'column' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 700, letterSpacing: '0.05em' }}>
-            <Globe size={14} color="#A855F7"/> PAGES ON GOOGLE
+        <Paper elevation={0} className="relative overflow-hidden bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-xl shadow-slate-200/50 dark:shadow-none hover:-translate-y-1 transition-transform flex flex-col">
+          <div className="flex items-center gap-2 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
+            <Globe size={16} className="text-purple-500"/> PAGES ON GOOGLE
           </div>
-          <div style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--foreground)', marginTop: '0.5rem' }}>{stats.indexed} / {stats.indexed + stats.notIndexed || 1}</div>
-          <div style={{ fontSize: '0.75rem', color: stats.notIndexed > 0 ? '#EF4444' : '#10B981', fontWeight: 600, marginBottom: '1rem' }}>
+          <div className="text-4xl font-extrabold text-slate-900 dark:text-white mt-3 mb-1">{stats.indexed} <span className="text-xl text-slate-400">/ {stats.indexed + stats.notIndexed || 1}</span></div>
+          <div className={`text-xs font-bold mb-6 ${stats.notIndexed > 0 ? 'text-red-500' : 'text-emerald-500'}`}>
             {stats.notIndexed > 0 ? `${stats.notIndexed} pages not indexed yet` : 'All known pages indexed'}
           </div>
-          <div style={{ height: 40, width: '100%' }}>
+          <div className="h-12 w-full mt-auto">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={sparklineData3}>
-                <Bar dataKey="v" fill="#A855F7" radius={[2, 2, 0, 0]} />
+                <Bar dataKey="v" fill="#A855F7" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
-        </motion.div>
+        </Paper>
 
         {/* Card 4 */}
-        <motion.div {...cardHoverProps} className="glass-card" style={{ borderRadius: '12px', padding: '1.25rem', display: 'flex', flexDirection: 'column' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 700, letterSpacing: '0.05em' }}>
-            <Key size={14} color="#F59E0B"/> KEYWORDS TRACKED
+        <Paper elevation={0} className="relative overflow-hidden bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-xl shadow-slate-200/50 dark:shadow-none hover:-translate-y-1 transition-transform flex flex-col">
+          <div className="flex items-center gap-2 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
+            <Key size={16} className="text-amber-500"/> KEYWORDS TRACKED
           </div>
-          <div style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--foreground)', marginTop: '0.5rem' }}>{stats.keywords}</div>
-          <div style={{ fontSize: '0.75rem', color: '#10B981', fontWeight: 600, marginBottom: '1rem' }}>{stats.keywordsTop10} keywords in Top 10</div>
-          <div style={{ height: 40, width: '100%' }}>
+          <div className="text-4xl font-extrabold text-slate-900 dark:text-white mt-3 mb-1">{stats.keywords}</div>
+          <div className="text-xs font-bold mb-6 text-emerald-500">{stats.keywordsTop10} keywords in Top 10</div>
+          <div className="h-12 w-full mt-auto">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={sparklineData4}>
                 <defs>
@@ -475,40 +474,28 @@ export default function DashboardPage() {
                     <stop offset="95%" stopColor="#F59E0B" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
-                <Area type="monotone" dataKey="v" stroke="#F59E0B" fillOpacity={1} fill="url(#colorKw)" strokeWidth={2} />
+                <Area type="monotone" dataKey="v" stroke="#F59E0B" fillOpacity={1} fill="url(#colorKw)" strokeWidth={3} />
               </AreaChart>
             </ResponsiveContainer>
           </div>
-        </motion.div>
+        </Paper>
           </>
         )}
-      </motion.div>
+      </div>
 
       {/* Phase 3: AI Health Pulse Card */}
-      <motion.div variants={itemVariants} style={{ marginBottom: '1.5rem' }}>
-        <div className="glass-card" style={{
-          padding: '1.25rem 1.5rem', display: 'flex', alignItems: 'center', gap: '16px'
-        }}>
-          <div style={{
-            background: 'linear-gradient(135deg, rgba(90, 74, 244, 0.2), rgba(90, 74, 244, 0.05))',
-            padding: '12px', borderRadius: '14px', flexShrink: 0
-          }}>
-            <BrainCircuit size={24} color="#8C82FA" />
+      <Paper elevation={0} className="animate-dash mb-10 overflow-hidden bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 md:p-8 shadow-xl shadow-slate-200/50 dark:shadow-none flex flex-col md:flex-row items-start md:items-center gap-6">
+          <div className="bg-indigo-50 dark:bg-indigo-500/10 p-4 rounded-2xl shrink-0">
+            <BrainCircuit size={28} className="text-indigo-600 dark:text-indigo-400" />
           </div>
-          <div style={{ flex: 1 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-              <span style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--foreground)' }}>AI Health Pulse</span>
-              <span style={{
-                fontSize: '0.6rem', fontWeight: 700, padding: '2px 8px', borderRadius: '100px',
-                background: stats.score >= 80 ? '#ECFDF5' : stats.score >= 50 ? '#FFFBEB' : '#FEF2F2',
-                color: stats.score >= 80 ? '#059669' : stats.score >= 50 ? '#D97706' : '#DC2626',
-                border: `1px solid ${stats.score >= 80 ? '#A7F3D0' : stats.score >= 50 ? '#FDE68A' : '#FECACA'}`,
-                textTransform: 'uppercase', letterSpacing: '0.5px'
-              }}>
+          <div className="flex-1">
+            <div className="flex items-center gap-3 mb-2">
+              <span className="text-lg font-bold text-slate-900 dark:text-white">AI Health Pulse</span>
+              <span className={`text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest border ${stats.score >= 80 ? 'bg-emerald-50 text-emerald-600 border-emerald-200' : stats.score >= 50 ? 'bg-amber-50 text-amber-600 border-amber-200' : 'bg-red-50 text-red-600 border-red-200'}`}>
                 {stats.score >= 80 ? 'Healthy' : stats.score >= 50 ? 'Needs Attention' : 'Critical'}
               </span>
             </div>
-            <p style={{ margin: 0, fontSize: '0.8rem', color: '#64748B', lineHeight: 1.5 }}>
+            <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed m-0">
               {stats.score >= 80
                 ? `Your site is performing well. All systems are green. Keep monitoring for any changes.`
                 : stats.score >= 50
@@ -517,75 +504,82 @@ export default function DashboardPage() {
               }
             </p>
           </div>
-          <div style={{ display: 'flex', gap: '24px', flexShrink: 0 }}>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#4F46E5' }}>{stats.score}</div>
-              <div style={{ fontSize: '0.65rem', color: '#94A3B8', fontWeight: 600 }}>SEO Score</div>
+          <div className="flex gap-6 shrink-0 mt-4 md:mt-0">
+            <div className="text-center">
+              <div className="text-2xl font-extrabold text-indigo-600 dark:text-indigo-400">{stats.score}</div>
+              <div className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">SEO Score</div>
             </div>
-            <div style={{ width: 1, background: '#E2E8F0' }} />
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#EA580C' }}>{dashboardData?.healthReport?.issues?.length || 0}</div>
-              <div style={{ fontSize: '0.65rem', color: '#94A3B8', fontWeight: 600 }}>Issues</div>
+            <div className="w-px bg-slate-200 dark:bg-slate-800" />
+            <div className="text-center">
+              <div className="text-2xl font-extrabold text-orange-500">{dashboardData?.healthReport?.issues?.length || 0}</div>
+              <div className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Issues</div>
             </div>
           </div>
-          <Link href="#ai-feed" style={{
-            background: '#4F46E5', color: '#FFFFFF', border: 'none',
-            padding: '0.5rem 1rem', borderRadius: '10px', fontSize: '0.8rem',
-            fontWeight: 600, textDecoration: 'none', flexShrink: 0,
-            boxShadow: '0 2px 8px -2px rgba(79, 70, 229, 0.4)',
-            display: 'flex', alignItems: 'center', gap: '6px'
-          }}>
-            <Eye size={14} /> View AI Feed
-          </Link>
-        </div>
-      </motion.div>
+          <Button
+            href="#ai-feed"
+            component={Link}
+            variant="contained"
+            sx={{
+              background: 'linear-gradient(135deg, #6366F1, #4338CA)', textTransform: 'none', fontWeight: 700, borderRadius: '10px', boxShadow: '0 4px 14px 0 rgba(99, 102, 241, 0.4)',
+              '&:hover': { background: 'linear-gradient(135deg, #4F46E5, #3730A3)' }
+            }}
+            startIcon={<Eye size={16} />}
+            className="w-full md:w-auto"
+          >
+            View AI Feed
+          </Button>
+      </Paper>
 
       {/* Middle Row (Health & Roadmap) */}
-      <motion.div variants={itemVariants} className="grid-responsive grid-cols-2" style={{ marginBottom: '1.5rem' }}>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10 animate-dash">
         
         {/* SEO Health Report */}
-        <div className="glass-card" style={{ padding: '1.5rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-            <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700, color: '#0F172A' }}>SEO Health Report</h3>
-            <Link href="/dashboard/issues" style={{ fontSize: '0.8rem', color: '#3B82F6', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-              See all issues <ArrowUpRight size={14} />
+        <Paper elevation={0} className="relative overflow-hidden bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 md:p-8 shadow-xl shadow-slate-200/50 dark:shadow-none">
+          <div className="flex justify-between items-center mb-8">
+            <Typography variant="h6" className="font-extrabold text-slate-900 dark:text-white">SEO Health Report</Typography>
+            <Link href="/dashboard/issues" className="text-sm font-bold text-blue-500 hover:text-blue-600 flex items-center gap-1">
+              See all issues <ArrowUpRight size={16} />
             </Link>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', marginBottom: '1.5rem' }}>
-            <div style={{ position: 'relative', width: 90, height: 90 }}>
+          <div className="flex items-center gap-6 mb-8">
+            <div className="relative w-[90px] h-[90px]">
               <svg width="90" height="90" viewBox="0 0 100 100">
-                <circle cx="50" cy="50" r="40" fill="none" stroke="#F1F5F9" strokeWidth="8"/>
+                <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" className="text-slate-100 dark:text-slate-800" strokeWidth="8"/>
                 <circle cx="50" cy="50" r="40" fill="none" stroke="#F59E0B" strokeWidth="8" strokeDasharray="195.8 251.2" strokeLinecap="round" transform="rotate(-90 50 50)"/>
               </svg>
-              <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                <span style={{ fontSize: '1.2rem', fontWeight: 800, color: '#F59E0B', lineHeight: 1 }}>78</span>
-                <span style={{ fontSize: '0.6rem', color: '#64748B' }}>/100</span>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <span className="text-xl font-extrabold text-amber-500 leading-none">78</span>
+                <span className="text-[10px] font-bold text-slate-400">/100</span>
               </div>
             </div>
             <div>
-              <div style={{ fontSize: '1rem', fontWeight: 700, color: '#F59E0B', marginBottom: '0.25rem' }}>Needs Work</div>
-              <div style={{ fontSize: '0.8rem', color: '#64748B', lineHeight: 1.5 }}>Your site has a few issues to fix. Solving the <strong style={{color: '#0F172A'}}>3</strong> critical errors could raise your score to <strong style={{color: '#0F172A'}}>89/100</strong>.</div>
+              <div className="text-lg font-bold text-amber-500 mb-1">Needs Work</div>
+              <div className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                Your site has a few issues to fix. Solving the <strong className="text-slate-900 dark:text-white">3</strong> critical errors could raise your score to <strong className="text-slate-900 dark:text-white">89/100</strong>.
+              </div>
             </div>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1.5rem' }}>
+          <div className="flex flex-col gap-3 mb-8">
             {(dashboardData?.healthReport?.issues || []).map((iss: any, i: number) => (
-              <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '0.75rem 1rem', borderRadius: '8px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: iss.color || '#3B82F6' }} />
-                  <span style={{ fontSize: '0.85rem', color: '#0F172A' }}>{iss.text}</span>
+              <div key={i} className="flex justify-between items-center bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 p-3 px-4 rounded-xl">
+                <div className="flex items-center gap-3">
+                  <div className="w-2.5 h-2.5 rounded-full" style={{ background: iss.color || '#3B82F6' }} />
+                  <span className="text-sm font-medium text-slate-700 dark:text-slate-300">{iss.text}</span>
                 </div>
-                <Link href={iss.url ? `/dashboard/lighthouse?url=${encodeURIComponent(iss.url)}` : "/dashboard/issues"} style={{ background: 'transparent', border: '1px solid #CBD5E1', color: '#3B82F6', fontSize: '0.75rem', padding: '0.25rem 0.75rem', borderRadius: '6px', cursor: 'pointer', textDecoration: 'none' }}>View</Link>
+                <Link href={iss.url ? `/dashboard/lighthouse?url=${encodeURIComponent(iss.url)}` : "/dashboard/issues"} className="text-xs font-bold text-blue-500 hover:text-blue-600 bg-blue-50 dark:bg-blue-900/20 px-3 py-1 rounded-lg">
+                  View
+                </Link>
               </div>
             ))}
           </div>
           
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: '0.8rem', color: '#64748B' }}>Scan completed: 2 hours ago</span>
-            <Link href="/dashboard/lighthouse" style={{ background: '#3B82F6', color: '#0F172A', border: 'none', padding: '0.6rem 1.25rem', borderRadius: '8px', fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer', textDecoration: 'none' }}>Run Audit Again</Link>
+          <div className="flex justify-between items-center">
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Scan completed: 2 hours ago</span>
+            <Button href="/dashboard/lighthouse" component={Link} variant="outlined" sx={{ textTransform: 'none', fontWeight: 700, borderRadius: '8px' }}>Run Audit Again</Button>
           </div>
-        </div>
+        </Paper>
 
         {/* SEO Journey Roadmap */}
         <div className="glass-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
@@ -664,7 +658,7 @@ export default function DashboardPage() {
           
           <button style={{ background: '#EFF6FF', color: '#3B82F6', border: '1px solid #BFDBFE', padding: '0.75rem', borderRadius: '8px', fontWeight: 600, fontSize: '0.85rem', width: '100%', marginTop: '1.5rem', cursor: 'pointer' }}>View Full Roadmap →</button>
         </div>
-      </motion.div>
+      </div>
 
       {/* Bottom Widgets Grid */}
       <motion.div variants={itemVariants} className="grid-responsive grid-cols-3">
@@ -952,6 +946,6 @@ export default function DashboardPage() {
         </>
       )}
 
-    </motion.div>
+    </div>
   );
 }

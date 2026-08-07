@@ -8,10 +8,12 @@ import React, {
   useEffect,
   Fragment,
 } from 'react';
+import anime from 'animejs';
 import { useMapLeads } from '@/hooks/useLeads';
 import { useLeadProgress } from '@/hooks/useLeadProgress';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { Button, Paper, Typography } from '@mui/material';
 import {
   Search, Loader2, Sparkles, MapPin, X, Wifi, WifiOff,
   ChevronDown, ChevronUp, ChevronLeft, ChevronRight,
@@ -409,6 +411,17 @@ export default function LeadsPage() {
 
   const tableRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    anime({
+      targets: '.animate-in',
+      translateY: [20, 0],
+      opacity: [0, 1],
+      duration: 800,
+      delay: anime.stagger(50),
+      easing: 'easeOutQuint'
+    });
+  }, []);
+
   // ── Build filter options ────────────────────────────────────────────────────
   const allTypes = useMemo(() => {
     const seen = new Set<string>();
@@ -512,16 +525,18 @@ export default function LeadsPage() {
   const showBanner = progress.active || progress.event === 'lead:completed' || progress.event === 'lead:failed';
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-black p-4 sm:p-6 font-sans">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-4 sm:p-6 font-sans">
       <div className="mx-auto max-w-[1500px]">
 
         {/* ── Header ─────────────────────────────────────────────────────────── */}
-        <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between animate-in">
           <div>
-            <h1 className="text-xl font-bold text-gray-900 dark:text-white">📍 Business Leads Dashboard</h1>
-            <p className="text-xs text-gray-400 mt-0.5">Generate, track, and convert quality leads faster</p>
+            <Typography variant="h4" className="font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+              📍 Business Leads Dashboard
+            </Typography>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Generate, track, and convert quality leads faster</p>
           </div>
-          <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex items-center gap-3 flex-wrap">
             <span className="text-xs text-gray-400">{filtered.length} leads · {typeFilter !== 'All Types' || locationFilter !== 'All Locations' || whatsappFilter || linkedinFilter || search ? 'Filters applied' : 'No filters applied'}</span>
             <button onClick={() => mutate()} className="flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:bg-[#111] dark:text-gray-300 transition-colors">
               <RefreshCw size={13} /> Refresh
@@ -548,36 +563,36 @@ export default function LeadsPage() {
         )}
 
         {/* ── Stats ──────────────────────────────────────────────────────────── */}
-        <div className="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
           {[
             { label: 'Total Leads', value: stats?.totalInDb ?? leads.length },
             { label: 'Avg Rating', value: stats?.avg_rating ? `★ ${stats.avg_rating}` : '★ 0.0' },
             { label: 'With Emails', value: stats?.leads_with_emails ?? 0 },
             { label: 'Avg Score', value: leads.length ? `${Math.round(leads.reduce((s: number, l: any) => s + (l.match_score || 0), 0) / leads.length)}%` : '0%' },
           ].map((stat, i) => (
-            <div key={i} className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-[#111]">
-              <div className="text-[10px] font-semibold uppercase tracking-wider text-gray-400">{stat.label}</div>
-              <div className="mt-1 text-2xl font-bold text-gray-900 dark:text-white">{stat.value}</div>
-            </div>
+            <Paper elevation={0} key={i} className="animate-in rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-xl shadow-slate-200/50 dark:shadow-none hover:-translate-y-1 transition-transform">
+              <div className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">{stat.label}</div>
+              <div className="text-3xl font-extrabold text-slate-900 dark:text-white">{stat.value}</div>
+            </Paper>
           ))}
         </div>
 
         {/* ── Search ─────────────────────────────────────────────────────────── */}
-        <div className="mb-3">
+        <div className="mb-4 animate-in">
           <div className="relative max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={15} />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
             <input
               type="text"
               placeholder="Search name, address or phone…"
               value={search}
               onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-              className="w-full rounded-xl border border-gray-200 bg-white py-2 pl-9 pr-4 text-sm outline-none focus:border-indigo-500 dark:border-gray-700 dark:bg-[#1a1a1a] dark:text-white"
+              className="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-12 pr-4 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 dark:border-slate-800 dark:bg-slate-900 dark:text-white transition-all shadow-sm"
             />
           </div>
         </div>
 
         {/* ── Filters Row ─────────────────────────────────────────────────────── */}
-        <div className="mb-4 flex flex-wrap items-center gap-2">
+        <div className="mb-6 flex flex-wrap items-center gap-3 animate-in">
           <SelectFilter value={typeFilter} options={allTypes} onChange={(v) => { setTypeFilter(v); setPage(1); }} />
           <SelectFilter value={locationFilter} options={allLocations} onChange={(v) => { setLocationFilter(v); setPage(1); }} />
           <FilterChip label="WhatsApp" active={whatsappFilter} onClick={() => { setWhatsappFilter((v) => !v); setNoWhatsappFilter(false); setPage(1); }} />

@@ -14,6 +14,7 @@ import SetupGuide, { SetupStep } from '../../../components/SetupGuide';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useSite } from '@/lib/SiteContext';
+import { Paper, Typography, Button } from '@mui/material';
 import DateRangePicker, { DateRangeValue } from '@/components/DateRangePicker';
 import AnalyticsExportButton from '@/components/AnalyticsExportButton';
 import DashboardSkeleton from '@/components/ui/DashboardSkeleton';
@@ -1109,24 +1110,32 @@ export default function AnalyticsPage() {
   };
 
   return (
-    <div className={styles.dashboardWrapper}>
-      <div className={styles.topHeader}>
+    <div className="animate-dash min-h-screen bg-slate-50 dark:bg-slate-950 p-6 md:p-10 font-sans">
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-10">
         <div>
-          <div className={styles.eyebrow}>Analytics · Live GA4 Data</div>
-          <h1 className={styles.pageTitle}>{greeting}, {userName}</h1>
-          <p className={styles.pageSubtitle}>Here's how {websiteName === 'my-site' ? 'your website' : websiteName} is performing today.</p>
-
-  
+          <div className="flex items-center gap-2 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3">
+            <Activity size={16} className="text-blue-500"/> Analytics · Live GA4 Data
+          </div>
+          <Typography variant="h3" className="font-extrabold text-slate-900 dark:text-white mb-2 tracking-tight">
+            {greeting}, {userName}
+          </Typography>
+          <Typography variant="body1" className="text-slate-500 dark:text-slate-400 font-medium">
+            Here's how {websiteName === 'my-site' ? 'your website' : websiteName} is performing today.
+          </Typography>
         </div>
-        <div className={styles.headerControls}>
+        <div className="flex flex-wrap items-center gap-4">
           <DateRangePicker value={dateRange} onChange={setDateRange} />
-          <button 
+          <Button 
             onClick={() => router.push('/dashboard/integrations')}
-            className={styles.exportButton}
-            style={{ background: '#3B82F6', color: '#FFFFFF', border: 'none', padding: '0.5rem 1rem', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', borderRadius: '8px', fontWeight: 600, fontSize: '0.85rem' }}
+            variant="contained"
+            startIcon={<Activity size={18} />}
+            sx={{
+              background: 'linear-gradient(135deg, #3B82F6, #2563EB)', textTransform: 'none', fontWeight: 700, borderRadius: '10px', boxShadow: '0 4px 14px 0 rgba(59, 130, 246, 0.3)',
+              '&:hover': { background: 'linear-gradient(135deg, #2563EB, #1D4ED8)' }
+            }}
           >
-            <Activity size={14} /> Connect GA4
-          </button>
+            Connect GA4
+          </Button>
           <AnalyticsExportButton
             analytics={ga4Overview || {}}
             pageSpeed={ga4Overview?.pageSpeed || null}
