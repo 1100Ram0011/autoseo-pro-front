@@ -92,7 +92,7 @@ export default function LandingPage() {
                         initial={{ height: 0 }}
                         animate={{ height: `${h}%` }}
                         transition={{ duration: 1, delay: 0.5 + (i * 0.1) }}
-                        style={{ flex: 1, background: 'linear-gradient(to top, #5A4AF4, #A78BFA)', borderRadius: '4px 4px 0 0', opacity: 0.8 }}
+                        style={{ flex: 1, background: 'linear-gradient(to top, #3b82f6, #8b5cf6)', borderRadius: '4px 4px 0 0', opacity: 0.8 }}
                       ></motion.div>
                     ))}
                   </div>

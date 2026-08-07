@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import toast from 'react-hot-toast';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from './MockUI';
+import { TextField, Button } from '@mui/material';
 // Mocks for missing components
 const AutoBloggerConfig = () => <div>AutoBlogger Coming Soon</div>;
 const ThemedToast = () => null;
@@ -1530,12 +1531,13 @@ function TitleSelector({ titles, totalTitlesCount, currentPage, setCurrentPage, 
         </div>
       )}
 
-      <div className="mt-6 border-t border-gray-100 pt-5">
-        <p className="text-sm text-gray-400 dark:text-gray-500 mb-2.5">Or write your own title:</p>
-        <div className="flex gap-2.5">
-          <input
-            className="flex-1 px-4 py-3 border border-gray-200 rounded-xl text-sm outline-none focus:border-gray-400 font-sans"
+      <div className="mt-6 border-t border-gray-100 dark:border-gray-800 pt-5">
+        <p className="text-sm text-gray-400 dark:text-gray-500 mb-4">Or write your own title:</p>
+        <div className="flex gap-3">
+          <TextField
+            variant="outlined"
             placeholder="Write your blog title here..."
+            fullWidth
             value={customTitle}
             onChange={(e) => setCustomTitle(e.target.value)}
             onKeyDown={(e) => {
@@ -1544,19 +1546,29 @@ function TitleSelector({ titles, totalTitlesCount, currentPage, setCurrentPage, 
                 setCustomTitle('');
               }
             }}
+            sx={{ '& .MuiOutlinedInput-root': { borderRadius: '12px', background: 'var(--tw-bg-opacity, rgba(255, 255, 255, 0.05))' } }}
           />
-          <button
+          <Button
+            variant="contained"
+            color="primary"
+            disabled={!customTitle.trim()}
             onClick={() => {
               if (customTitle.trim()) {
                 onSelect(customTitle.trim());
                 setCustomTitle('');
               }
             }}
-            className={`px-5 py-3 bg-gray-800 text-white text-sm font-medium rounded-xl border-none ${customTitle.trim() ? 'opacity-100 cursor-pointer hover:bg-gray-700' : 'opacity-50 cursor-not-allowed'
-              }`}
+            sx={{ 
+              borderRadius: '12px', 
+              padding: '10px 24px', 
+              textTransform: 'none', 
+              fontWeight: 700, 
+              minWidth: '130px',
+              boxShadow: 'none'
+            }}
           >
             Generate →
-          </button>
+          </Button>
         </div>
       </div>
     </div>
