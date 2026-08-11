@@ -121,6 +121,29 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
 
         <div className={styles.navSection}>
+          <div className={styles.sectionTitle}>CAMPAIGNS & OUTREACH</div>
+          <Link href="/dashboard/email/accounts" className={`${styles.navItem} ${isRouteActive('/dashboard/email/accounts') ? styles.active : ''}`}>
+            <Mail size={18} /> Email Accounts
+            <span className={styles.navBadge}>New</span>
+          </Link>
+          <Link href="/dashboard/email/templates" className={`${styles.navItem} ${isRouteActive('/dashboard/email/templates') ? styles.active : ''}`}>
+            <FileText size={18} /> Email Templates
+          </Link>
+          <Link href="/dashboard/email/campaigns" className={`${styles.navItem} ${isRouteActive('/dashboard/email/campaigns') ? styles.active : ''}`}>
+            <Target size={18} /> Email Campaigns
+            <span className={styles.navBadge}>New</span>
+          </Link>
+          <Link href="/dashboard/whatsapp/campaigns" className={`${styles.navItem} ${isRouteActive('/dashboard/whatsapp/campaigns') ? styles.active : ''}`}>
+            <MessageSquare size={18} /> WhatsApp Campaigns
+            <span className={styles.navBadge}>New</span>
+          </Link>
+          <Link href="/dashboard/whatsapp/inbox" className={`${styles.navItem} ${isRouteActive('/dashboard/whatsapp/inbox') ? styles.active : ''}`}>
+            <MessageSquare size={18} /> WhatsApp Inbox
+            <span className={styles.navBadge}>New</span>
+          </Link>
+        </div>
+
+        <div className={styles.navSection}>
           <div className={styles.sectionTitle}>TECHNICAL SEO</div>
           <Link href="/dashboard/cwv" className={`${styles.navItem} ${isRouteActive('/dashboard/cwv') ? styles.active : ''}`}>
             <Activity size={18} /> Core Web Vitals
