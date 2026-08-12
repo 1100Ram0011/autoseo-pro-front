@@ -37,7 +37,7 @@ function BillingContent() {
     };
     checkStatus();
 
-    if (searchParams.get('success')) {
+    if (searchParams?.get('success')) {
       setIsSuccess(true);
       setIsActivePro(true);
     }

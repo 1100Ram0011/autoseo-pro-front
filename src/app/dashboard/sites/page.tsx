@@ -16,7 +16,7 @@ import styles from './page.module.css';
 function SitesContent() {
   const { data: session } = useSession();
   const searchParams = useSearchParams();
-  const [isModalOpen, setIsModalOpen] = useState(searchParams.get('add') === 'true');
+  const [isModalOpen, setIsModalOpen] = useState(searchParams?.get('add') === 'true');
   const [url, setUrl] = useState('');
   const [isCrawling, setIsCrawling] = useState(false);
   const [editingSiteId, setEditingSiteId] = useState<string | null>(null);

@@ -1,0 +1,1 @@
+export const useTheme = () => ({ theme: 'light', setTheme: () => {} }); export const ThemeProvider = ({children}) => children;
