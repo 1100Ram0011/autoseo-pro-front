@@ -16,7 +16,7 @@ import {
 import {
   useGetConversationalAutomationQuery,
   useUpdateConversationalAutomationMutation,
-} from '../../../../../redux/apis/metaWhatsapp.api'
+} from '@/redux/apis/metaWhatsapp.api'
 
 export default function MetaConversationalAutomation(props) {
   const context = useOutletContext() || {}

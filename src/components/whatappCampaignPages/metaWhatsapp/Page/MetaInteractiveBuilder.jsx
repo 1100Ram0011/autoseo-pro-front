@@ -25,7 +25,7 @@ import {
   useDeleteInteractiveMessageMutation,
   useSendInteractiveMessageMutation,
   useUpdateInteractiveMessageMutation,
-} from '../../../../../redux/apis/metaWhatsapp.api'
+} from '@/redux/apis/metaWhatsapp.api'
 
 export default function MetaInteractiveBuilder(props) {
   const context = useOutletContext() || {}

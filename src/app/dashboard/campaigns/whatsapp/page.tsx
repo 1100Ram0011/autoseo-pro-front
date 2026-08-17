@@ -6,13 +6,19 @@ const IntegrationTab = dynamic(() => import("@/components/whatappCampaignPages/m
 const ContactsTab = dynamic(() => import("@/components/whatappCampaignPages/metaWhatsapp/Page/MetaWhatsappContact"), { ssr: false }) as any;
 const TemplatesTab = dynamic(() => import("@/components/whatappCampaignPages/metaWhatsapp/Page/MetaTemplateLibraryPage"), { ssr: false }) as any;
 const CampaignsTab = dynamic(() => import("@/components/whatappCampaignPages/metaWhatsapp/Page/MetaWhatsappCampaign"), { ssr: false }) as any;
-import { ContactRound, LayoutTemplate, MessageCircleMore, PlugZap, Rocket, ShieldCheck } from "lucide-react";
+const LogsTab = dynamic(() => import("@/components/whatappCampaignPages/metaWhatsapp/Page/MetaWhatsappLogs"), { ssr: false }) as any;
+const ChatBotTab = dynamic(() => import("@/components/whatappCampaignPages/metaWhatsapp/Page/MetaWhatsappChatbotFlow"), { ssr: false }) as any;
+const DevelopersTab = dynamic(() => import("@/components/whatappCampaignPages/metaWhatsapp/Page/MetaWhatsappDevelopers"), { ssr: false }) as any;
+import { ContactRound, LayoutTemplate, MessageCircleMore, PlugZap, Rocket, ShieldCheck, FileText, Code, BotMessageSquare } from "lucide-react";
 
 const tabs = [
   { id: "integration", label: "Integration", description: "Connect your Meta account", icon: PlugZap },
   { id: "contacts", label: "Contact lists", description: "Organize your audience", icon: ContactRound },
   { id: "templates", label: "Templates", description: "Create approved messages", icon: LayoutTemplate },
   { id: "campaigns", label: "Campaigns", description: "Send with confidence", icon: Rocket },
+  { id: "logs", label: "Logs", description: "View message logs", icon: FileText },
+  { id: "chatbot", label: "Chat Bot", description: "Automate responses", icon: BotMessageSquare },
+  { id: "developers", label: "Developers", description: "API and Webhooks", icon: Code },
 ];
 
 const WhatsAppCampaignsPage = () => {
@@ -47,6 +53,9 @@ const WhatsAppCampaignsPage = () => {
           {activeTab === "contacts" && <ContactsTab />}
           {activeTab === "templates" && <TemplatesTab />}
           {activeTab === "campaigns" && <CampaignsTab />}
+          {activeTab === "logs" && <LogsTab />}
+          {activeTab === "chatbot" && <ChatBotTab />}
+          {activeTab === "developers" && <DevelopersTab />}
         </main>
       </div>
     </div>

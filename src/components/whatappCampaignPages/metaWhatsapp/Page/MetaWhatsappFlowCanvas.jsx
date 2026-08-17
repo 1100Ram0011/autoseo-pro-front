@@ -24,7 +24,7 @@ import {
 } from "lucide-react";
 import toast from "react-hot-toast";
 import MetaInteractiveBuilder from "./MetaInteractiveBuilder";
-import { useTestApiRequestMutation } from "../../../../../redux/apis/metaWhatsapp.api";
+import { useTestApiRequestMutation } from "@/redux/apis/metaWhatsapp.api";
 
 export default function MetaWhatsappFlowCanvas({
     flows = [],

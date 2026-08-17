@@ -33,9 +33,9 @@ import {
   useUpdateChatbotFlowListMutation,
   useDeleteChatbotFlowListMutation,
   useDuplicateChatbotFlowListMutation,
-} from '../../../../../redux/apis/metaWhatsapp.api'
+} from '@/redux/apis/metaWhatsapp.api'
 import { useSelector, useDispatch } from 'react-redux'
-import { setSelectedNumber as setSelectedNumberAction } from '../../../../../redux/app/whatsappSelectionSlice'
+import { setSelectedNumber as setSelectedNumberAction } from '@/redux/app/whatsappSelectionSlice'
 import MetaInteractiveBuilder from './MetaInteractiveBuilder'
 import MetaWhatsappFlowCanvas from './MetaWhatsappFlowCanvas'
 

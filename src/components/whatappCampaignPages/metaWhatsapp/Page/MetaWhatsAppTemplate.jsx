@@ -11,7 +11,7 @@ import {
   useGetTemplatesQuery,
   useSyncTemplateMutation,
   useDeleteTemplateMutation,
-} from '../../../../../redux/apis/metaWhatsapp.api'
+} from '@/redux/apis/metaWhatsapp.api'
 
 // ── Reusable Components ──
 import ConfirmDialog from '../Component/ConfirmDialog'

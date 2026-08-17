@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, useLocation, Outlet } from '@/components/react-router-dom'
-import { useGetWhatsappNumberQuery } from '../../../redux/apis/metaWhatsapp.api'
+import { useGetWhatsappNumberQuery } from '@/redux/apis/metaWhatsapp.api'
 import {
   MessageSquare,
   LayoutTemplate,
