@@ -9,7 +9,7 @@ import {
   useSyncNumberLimitMutation,
   useLazyGetBusinessProfileQuery,
 } from '@/redux/apis/metaWhatsapp.api'
-import { cn } from '@/lib/utils.js'
+import { cn } from '@/lib/utils'
 import DemoAnimatedAuthModal from '@/ReUseAbleComponents/DemoAnimatedAuthModal'
 import Modal from '@/ReUseAbleComponents/Modal'
 import AuthPage from '@/pages/user/AuthPage'

@@ -1,6 +1,6 @@
 import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
-import { cn } from '@/lib/utils.js'
+import { cn } from '@/lib/utils'
 
 /**
  * ConfirmDialog — Portal-based confirmation dialog with header and variant support

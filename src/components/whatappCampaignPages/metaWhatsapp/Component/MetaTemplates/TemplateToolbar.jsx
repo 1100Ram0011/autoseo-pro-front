@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { SearchIcon, SyncIcon, PlusIcon, LoaderIcon } from './ui/WaIcons'
 import Button from '@/components/whatappCampaignPages/metaWhatsapp/Component/Button'
-import { cn } from '@/lib/utils.js'
+import { cn } from '@/lib/utils'
 
 // ─── Search Bar ───────────────────────────────────────────────────────────────
 const SearchBar = ({ value, onChange, placeholder }) => {

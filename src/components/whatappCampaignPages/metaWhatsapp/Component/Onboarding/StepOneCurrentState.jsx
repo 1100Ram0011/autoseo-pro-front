@@ -1,6 +1,6 @@
 import React from 'react';
 import { Smartphone, RefreshCcw, LogIn } from 'lucide-react';
-import { cn } from '@/lib/utils.js';
+import { cn } from '@/lib/utils';
 
 export default function StepOneCurrentState({ onSelectState }) {
   const options = [

@@ -12,10 +12,11 @@ import {
   ShieldCheck,
 } from "lucide-react";
 
-const EmailTemplatesTab = lazy(() => import("@/components/EmailCampaign/EmailTemplatesTab"));
-const EmailCampaignsTab = lazy(() => import("@/components/EmailCampaign/EmailCampaignsTab"));
-const ConnectEmailTab = lazy(() => import("@/components/EmailCampaign/ConnectEmailTab"));
-const AITemplatesTab = lazy(() => import("@/components/EmailCampaign/AITemplatesTab"));
+import dynamic from "next/dynamic";
+const EmailTemplatesTab = dynamic(() => import("@/components/features/emailTemplate/EmailTemplatesPage"), { ssr: false }) as any;
+const EmailCampaignsTab = dynamic(() => import("@/components/features/emailCampaign/EmailCampaignPage"), { ssr: false }) as any;
+const ConnectEmailTab = dynamic(() => import("@/components/features/connectEmails/ConnectMails"), { ssr: false }) as any;
+const AITemplatesTab = dynamic(() => import("@/components/features/emailTemplate/components/AIGeneratedEmailTemplates"), { ssr: false }) as any;
 
 const TABS = [
   {

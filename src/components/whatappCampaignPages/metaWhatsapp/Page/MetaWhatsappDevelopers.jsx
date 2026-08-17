@@ -29,7 +29,7 @@ import {
   Eye,
   EyeOff,
 } from 'lucide-react'
-import { cn } from '@/lib/utils.js'
+import { cn } from '@/lib/utils'
 
 // ── Reusable Components ──
 import PageHeader from '../Component/PageHeader'

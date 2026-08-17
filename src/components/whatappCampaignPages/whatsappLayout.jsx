@@ -16,7 +16,7 @@ import {
   BotMessageSquare,
 } from 'lucide-react'
 import { ScrollArea } from '@/components/ui/scroll-area.jsx'
-import { cn } from '@/lib/utils.js'
+import { cn } from '@/lib/utils'
 import ComingSoon from '@/pages/public/ComingSoon'
 import { useSelector, useDispatch } from 'react-redux'
 import { setSelectedNumber as setSelectedNumberAction } from '@/redux/app/whatsappSelectionSlice'

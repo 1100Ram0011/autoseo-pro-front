@@ -1,5 +1,5 @@
 import { ChevronLeft } from 'lucide-react'
-import { cn } from '@/lib/utils.js'
+import { cn } from '@/lib/utils'
 
 /**
  * CollapseToggle — Sidebar collapse/expand button

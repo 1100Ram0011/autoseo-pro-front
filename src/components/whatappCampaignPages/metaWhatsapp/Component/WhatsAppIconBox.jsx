@@ -1,5 +1,5 @@
 import { FaWhatsapp } from 'react-icons/fa'
-import { cn } from '@/lib/utils.js'
+import { cn } from '@/lib/utils'
 
 /**
  * WhatsAppIconBox — Green gradient WhatsApp icon box

@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils.js'
+import { cn } from '@/lib/utils'
 import { QUALITY_COLORS } from './metaWhatsappConstants'
 
 // ─── Quality dot (GREEN / YELLOW / RED / UNKNOWN) ──

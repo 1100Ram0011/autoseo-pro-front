@@ -1,10 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
-import IntegrationTab from "@/components/WhatsappCampaign/IntegrationTab";
-import ContactsTab from "@/components/WhatsappCampaign/ContactsTab";
-import TemplatesTab from "@/components/WhatsappCampaign/TemplatesTab";
-import CampaignsTab from "@/components/WhatsappCampaign/CampaignsTab";
+import dynamic from "next/dynamic";
+const IntegrationTab = dynamic(() => import("@/components/whatappCampaignPages/metaWhatsapp/Page/MetaWhatsAppIntegration"), { ssr: false }) as any;
+const ContactsTab = dynamic(() => import("@/components/whatappCampaignPages/metaWhatsapp/Page/MetaWhatsappContact"), { ssr: false }) as any;
+const TemplatesTab = dynamic(() => import("@/components/whatappCampaignPages/metaWhatsapp/Page/MetaTemplateLibraryPage"), { ssr: false }) as any;
+const CampaignsTab = dynamic(() => import("@/components/whatappCampaignPages/metaWhatsapp/Page/MetaWhatsappCampaign"), { ssr: false }) as any;
 import { ContactRound, LayoutTemplate, MessageCircleMore, PlugZap, Rocket, ShieldCheck } from "lucide-react";
 
 const tabs = [

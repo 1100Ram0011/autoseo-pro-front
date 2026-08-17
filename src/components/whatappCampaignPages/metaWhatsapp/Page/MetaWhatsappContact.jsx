@@ -7,7 +7,7 @@ import {
     useGetContactListsQuery, useCreateContactListMutation, useDeleteContactListMutation,
     useGetWhatsappNumberQuery,
 } from "@/redux/apis/metaWhatsapp.api";
-import { cn } from "@/lib/utils.js";
+import { cn } from "@/lib/utils";
 import ConfirmDialog from "@/ReUseAbleComponents/ConfirmDialog.jsx";
 import DemoAnimatedAuthModal from "@/ReUseAbleComponents/DemoAnimatedAuthModal";
 import AuthPage from "@/pages/user/AuthPage";

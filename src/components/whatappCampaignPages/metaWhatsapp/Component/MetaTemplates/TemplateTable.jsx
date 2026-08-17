@@ -4,7 +4,7 @@ import { Skeleton } from './ui/WaBaseUI'
 import EmptyState from '../EmptyState'
 import Button from '../Button'
 import { Eye, LayoutTemplate } from 'lucide-react'
-import { cn } from '@/lib/utils.js'
+import { cn } from '@/lib/utils'
 
 // ─── Status Dot ───────────────────────────────────────────────────────────────
 const STATUS_CFG = {

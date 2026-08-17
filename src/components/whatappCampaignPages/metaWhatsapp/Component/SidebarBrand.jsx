@@ -1,6 +1,6 @@
 import WhatsAppIconBox from './WhatsAppIconBox'
 import { ChevronLeft } from 'lucide-react'
-import { cn } from '@/lib/utils.js'
+import { cn } from '@/lib/utils'
 
 /**
  * SidebarBrand — Sidebar header with WhatsApp icon + title + mobile close

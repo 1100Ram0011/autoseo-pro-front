@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils.js'
+import { cn } from '@/lib/utils'
 import { STATUS_MAP, STATUS_CFG } from './metaWhatsappConstants'
 
 /**

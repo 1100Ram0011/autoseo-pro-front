@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils.js'
+import { cn } from '@/lib/utils'
 
 const VARIANTS = {
   primary: 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm border-none dark:bg-emerald-600 dark:hover:bg-emerald-500',
