@@ -188,7 +188,7 @@ export default function LoginPage() {
               >
                 {[
                   { icon: 'G', text: 'Continue with Google', color: '#EA4335', onClick: () => signIn('google', { callbackUrl: '/dashboard' }) },
-                  { icon: 'M', text: 'Continue with Microsoft', color: '#00A4EF', onClick: null }
+                  { icon: 'M', text: 'Continue with Microsoft', color: '#00A4EF', onClick: undefined }
                 ].map((btn, i) => (
                   <motion.button 
                     key={i}
