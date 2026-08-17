@@ -254,7 +254,7 @@ export default function DashboardPage() {
             Fix {dashboardData?.healthReport?.issues?.length || 0} Issues
           </Button>
         </div>
-      </div>
+      </motion.div>
 
       {/* Phase 2: Premium Welcome Flow (How AutoSEO Works) */}
       {showWelcome && (
