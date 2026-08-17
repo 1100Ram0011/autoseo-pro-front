@@ -9,6 +9,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Loader2,
+  ShieldCheck,
 } from "lucide-react";
 
 const EmailTemplatesTab = lazy(() => import("@/components/EmailCampaign/EmailTemplatesTab"));
@@ -48,21 +49,21 @@ export default function EmailCampaignPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   return (
-    <div className="flex h-full bg-white dark:bg-slate-950">
+    <div className="flex min-h-full bg-slate-50/70 dark:bg-slate-950">
       {/* ───── LEFT SIDEBAR ───── */}
       <aside
-        className={`hidden sm:flex relative flex-col border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 transition-all duration-300 ${
+        className={`hidden sm:flex relative flex-col border-r border-slate-200 dark:border-slate-800 bg-white/95 shadow-sm dark:bg-slate-950 transition-all duration-300 ${
           isSidebarOpen ? "w-64" : "w-16"
         }`}
       >
         {/* Header */}
         <div
-          className={`flex h-16 shrink-0 items-center gap-3 border-b border-slate-200 dark:border-slate-800 px-4 ${
+          className={`flex h-20 shrink-0 items-center gap-3 border-b border-slate-200 dark:border-slate-800 px-4 ${
             isSidebarOpen ? "justify-start" : "justify-center px-0"
           }`}
         >
           <div
-            className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 border border-blue-500/20 ${
+            className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-md shadow-blue-500/25 ${
               !isSidebarOpen && "mx-auto"
             }`}
           >
@@ -70,13 +71,13 @@ export default function EmailCampaignPage() {
           </div>
           {isSidebarOpen && (
             <span className="truncate text-base font-bold tracking-tight text-slate-800 dark:text-slate-100">
-              Email Campaigns
+              Email Studio
             </span>
           )}
         </div>
 
         {/* Navigation */}
-        <nav className={`flex-1 space-y-1 ${isSidebarOpen ? "p-3" : "p-2"}`}>
+        <nav className={`flex-1 space-y-1 ${isSidebarOpen ? "p-3" : "p-2"}`} aria-label="Email campaign sections">
           {TABS.map(({ key, label, icon: Icon }) => {
             const isActive = activeTab === key;
             return (
@@ -89,13 +90,13 @@ export default function EmailCampaignPage() {
                     : "justify-center p-3"
                 } ${
                   isActive
-                    ? "bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400 border-l-4 border-blue-600"
+                    ? "bg-blue-600 text-white shadow-md shadow-blue-500/20 border-l-4 border-blue-600"
                     : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 border-l-4 border-transparent"
                 }`}
               >
                 <Icon
                   className={`flex-shrink-0 ${isSidebarOpen ? "h-4 w-4" : "h-5 w-5"} ${
-                    isActive ? "text-blue-600 dark:text-blue-400" : ""
+                    isActive ? "text-white" : ""
                   }`}
                 />
                 {isSidebarOpen && <span className="truncate">{label}</span>}
@@ -130,10 +131,14 @@ export default function EmailCampaignPage() {
       </aside>
 
       {/* ───── MAIN CONTENT ───── */}
-      <div className="flex flex-1 flex-col overflow-hidden bg-white dark:bg-slate-950">
+      <div className="flex flex-1 flex-col overflow-hidden">
+        <header className="hidden shrink-0 items-center justify-between border-b border-slate-200 bg-white/90 px-6 py-4 backdrop-blur dark:border-slate-800 dark:bg-slate-950/90 sm:flex">
+          <div><p className="text-xs font-semibold uppercase tracking-[0.16em] text-blue-600 dark:text-blue-400">Email studio</p><h1 className="mt-1 text-lg font-bold text-slate-900 dark:text-white">{TABS.find(tab => tab.key === activeTab)?.label}</h1></div>
+          <div className="inline-flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700 dark:border-blue-900/60 dark:bg-blue-950/40 dark:text-blue-300"><ShieldCheck size={14} /> Campaign-ready</div>
+        </header>
         {/* Mobile Tabs */}
         <div className="sm:hidden border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
-          <div className="flex overflow-x-auto">
+          <div className="flex overflow-x-auto bg-white dark:bg-slate-900">
             {TABS.map(({ key, label, icon: Icon }) => {
               const isActive = activeTab === key;
               return (
@@ -155,7 +160,8 @@ export default function EmailCampaignPage() {
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 min-h-0 overflow-y-auto">
+        <div className="flex-1 min-h-0 overflow-y-auto p-3 sm:p-5">
+          <div className="min-h-full rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
           <Suspense
             fallback={
               <div className="flex items-center justify-center p-20">
@@ -168,6 +174,7 @@ export default function EmailCampaignPage() {
             {activeTab === "templates" && <EmailTemplatesTab />}
             {activeTab === "aiTemplates" && <AITemplatesTab />}
           </Suspense>
+          </div>
         </div>
       </div>
     </div>
