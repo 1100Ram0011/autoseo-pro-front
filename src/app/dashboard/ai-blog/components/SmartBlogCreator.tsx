@@ -117,8 +117,21 @@ export default function SmartBlogCreator({ profileId, requireAuth }) {
   const [setActiveJob] = useSetActiveJobMutation();
 
   // ── Derive state from DB session ──
-  const titles = session?.titles || [];
-  const drafts = session?.drafts || []; // array [{title, content, tags, coverImage}]
+  const sessionTitles = session?.titles || [];
+  const dummyTitles = [
+    { title: "Top 10 SEO Strategies for 2024", url: "https://example.com/top-10" },
+    { title: "How to Use AI for Content Creation", url: "https://example.com/ai-content" },
+    { title: "The Ultimate Guide to Google Analytics 4", url: "https://example.com/ga4" },
+    { title: "10 Best SEO Tools to Grow Your Business", url: "https://example.com/seo-tools" }
+  ];
+  const titles = sessionTitles.length > 0 ? sessionTitles : dummyTitles;
+
+  const sessionDrafts = session?.drafts || [];
+  const dummyDrafts = [
+    { title: "Top 10 SEO Strategies for 2024", content: "<p>This is a draft content...</p>", tags: "SEO, 2024", coverImage: null }
+  ];
+  const drafts = sessionDrafts.length > 0 ? sessionDrafts : dummyDrafts;
+
   const activeJobs = session?.activeJobs || []; // array of {jobId, selectedTitle}
 
   // drafts array → map for O(1) lookup in TitleSelector
@@ -129,7 +142,21 @@ export default function SmartBlogCreator({ profileId, requireAuth }) {
     { pollingInterval: (showPublishedModal || autoBlogState.isActive) ? 5000 : 0 }
   );
   const [deleteBlogMutation] = useDeleteBlogMutation();
-  const publishedBlogsList = (blogsData?.blogs || []).filter((b) => b.status === 'published');
+  
+  const fetchedBlogs = blogsData?.blogs || [];
+  const dummyBlogs = [
+    {
+      _id: "blog_1",
+      title: "How to Build a React App",
+      status: "published",
+      devtoUrl: "https://dev.to/example",
+      bloggerUrl: "https://example.blogspot.com",
+      createdAt: new Date().toISOString()
+    }
+  ];
+  const blogsToUse = fetchedBlogs.length > 0 ? fetchedBlogs : dummyBlogs;
+  
+  const publishedBlogsList = blogsToUse.filter((b) => b.status === 'published');
   const publishedBlogsMap = Object.fromEntries(
     publishedBlogsList.map((b) => [b.title, b])
   );

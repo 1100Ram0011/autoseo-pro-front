@@ -86,7 +86,48 @@ export default function EmailCampaignsTab() {
   const [actionId, setActionId] = useState<string | null>(null);
   const [form, setForm] = useState({ name: "", templateId: "", provider: "google" });
 
-  const filtered = campaigns.filter((c: any) =>
+  const dummyEmailCampaigns = [
+    {
+      id: "email_1",
+      name: "Q3 Newsletter",
+      provider: "google",
+      status: "completed",
+      totalRecipients: 5000,
+      sentCount: 5000,
+      failedCount: 50,
+      openedCount: 3200,
+      clickedCount: 1100,
+      template: { name: "Newsletter Temp" }
+    },
+    {
+      id: "email_2",
+      name: "Product Launch",
+      provider: "microsoft",
+      status: "sending",
+      totalRecipients: 15000,
+      sentCount: 8000,
+      failedCount: 200,
+      openedCount: 4500,
+      clickedCount: 500,
+      template: { name: "Launch Email" }
+    },
+    {
+      id: "email_3",
+      name: "Inactive Users Re-engagement",
+      provider: "custom",
+      status: "failed",
+      totalRecipients: 1000,
+      sentCount: 100,
+      failedCount: 900,
+      openedCount: 20,
+      clickedCount: 5,
+      template: { name: "Re-engagement" }
+    }
+  ];
+
+  const displayCampaigns = (campaigns && campaigns.length > 0) ? campaigns : dummyEmailCampaigns;
+
+  const filtered = displayCampaigns.filter((c: any) =>
     c.name?.toLowerCase().includes(search.toLowerCase())
   );
 

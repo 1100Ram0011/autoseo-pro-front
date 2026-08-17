@@ -35,10 +35,63 @@ export default function ImageLibraryPage() {
     { id: 'manual', label: 'Manual Uploads' },
   ];
 
+  const dummyImages = [
+    {
+      id: "img_1",
+      _id: "img_1",
+      mediaUrl: "https://images.unsplash.com/photo-1542204165-65bf26472b9b?q=80&w=600&auto=format&fit=crop",
+      description: "Professional photography for marketing campaign",
+      hashtags: "#marketing #professional #campaign",
+      source: "manual",
+      uploadType: "manual",
+      createdAt: new Date().toISOString()
+    },
+    {
+      id: "img_2",
+      _id: "img_2",
+      mediaUrl: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=600&auto=format&fit=crop",
+      description: "AI generated creative tech workspace",
+      hashtags: "#ai #workspace #tech",
+      source: "ai",
+      uploadType: "ai",
+      createdAt: new Date(Date.now() - 86400000).toISOString()
+    }
+  ];
+
+  const dummyDeleted = [
+    {
+      id: "img_3",
+      _id: "img_3",
+      mediaUrl: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=600&auto=format&fit=crop",
+      description: "Old laptop setup (Deleted)",
+      hashtags: "#laptop #old",
+      source: "manual",
+      uploadType: "manual",
+      createdAt: new Date(Date.now() - 172800000).toISOString()
+    }
+  ];
+
+  const dummyArchived = [
+    {
+      id: "img_4",
+      _id: "img_4",
+      mediaUrl: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=600&auto=format&fit=crop",
+      description: "Archived office setup",
+      hashtags: "#office #archived",
+      source: "ai",
+      uploadType: "ai",
+      createdAt: new Date(Date.now() - 259200000).toISOString()
+    }
+  ];
+
+  const activeImages = (images && images.length > 0) ? images : dummyImages;
+  const activeDeletedList = (deletedImages && deletedImages.length > 0) ? deletedImages : dummyDeleted;
+  const activeArchivedList = (archivedMedia && archivedMedia.length > 0) ? archivedMedia : dummyArchived;
+
   let currentData = [];
-  if (activeTab === 'all') currentData = images;
-  else if (activeTab === 'archived') currentData = archivedMedia;
-  else if (activeTab === 'deleted') currentData = deletedImages;
+  if (activeTab === 'all') currentData = activeImages;
+  else if (activeTab === 'archived') currentData = activeArchivedList;
+  else if (activeTab === 'deleted') currentData = activeDeletedList;
 
   const filteredData = useMemo(() => {
     return currentData.filter((item: any) => {

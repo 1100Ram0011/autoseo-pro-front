@@ -64,6 +64,7 @@ interface PDFContext {
   Body: (text: string) => void;
   Gap: (h?: number) => void;
   KpiCard: (label: string, value: string, sub: string, color: number[], x: number, w: number) => void;
+  BarChart: (title: string, data: Array<{ label: string; value: number }>, color: number[]) => void;
   Table: (headers: string[], rows: any[][], widths: number[], opts?: any) => void;
   save: (filename: string, action?: 'download' | 'preview') => void;
 }
@@ -133,6 +134,36 @@ async function createPDFDoc(websiteName: string, websiteUrl: string, reportTitle
     if (sub) { C(P.hint); doc.setFontSize(6); doc.text(sub, x + w / 2, y + 19, { align: 'center' }); }
   }
 
+  /** Draws a self-contained chart so exported PDFs retain their visuals offline. */
+  function BarChart(title: string, data: Array<{ label: string; value: number }>, color: number[]) {
+    const items = data
+      .map(item => ({ label: String(item.label || 'Unknown'), value: Number(item.value) || 0 }))
+      .filter(item => item.value >= 0)
+      .slice(0, 8);
+    if (!items.length) return;
+
+    const rowH = 6.5, h = 18 + items.length * rowH;
+    need(h + 4);
+    C(P.text); doc.setFontSize(10); doc.setFont('helvetica', 'bold');
+    doc.text(title, M, y);
+    y += 5;
+    F(P.white); doc.roundedRect(M, y, COL, h - 5, 2, 2, 'F');
+    D(P.border); LW(0.25); doc.roundedRect(M, y, COL, h - 5, 2, 2, 'S');
+    const max = Math.max(...items.map(item => item.value), 1);
+    const labelW = 42, valueW = 22, barW = COL - labelW - valueW - 10;
+    items.forEach((item, index) => {
+      const lineY = y + 7 + index * rowH;
+      const label = item.label.length > 24 ? item.label.slice(0, 23) + '…' : item.label;
+      C(P.sub); doc.setFontSize(7); doc.setFont('helvetica', 'normal');
+      doc.text(label, M + 3, lineY + 2.5);
+      F(P.card); doc.roundedRect(M + labelW, lineY, barW, 3.5, 1, 1, 'F');
+      F(color); doc.roundedRect(M + labelW, lineY, Math.max(1, barW * (item.value / max)), 3.5, 1, 1, 'F');
+      C(P.text); doc.setFontSize(7); doc.setFont('helvetica', 'bold');
+      doc.text(fmtN(item.value), M + labelW + barW + valueW - 2, lineY + 2.5, { align: 'right' });
+    });
+    y += h;
+  }
+
   function Table(headers: string[], rows: any[][], widths: number[], opts: any = {}) {
     const rowH = 7, headH = 8;
     need(headH + Math.min(rows.length, 5) * rowH);
@@ -185,7 +216,7 @@ async function createPDFDoc(websiteName: string, websiteUrl: string, reportTitle
   const ctx: PDFContext = {
     doc, PW, PH, M, COL, y, pg, P,
     F, D, C, LW, setupPage, newPage, need,
-    H2, H3, Body, Gap, KpiCard, Table,
+    H2, H3, Body, Gap, KpiCard, BarChart, Table,
     save: (filename: string, action: 'download' | 'preview' = 'download') => {
       if (action === 'preview') window.open(doc.output('bloburl'), '_blank');
       else doc.save(filename);
@@ -280,6 +311,11 @@ export async function exportAnalyticsPDF(data: any, websiteUrl: string, dateLabe
   ctx.KpiCard('BOUNCE RATE', `${(data.bounceRate || 0).toFixed(1)}%`, 'Lower is better', (data.bounceRate || 0) > 60 ? ctx.P.red : ctx.P.green, ctx.M + 2 * (cw + 2), cw);
   ctx.KpiCard('AVG SESSION', fmtDur(data.avgSessionDuration || 0), 'Time on site', ctx.P.accent, ctx.M + 3 * (cw + 2), cw);
   ctx.y += 26;
+
+  if (data.trafficSources && Object.keys(data.trafficSources).length) {
+    ctx.BarChart('Traffic-source distribution', Object.entries(data.trafficSources as Record<string, number>)
+      .sort((a, b) => b[1] - a[1]).map(([label, value]) => ({ label, value })), ctx.P.orange);
+  }
 
   if (data.trafficSources && Object.keys(data.trafficSources).length) {
     ctx.newPage();
@@ -416,6 +452,12 @@ export async function exportGSCPDF(overview: any, keywords: any[], pages: any[],
   ctx.KpiCard('AVG CTR', `${((m.ctr || 0) * 100).toFixed(1)}%`, 'Click-through rate', ctx.P.green, ctx.M + 2 * (cw + 2), cw);
   ctx.KpiCard('AVG POSITION', (m.position || 0).toFixed(1), 'SERP ranking', ctx.P.amber, ctx.M + 3 * (cw + 2), cw);
   ctx.y += 26;
+
+  if (keywords?.length) {
+    ctx.BarChart('Top keyword clicks', keywords.slice(0, 8).map((k: any) => ({
+      label: k.query || k.keyword || 'Keyword', value: k.clicks || 0
+    })), ctx.P.blue);
+  }
 
   if (keywords?.length) {
     ctx.newPage();
@@ -555,6 +597,12 @@ export async function exportKeywordsPDF(keywords: any[], websiteUrl: string, act
   ctx.KpiCard('TOP 10', String(inTop10), 'Page 1 rankings', ctx.P.blue, ctx.M + 2 * (cw + 2), cw);
   ctx.KpiCard('BELOW 30', String(below30), 'Need improvement', ctx.P.amber, ctx.M + 3 * (cw + 2), cw);
   ctx.y += 26;
+  ctx.BarChart('Ranking distribution', [
+    { label: 'Top 3', value: inTop3 },
+    { label: 'Positions 4–10', value: Math.max(0, inTop10 - inTop3) },
+    { label: 'Positions 11–30', value: Math.max(0, keywords.length - inTop10 - below30) },
+    { label: 'Below 30 / unranked', value: below30 },
+  ], ctx.P.purple);
 
   ctx.newPage();
   ctx.H2('All Keywords');
@@ -648,6 +696,11 @@ export async function exportLighthousePDF(pages: any[], websiteUrl: string, acti
   ctx.KpiCard('AVG SEO', `${Math.round(avgSeo)}`, 'SEO score', avgSeo >= 90 ? ctx.P.green : avgSeo >= 50 ? ctx.P.amber : ctx.P.red, ctx.M + 2 * (cw + 2), cw);
   ctx.KpiCard('AVG A11Y', `${Math.round(avgAcc)}`, 'Accessibility', avgAcc >= 90 ? ctx.P.green : avgAcc >= 50 ? ctx.P.amber : ctx.P.red, ctx.M + 3 * (cw + 2), cw);
   ctx.y += 26;
+  ctx.BarChart('Average audit scores', [
+    { label: 'Performance', value: avgPerf },
+    { label: 'SEO', value: avgSeo },
+    { label: 'Accessibility', value: avgAcc },
+  ], ctx.P.blue);
 
   ctx.newPage();
   ctx.H2('Page-by-Page Audit Results');
@@ -742,6 +795,11 @@ export async function exportSitemapsPDF(sitemaps: any[], websiteUrl: string, act
   ctx.KpiCard('INDEXED', fmtN(totalIndexed), `${pct(totalIndexed, totalUrls)}% indexed`, totalIndexed === totalUrls ? ctx.P.green : ctx.P.amber, ctx.M + 2 * (cw + 2), cw);
   ctx.KpiCard('ERRORS', String(totalErrors), 'Issues found', totalErrors > 0 ? ctx.P.red : ctx.P.green, ctx.M + 3 * (cw + 2), cw);
   ctx.y += 26;
+  ctx.BarChart('Indexing coverage', [
+    { label: 'Submitted URLs', value: totalUrls },
+    { label: 'Indexed URLs', value: totalIndexed },
+    { label: 'Not indexed', value: Math.max(0, totalUrls - totalIndexed) },
+  ], ctx.P.green);
 
   ctx.newPage();
   ctx.H2('Sitemap Details');
@@ -819,6 +877,12 @@ export async function exportBacklinksPDF(links: any[], websiteUrl: string) {
   ctx.KpiCard('TOXIC', String(toxic), 'Toxicity >= 60', toxic > 0 ? ctx.P.red : ctx.P.green, ctx.M + 2 * (cw + 2), cw);
   ctx.KpiCard('DISAVOWED', String(disavowed), 'Blocked links', ctx.P.amber, ctx.M + 3 * (cw + 2), cw);
   ctx.y += 26;
+  ctx.BarChart('Backlink quality distribution', [
+    { label: 'Safe', value: safe },
+    { label: 'Medium risk', value: medium },
+    { label: 'Toxic', value: toxic },
+    { label: 'Disavowed', value: disavowed },
+  ], ctx.P.orange);
 
   ctx.newPage();
   ctx.H2('All Backlinks');

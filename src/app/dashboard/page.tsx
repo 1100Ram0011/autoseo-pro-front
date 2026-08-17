@@ -20,6 +20,15 @@ import SmartActionsFeed from './SmartActionsFeed';
 import DateRangePicker, { DateRangeValue } from '@/components/DateRangePicker';
 import { Paper, Button, Typography, Chip } from '@mui/material';
 import anime from 'animejs';
+import { 
+  PageTransition, 
+  SectionTransition, 
+  AnimatedCard,
+  getResponsiveGrid,
+  getResponsiveContainer,
+  fadeInUp,
+  staggerContainer
+} from '@/components/animations';
 
 // Fallback data removed completely to strictly use real backend API data
 
@@ -160,10 +169,16 @@ export default function DashboardPage() {
   const sparklineData4 = Array.isArray(dashboardData?.keywordTrend) ? dashboardData.keywordTrend.map((t: any) => ({ v: t.clicks || 0 })) : [{v:0}];
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-6 md:p-8 font-sans">
-      
-      {/* Header */}
-      <div className="mb-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 animate-dash">
+    <PageTransition variant="fadeUp">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-4 md:p-6 lg:p-8 font-sans">
+        
+        {/* Header */}
+        <motion.div 
+          className="mb-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
         <div>
           <Typography variant="h4" className="font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
             {greeting || 'Good afternoon'} 👋
@@ -945,7 +960,7 @@ export default function DashboardPage() {
       </motion.div>
         </>
       )}
-
-    </div>
+      </div>
+    </PageTransition>
   );
 }

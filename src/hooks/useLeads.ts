@@ -56,8 +56,75 @@ export function useMapLeads() {
     return response.data;
   };
 
+  const fetchedLeads = data?.data || [];
+  
+  const dummyLeads = [
+    {
+      _id: "lead_1",
+      id: "lead_1",
+      name: "Acme Web Solutions",
+      business_type: "Information Technology",
+      city: "San Francisco",
+      location_name: "San Francisco",
+      rating: 4.8,
+      reviews: 156,
+      phone: "+1 415-555-0198",
+      emails: ["contact@acmeweb.example.com"],
+      website: "https://acmeweb.example.com",
+      isWhatsAppNumber: true,
+      linkedin: "https://linkedin.com/company/acmeweb",
+      hasLinkedinExtracted: true,
+      match_score: 95,
+      createdAt: new Date().toISOString(),
+      address: "123 Tech Lane, SF, CA 94105",
+      additionalPhones: ["+1 415-555-0199"]
+    },
+    {
+      _id: "lead_2",
+      id: "lead_2",
+      name: "Global Logistics Inc",
+      business_type: "Transportation",
+      city: "New York",
+      location_name: "New York",
+      rating: 3.9,
+      reviews: 42,
+      phone: "+1 212-555-0123",
+      emails: [],
+      website: "N/A",
+      isWhatsAppNumber: false,
+      linkedin: "N/A",
+      hasLinkedinExtracted: false,
+      match_score: 65,
+      createdAt: new Date(Date.now() - 86400000).toISOString(),
+      address: "45 Freight Rd, NY, NY 10001",
+      additionalPhones: []
+    },
+    {
+      _id: "lead_3",
+      id: "lead_3",
+      name: "Green Energy Corp",
+      business_type: "Renewables",
+      city: "Austin",
+      location_name: "Austin",
+      rating: 5.0,
+      reviews: 12,
+      phone: "+1 512-555-0987",
+      emails: ["info@greenenergy.example.com"],
+      website: "https://greenenergy.example.com",
+      isWhatsAppNumber: true,
+      linkedin: "https://linkedin.com/company/greenenergy",
+      hasLinkedinExtracted: true,
+      match_score: 88,
+      createdAt: new Date(Date.now() - 172800000).toISOString(),
+      address: "789 Eco Blvd, Austin, TX 78701",
+      additionalPhones: []
+    }
+  ];
+
+  const leadsToUse = fetchedLeads.length > 0 ? fetchedLeads : dummyLeads;
+
   return {
-    leads: data?.data || [],
+    leads: leadsToUse,
     stats: data?.statistics || null,
     isLoading,
     isError: error,
