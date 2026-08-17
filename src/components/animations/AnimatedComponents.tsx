@@ -1,15 +1,15 @@
 'use client';
 
 import React from 'react';
-import { motion, MotionProps } from 'framer-motion';
+import { motion, HTMLMotionProps } from 'framer-motion';
 import { fadeInUp, scaleIn, staggerContainer } from '@/utils/motionVariants';
 import { motionConfig } from '@/config/motionConfig';
 
-interface AnimatedContainerProps extends React.HTMLAttributes<HTMLDivElement> {
+interface AnimatedContainerProps extends Omit<HTMLMotionProps<"div">, "variant"> {
   children: React.ReactNode;
   variant?: 'fade' | 'scale' | 'stagger';
   delay?: number;
-  motionProps?: MotionProps;
+  motionProps?: HTMLMotionProps<"div">;
 }
 
 /**
@@ -45,7 +45,7 @@ export const AnimatedContainer: React.FC<AnimatedContainerProps> = ({
 };
 
 interface AnimatedButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  extends Omit<HTMLMotionProps<"button">, "variant"> {
   children: React.ReactNode;
   variant?: 'primary' | 'secondary' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
@@ -103,7 +103,7 @@ export const AnimatedButton: React.FC<AnimatedButtonProps> = ({
   );
 };
 
-interface AnimatedCardProps extends React.HTMLAttributes<HTMLDivElement> {
+interface AnimatedCardProps extends HTMLMotionProps<"div"> {
   children: React.ReactNode;
   hover?: boolean;
 }
@@ -224,7 +224,7 @@ export const FadeInText: React.FC<{
   );
 };
 
-interface GradientTextProps extends React.HTMLAttributes<HTMLSpanElement> {
+interface GradientTextProps extends HTMLMotionProps<"span"> {
   children: React.ReactNode;
   colors?: string[];
 }
