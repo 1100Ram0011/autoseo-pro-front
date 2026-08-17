@@ -16,7 +16,7 @@ export const useInView = (
   const ref = useRef(null);
   const isInView = useInViewFramer(ref, {
     once: options.once ?? true,
-    margin: options.margin ?? '0px',
+    margin: (options.margin ?? '0px') as any,
     amount: options.amount ?? 0.3,
   });
 
